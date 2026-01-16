@@ -1,0 +1,48 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Elegant warm gradient background -->
+  <defs>
+    <linearGradient id="warmGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f5f5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#fefefe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f8f8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a80e9e;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#a80e9e;stop-opacity:0.05" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#warmGradient)"/>
+  <rect width="400" height="300" fill="url(#accentGradient)"/>
+  
+  <!-- Decorative corner ornament -->
+  <path d="M 10 10 Q 10 10 20 10 L 20 12 Q 10 12 10 22 Z" fill="#a80e9e" opacity="0.2"/>
+  <path d="M 390 10 Q 390 10 380 10 L 380 12 Q 390 12 390 22 Z" fill="#a80e9e" opacity="0.2"/>
+  
+  <!-- Center memorial icon - stylized person silhouette -->
+  <g transform="translate(200, 150)">
+    <!-- Head -->
+    <circle cx="0" cy="-20" r="22" fill="#a80e9e" opacity="0.3"/>
+    
+    <!-- Body -->
+    <ellipse cx="0" cy="20" rx="35" ry="45" fill="#a80e9e" opacity="0.25"/>
+    
+    <!-- Decorative candle flame above -->
+    <g transform="translate(0, -70)">
+      <ellipse cx="0" cy="0" rx="8" ry="12" fill="#d4af37" opacity="0.4"/>
+      <path d="M -4 0 Q 0 -8 4 0 Z" fill="#d4af37" opacity="0.6"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="250" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#262523" text-anchor="middle" font-weight="500" opacity="0.4">
+    In Loving Memory
+  </text>
+  
+  <!-- Decorative Star of David subtle pattern -->
+  <g opacity="0.08" fill="#a80e9e">
+    <path d="M 30 40 L 35 50 L 40 40 L 45 50 L 40 60 L 30 60 L 25 50 Z" />
+    <path d="M 360 240 L 365 250 L 370 240 L 375 250 L 370 260 L 360 260 L 355 250 Z" />
+  </g>
+</svg>

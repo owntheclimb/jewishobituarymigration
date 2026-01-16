@@ -1,0 +1,105 @@
+'use client';
+
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Clock, Share2, Download, ArrowLeft, DollarSign } from 'lucide-react';
+import Link from 'next/link';
+
+
+export default function ArticleJewishFuneralCostsPage() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+
+      <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <Button variant="ghost" size="sm" className="mb-4" asChild>
+            <Link href="/resources"><ArrowLeft className="mr-2 h-4 w-4" />Back to Resources</Link>
+          </Button>
+
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <Badge>Planning</Badge>
+            <span className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Clock className="h-4 w-4" />11 min read
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Jewish Funeral Costs: A Complete Guide to What You'll Pay
+          </h1>
+
+          <p className="text-xl text-muted-foreground leading-relaxed mb-6">
+            Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time, with typical expenses ranging from $8,000-$15,000.
+          </p>
+
+          <div className="flex gap-3">
+            <Button variant="outline"><Share2 className="mr-2 h-4 w-4" />Share Article</Button>
+            <Button variant="outline"><Download className="mr-2 h-4 w-4" />Download PDF</Button>
+          </div>
+        </div>
+      </section>
+
+      <article className="py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="prose prose-lg max-w-none">
+            <h2 className="text-foreground">Typical Jewish Funeral Expenses</h2>
+
+            <Card className="p-6 my-6 bg-card">
+              <div className="flex items-center gap-2 mb-4">
+                <DollarSign className="h-6 w-6 text-primary" />
+                <h3 className="text-xl font-bold text-foreground m-0">Basic Cost Breakdown</h3>
+              </div>
+              <div className="space-y-3 text-foreground">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Basic Services Fee</span>
+                  <span>$2,000 - $3,500</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Simple Wooden Casket</span>
+                  <span>$800 - $2,500</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Burial Plot</span>
+                  <span>$1,500 - $5,000</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Opening/Closing Grave</span>
+                  <span>$1,000 - $1,500</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Headstone</span>
+                  <span>$1,500 - $4,000</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="font-semibold">Shiva/Memorial Supplies</span>
+                  <span>$200 - $500</span>
+                </div>
+                <div className="flex justify-between py-3 bg-primary/10 px-3 rounded mt-2">
+                  <span className="font-bold text-lg">Typical Total</span>
+                  <span className="font-bold text-lg">$8,000 - $15,000</span>
+                </div>
+              </div>
+            </Card>
+
+            <h2 className="text-foreground">Why Jewish Funerals Cost Less</h2>
+            <p className="text-foreground">Jewish tradition actually helps reduce funeral costs through several principles: simple wooden caskets, no embalming, no elaborate viewing, and emphasis on equality. These traditions mean Jewish funerals are often less expensive than non-Jewish ones.</p>
+
+            <h2 className="text-foreground">How to Reduce Costs</h2>
+            <ul className="text-foreground">
+              <li>Join a Jewish burial society offering group rates</li>
+              <li>Purchase burial plots in advance</li>
+              <li>Choose a simpler headstone design</li>
+              <li>Use synagogue connections for funeral home recommendations</li>
+              <li>Apply for assistance from Jewish social services if needed</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <Footer />
+    </div>
+  );
+}

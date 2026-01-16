@@ -1,0 +1,165 @@
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Heart, ArrowRight, Quote } from 'lucide-react';
+
+interface FeaturedStory {
+  id: string;
+  name: string;
+  dates: string;
+  location: string;
+  imageUrl: string;
+  excerpt: string;
+  quote: string;
+  category: string;
+}
+
+// Featured obituaries showcasing beautiful life stories
+const featuredStories: FeaturedStory[] = [
+  {
+    id: 'story-1',
+    name: 'Rabbi David Goldstein',
+    dates: '1945-2024',
+    location: 'Brooklyn, New York',
+    imageUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=600&h=400&fit=crop',
+    category: 'Community Leader',
+    excerpt: 'For over 40 years, Rabbi Goldstein served his community with wisdom, compassion, and an unwavering commitment to Torah study. His door was always open, his counsel always sought, and his smile could light up the darkest of days.',
+    quote: 'He taught us that every soul is precious, every question deserves thoughtful consideration, and every act of kindness creates ripples that extend far beyond our sight.'
+  },
+  {
+    id: 'story-2',
+    name: 'Miriam Sarah Levy',
+    dates: '1932-2024',
+    location: 'Jerusalem, Israel',
+    imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop',
+    category: 'Holocaust Survivor',
+    excerpt: 'Miriam survived the unthinkable with grace and emerged as a beacon of hope for future generations. She dedicated her life to education, ensuring that the memories of those lost would never fade and that hatred would be met with understanding.',
+    quote: 'From the ashes of despair, I chose to build a garden of remembrance. Each student I taught, each story I shared, was my way of saying: we remember, we persist, we triumph through love.'
+  },
+  {
+    id: 'story-3',
+    name: 'Dr. Benjamin Rosenthal',
+    dates: '1958-2024',
+    location: 'Chicago, Illinois',
+    imageUrl: 'https://images.unsplash.com/photo-1590086782792-42dd2350140d?w=600&h=400&fit=crop',
+    category: 'Physician & Philanthropist',
+    excerpt: 'A renowned pediatric cardiologist who treated thousands of children, Dr. Rosenthal believed that healing extended beyond medicine. He established free clinics in underserved communities and mentored countless young physicians.',
+    quote: 'Medicine is not just about fixing hearts—it\'s about understanding them, caring for them, and teaching others to do the same with compassion and humility.'
+  }
+];
+
+const NeshamaStories = () => {
+  const mainStory = featuredStories[0];
+  const sideStories = featuredStories.slice(1);
+
+  return (
+    <section className="py-20 px-4 bg-gradient-to-b from-background via-muted/20 to-background">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
+            <Heart className="h-4 w-4 text-primary" />
+            <span className="text-sm font-semibold text-primary uppercase tracking-wider">
+              Featured Stories
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Lives Remembered Forever
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Beautifully written tributes that capture the essence of remarkable lives and inspire us all
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Featured Story */}
+          <Card className="lg:col-span-2 overflow-hidden shadow-elegant hover:shadow-lg transition-all duration-300 group">
+            <div className="aspect-[16/9] overflow-hidden">
+              <img 
+                src={mainStory.imageUrl} 
+                alt={mainStory.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <CardContent className="p-8">
+              <Badge className="mb-4">{mainStory.category}</Badge>
+              <h3 className="text-3xl font-bold mb-2">{mainStory.name}</h3>
+              <p className="text-muted-foreground mb-4">
+                {mainStory.dates} • {mainStory.location}
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                <p className="text-foreground leading-relaxed">
+                  {mainStory.excerpt}
+                </p>
+                
+                <div className="relative pl-6 border-l-2 border-primary/30 italic">
+                  <Quote className="absolute -left-2 -top-1 h-4 w-4 text-primary" />
+                  <p className="text-muted-foreground">
+                    "{mainStory.quote}"
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button asChild>
+                  <Link href={`/memorial/${mainStory.id}`}>
+                    Read Full Story
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button variant="outline">
+                  <Heart className="mr-2 h-4 w-4" />
+                  Share Memory
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Side Stories */}
+          <div className="lg:col-span-1 space-y-6">
+            {sideStories.map((story) => (
+              <Card key={story.id} className="overflow-hidden shadow-subtle hover:shadow-elegant transition-all duration-300 group">
+                <div className="aspect-[16/9] overflow-hidden">
+                  <img 
+                    src={story.imageUrl} 
+                    alt={story.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <Badge variant="outline" className="mb-3 text-xs">
+                    {story.category}
+                  </Badge>
+                  <h4 className="text-xl font-bold mb-1">{story.name}</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {story.dates}
+                  </p>
+                  <p className="text-sm text-foreground mb-4 line-clamp-3">
+                    {story.excerpt}
+                  </p>
+                  <Button size="sm" variant="ghost" className="p-0 h-auto" asChild>
+                    <Link href={`/memorial/${story.id}`}>
+                      Read More <ArrowRight className="ml-1 h-3 w-3" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-center mt-8">
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/featured-stories">
+              View All Featured Stories
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default NeshamaStories;

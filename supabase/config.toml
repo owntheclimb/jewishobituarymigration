@@ -1,0 +1,22 @@
+project_id = "pinwpummsftjsqvszchs"
+
+[functions.daily-digest]
+verify_jwt = false
+
+[functions.update-community-stats]
+verify_jwt = false
+
+[functions.moderation-notification]
+verify_jwt = false
+
+[functions.refresh-obits]
+verify_jwt = false
+
+[functions.parse-rss-feed]
+verify_jwt = false
+
+[functions.sync-obituaries]
+verify_jwt = false
+
+[functions.keep-alive]
+verify_jwt = false
