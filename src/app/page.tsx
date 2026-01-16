@@ -1,65 +1,734 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Badge } from "@/components/ui/badge";
+import { Search, FileText, Heart, Clock, Users, BookOpen, MapPin, User, ArrowRight, Flame } from "lucide-react";
+import { notableFigures } from "@/data/notableFigures";
+import heroImage from "@/assets/hero-image.jpg";
+import legacyMemorialUI from "@/assets/legacy-memorial-ui.jpg";
+import obituaryPortrait from "@/assets/obituary-portrait-realistic.jpg";
+import flowersBouquet from "@/assets/flowers-bouquet.jpg";
+import memorialTree from "@/assets/memorial-tree.jpg";
+import stepCreate from "@/assets/step-create.png";
+import stepPublish from "@/assets/step-publish.png";
+import stepRemember from "@/assets/step-remember.png";
+import stepSupport from "@/assets/step-support.png";
+import OnThisDate from "@/components/OnThisDate";
+import NeshamaStories from "@/components/NeshamaStories";
+import BrowseStatistics from "@/components/BrowseStatistics";
+
+const Index = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-background">
+      <Navbar />
+
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Video - Optimized for all mobile devices including iOS */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          controls={false}
+          style={{ objectFit: 'cover' }}
+          onLoadedMetadata={(e) => {
+            const video = e.currentTarget;
+            video.play().catch(() => {
+              console.log('Video autoplay prevented by browser');
+            });
+          }}
+        >
+          {/* TODO: Consider hosting an optimized mobile version of this video */}
+          {/* Current video might be too large for mobile autoplay */}
+          <source src="https://www.legacy.com/static/globalassets/framercontent/legacy-home-hero.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="text-center text-white max-w-4xl px-4 animate-fade-in relative z-10">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            Honor Their{" "}
+            <span className="text-primary">Legacy</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto leading-relaxed">
+            Create beautiful, lasting tributes and help others find peace in remembrance
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button variant="elegant" size="lg" className="text-lg px-8 py-4" asChild>
+              <Link href="/create-obituary">
+                <Heart className="mr-2 h-5 w-5" />
+                Create an Obituary
+              </Link>
+            </Button>
+            <Button variant="soft" size="lg" className="text-lg px-8 py-4 bg-white/10 text-white border-white/20 hover:bg-white/20" asChild>
+              <Link href="/help">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Writing Help
+              </Link>
+            </Button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="max-w-md mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Find an obituary by name..."
+                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60 h-12"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                  }
+                }}
+              />
+              <Button
+                size="sm"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10"
+                onClick={() => {
+                  if (searchQuery.trim()) {
+                    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                  }
+                }}
+              >
+                Search
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              From creating meaningful tributes to planning services, we're here to support you through every step
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Create Obituary */}
+            <div className="text-center p-6 rounded-lg border border-border shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-105">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <FileText className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Create Obituaries</h3>
+              <p className="text-muted-foreground mb-4">
+                Easy-to-use tools and templates to create beautiful, personalized obituaries that honor your loved one's memory.
+              </p>
+              <Button variant="outline" asChild>
+                <Link href="/create-obituary">Get Started</Link>
+              </Button>
+            </div>
+
+            {/* Find Obituaries */}
+            <div className="text-center p-6 rounded-lg border border-border shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-105">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <Search className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Find Obituaries</h3>
+              <p className="text-muted-foreground mb-4">
+                Search our comprehensive database by name, location, school, or funeral home to find and honor those who have passed.
+              </p>
+              <Button variant="outline" asChild>
+                <Link href="/search">Search Now</Link>
+              </Button>
+            </div>
+
+            {/* Planning Services */}
+            <div className="text-center p-6 rounded-lg border border-border shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-105">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <MapPin className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Funeral Planning</h3>
+              <p className="text-muted-foreground mb-4">
+                Find funeral homes, compare services, and access resources for estate planning and grief support.
+              </p>
+              <Button variant="outline" asChild>
+                <Link href="/planning">Learn More</Link>
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Legacy Promise Section */}
+      <section className="py-20 px-4" id="promise" aria-labelledby="promise-heading">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <p className="text-sm font-semibold text-primary mb-4 tracking-widest uppercase">
+              THE JEWISH OBITS PROMISE
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight" id="promise-heading">
+              We help you honor a beautiful life
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+            {/* Left Column - Memorial + Bottom Row */}
+            <div className="flex flex-col gap-8">
+              {/* Legacy Memorial - Featured Card */}
+              <Link
+                href="/memorial"
+                className="group relative bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/30 dark:to-orange-900/30 p-8 rounded-3xl shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-[1.02] block overflow-hidden"
+                aria-labelledby="memorial-title"
+                aria-describedby="memorial-desc"
+              >
+                <div className="flex items-start gap-6">
+                  <div className="flex-1">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 id="memorial-title" className="text-2xl font-bold text-foreground mb-3">
+                      Legacy Memorial
+                    </h3>
+                    <p id="memorial-desc" className="text-muted-foreground mb-4 leading-relaxed">
+                      A lasting online space where family & friends share memories of a loved one.
+                    </p>
+                    <span className="inline-flex items-center text-primary font-semibold group-hover:gap-3 gap-2 transition-all">
+                      Get Started
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                  <div className="flex-shrink-0 w-48 h-32 relative">
+                    <img
+                      src={legacyMemorialUI.src}
+                      alt=""
+                      className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </div>
+              </Link>
+
+              {/* Bottom Row - Flowers & Trees */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Flowers & Gifts */}
+                <Link
+                  href="/flowers"
+                  className="group relative bg-gradient-to-br from-pink-50 to-rose-100 dark:from-pink-950/30 dark:to-rose-900/30 p-6 rounded-3xl shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-[1.02] block overflow-hidden"
+                >
+                  <div className="relative z-10">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      Flowers & Gifts
+                    </h3>
+                    <span className="inline-flex items-center text-primary font-semibold group-hover:gap-3 gap-2 transition-all text-sm">
+                      Shop Flowers
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                  <div className="mt-4 w-full h-32 relative">
+                    <img
+                      src={flowersBouquet.src}
+                      alt=""
+                      className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+
+                {/* Memorial Trees */}
+                <Link
+                  href="/memorial-trees"
+                  className="group relative bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/30 p-6 rounded-3xl shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-[1.02] block overflow-hidden"
+                >
+                  <div className="relative z-10">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      Memorial Trees
+                    </h3>
+                    <span className="inline-flex items-center text-primary font-semibold group-hover:gap-3 gap-2 transition-all text-sm">
+                      Plant a Tree
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                  <div className="mt-4 w-full h-32 relative">
+                    <img
+                      src={memorialTree.src}
+                      alt=""
+                      className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column - The Obituary (Tall Card) */}
+            <Link
+              href="/create-obituary"
+              className="group relative bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-900/30 p-8 rounded-3xl shadow-subtle hover:shadow-elegant transition-all duration-300 hover:scale-[1.02] block overflow-hidden min-h-[500px] flex flex-col"
+              aria-labelledby="obit-title"
+              aria-describedby="obit-desc"
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <h3 id="obit-title" className="text-2xl font-bold text-foreground mb-3">
+                The Obituary
+              </h3>
+              <p id="obit-desc" className="text-muted-foreground mb-6 leading-relaxed">
+                Your loved one's life story, published & preserved as a precious tribute for generations to come.
+              </p>
+              <span className="inline-flex items-center text-primary font-semibold group-hover:gap-3 gap-2 transition-all mb-8">
+                Create an Obituary
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+
+              <div className="flex-1 relative mt-auto">
+                <img
+                  src={obituaryPortrait.src}
+                  alt=""
+                  className="w-full h-64 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 text-center text-xs font-semibold text-foreground shadow-lg">
+                  <div>MARCH</div>
+                  <div className="text-lg">23</div>
+                </div>
+                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-foreground shadow-lg group-hover:translate-x-1 transition-transform">
+                  Sign Guestbook
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(var(--primary-rgb),0.03),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(var(--primary-rgb),0.03),transparent_50%)]" />
+
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-20">
+            <p className="text-sm font-semibold text-primary mb-4 tracking-[0.2em] uppercase font-inter">
+              HOW IT WORKS
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-cormorant">
+              Creating a Lasting Tribute is Simple
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              We guide you through every step of honoring your loved one's memory
+            </p>
+            <div className="mt-6 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          </div>
+
+          {/* Steps */}
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+              {/* Step 1: Create */}
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-500 ease-out group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:scale-105 overflow-hidden border-2 border-background shadow-elegant">
+                    <img src={stepCreate.src} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold shadow-lg shadow-primary/30 ring-4 ring-background">
+                    1
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-4 font-cormorant text-2xl">Create</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Use our AI-powered tool to write a meaningful obituary in minutes
+                </p>
+              </div>
+
+              {/* Step 2: Publish */}
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-500 ease-out group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:scale-105 overflow-hidden border-2 border-background shadow-elegant">
+                    <img src={stepPublish.src} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold shadow-lg shadow-primary/30 ring-4 ring-background">
+                    2
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-4 font-cormorant text-2xl">Publish</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Share with your community and publish in local newspapers
+                </p>
+              </div>
+
+              {/* Step 3: Remember */}
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-500 ease-out group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:scale-105 overflow-hidden border-2 border-background shadow-elegant">
+                    <img src={stepRemember.src} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold shadow-lg shadow-primary/30 ring-4 ring-background">
+                    3
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-4 font-cormorant text-2xl">Remember</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Create a lasting memorial page for family and friends to visit
+                </p>
+              </div>
+
+              {/* Step 4: Support */}
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-500 ease-out group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:scale-105 overflow-hidden border-2 border-background shadow-elegant">
+                    <img src={stepSupport.src} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold shadow-lg shadow-primary/30 ring-4 ring-background">
+                    4
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-4 font-cormorant text-2xl">Support</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Send flowers, plant trees, and make memorial donations
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-16">
+            <Link href="/obituary-helper">
+              <Button size="lg" className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300">
+                Get Started Now
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Neshama Stories - Featured Obituaries */}
+      <NeshamaStories />
+
+      {/* Browse Statistics */}
+      <BrowseStatistics />
+
+      {/* Recent Obituaries Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Recent Tributes</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Honoring the lives and legacies of those we've recently lost
+                </p>
+                <Link href="/search">
+                  <Button variant="outline">View All Obituaries →</Button>
+                </Link>
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <OnThisDate />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Notable Figures Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Remembering Notable Figures</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              Celebrating the lives of prominent Jewish figures who made lasting impacts
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Elie Wiesel */}
+            <Card className="overflow-hidden hover:shadow-elegant transition-all duration-300 group">
+              <div className="aspect-[3/4] bg-muted relative overflow-hidden">
+                <img
+                  src={notableFigures[1].image}
+                  alt={notableFigures[1].name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-6">
+                <Badge className="mb-3 text-xs">{notableFigures[1].category}</Badge>
+                <h3 className="text-xl font-bold mb-1">{notableFigures[1].name}</h3>
+                <p className="text-sm text-muted-foreground mb-1">{notableFigures[1].hebrewName}</p>
+                <p className="text-sm text-muted-foreground mb-3">{notableFigures[1].dates}</p>
+                <p className="text-sm text-foreground mb-4 line-clamp-3">{notableFigures[1].excerpt}</p>
+
+                <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Flame className="h-3 w-3" />
+                    {notableFigures[1].candles.toLocaleString()} candles
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-3 w-3" />
+                    {notableFigures[1].memories.toLocaleString()} memories
+                  </span>
+                </div>
+
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <Link href={`/notable/${notableFigures[1].id}`}>View Memorial</Link>
+                </Button>
+              </div>
+            </Card>
+
+            {/* Ruth Bader Ginsburg */}
+            <Card className="overflow-hidden hover:shadow-elegant transition-all duration-300 group">
+              <div className="aspect-[3/4] bg-muted relative overflow-hidden">
+                <img
+                  src={notableFigures[0].image}
+                  alt={notableFigures[0].name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-6">
+                <Badge className="mb-3 text-xs">{notableFigures[0].category}</Badge>
+                <h3 className="text-xl font-bold mb-1">{notableFigures[0].name}</h3>
+                <p className="text-sm text-muted-foreground mb-1">{notableFigures[0].hebrewName}</p>
+                <p className="text-sm text-muted-foreground mb-3">{notableFigures[0].dates}</p>
+                <p className="text-sm text-foreground mb-4 line-clamp-3">{notableFigures[0].excerpt}</p>
+
+                <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Flame className="h-3 w-3" />
+                    {notableFigures[0].candles.toLocaleString()} candles
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-3 w-3" />
+                    {notableFigures[0].memories.toLocaleString()} memories
+                  </span>
+                </div>
+
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <Link href={`/notable/${notableFigures[0].id}`}>View Memorial</Link>
+                </Button>
+              </div>
+            </Card>
+
+            {/* Leonard Nimoy */}
+            <Card className="overflow-hidden hover:shadow-elegant transition-all duration-300 group">
+              <div className="aspect-[3/4] bg-muted relative overflow-hidden">
+                <img
+                  src={notableFigures[2].image}
+                  alt={notableFigures[2].name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-6">
+                <Badge className="mb-3 text-xs">{notableFigures[2].category}</Badge>
+                <h3 className="text-xl font-bold mb-1">{notableFigures[2].name}</h3>
+                <p className="text-sm text-muted-foreground mb-1">{notableFigures[2].hebrewName}</p>
+                <p className="text-sm text-muted-foreground mb-3">{notableFigures[2].dates}</p>
+                <p className="text-sm text-foreground mb-4 line-clamp-3">{notableFigures[2].excerpt}</p>
+
+                <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Flame className="h-3 w-3" />
+                    {notableFigures[2].candles.toLocaleString()} candles
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-3 w-3" />
+                    {notableFigures[2].memories.toLocaleString()} memories
+                  </span>
+                </div>
+
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <Link href={`/notable/${notableFigures[2].id}`}>View Memorial</Link>
+                </Button>
+              </div>
+            </Card>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/notable">
+              <Button variant="soft" size="lg">
+                Explore All Notable Figures →
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Community Connections Section */}
+      <section className="py-16 bg-background">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Find Your Community</h2>
+            <p className="text-lg text-muted-foreground">
+              Connect with obituaries from synagogues, schools, and organizations
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <Link href="/synagogues" className="group">
+              <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <Users className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-1">Synagogues</h3>
+                <p className="text-xs text-muted-foreground">50+ communities</p>
+              </Card>
+            </Link>
+
+            <Link href="/schools" className="group">
+              <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <BookOpen className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-1">Schools</h3>
+                <p className="text-xs text-muted-foreground">Alumni memorials</p>
+              </Card>
+            </Link>
+
+            <Link href="/organizations" className="group">
+              <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <Heart className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-1">Organizations</h3>
+                <p className="text-xs text-muted-foreground">Member tributes</p>
+              </Card>
+            </Link>
+
+            <Link href="/communities" className="group">
+              <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <MapPin className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-1">Cities</h3>
+                <p className="text-xs text-muted-foreground">Browse by location</p>
+              </Card>
+            </Link>
+          </div>
+
+          <div className="text-center">
+            <Link href="/communities">
+              <Button variant="outline">Browse All Communities</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Resources & Support Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">We're Here to Help</h2>
+            <p className="text-lg text-muted-foreground">
+              Comprehensive resources for planning, writing, and healing
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Link href="/help" className="group">
+              <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <FileText className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-2">Writing Guides</h3>
+                <p className="text-sm text-muted-foreground">
+                  Expert tips for crafting meaningful obituaries
+                </p>
+              </Card>
+            </Link>
+
+            <Link href="/funeral-homes" className="group">
+              <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <MapPin className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-2">Funeral Homes</h3>
+                <p className="text-sm text-muted-foreground">
+                  Find trusted Jewish funeral service providers
+                </p>
+              </Card>
+            </Link>
+
+            <Link href="/grief-support" className="group">
+              <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <Heart className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-2">Grief Support</h3>
+                <p className="text-sm text-muted-foreground">
+                  Resources and community for healing
+                </p>
+              </Card>
+            </Link>
+
+            <Link href="/resources" className="group">
+              <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
+                <BookOpen className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-semibold mb-2">Jewish Customs</h3>
+                <p className="text-sm text-muted-foreground">
+                  Learn about mourning traditions
+                </p>
+              </Card>
+            </Link>
+          </div>
+
+          <div className="mt-12 text-center">
+            <Card className="p-8 bg-background inline-block">
+              <h3 className="text-xl font-bold mb-2">Featured Article</h3>
+              <p className="text-muted-foreground mb-4 max-w-md">
+                "Understanding the Practice of Sitting Shiva: A Guide for Families and Friends"
+              </p>
+              <Button variant="outline" asChild>
+                <Link href="/resources">Read Article</Link>
+              </Button>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Links Section */}
+      <section className="py-16 bg-background">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Need Help Getting Started?</h2>
+            <p className="text-lg text-muted-foreground">
+              We're here to guide you through creating the perfect tribute
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
+              <BookOpen className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="font-semibold mb-2">Writing Tips</h3>
+              <p className="text-sm text-muted-foreground mb-3">Learn how to write meaningful obituaries</p>
+              <Link href="/help" className="text-primary text-sm font-medium hover:underline">
+                Read Guide →
+              </Link>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
+              <FileText className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="font-semibold mb-2">Templates</h3>
+              <p className="text-sm text-muted-foreground mb-3">Professional templates to get you started</p>
+              <Link href="/obituary-helper" className="text-primary text-sm font-medium hover:underline">
+                View Templates →
+              </Link>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
+              <Users className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="font-semibold mb-2">Examples</h3>
+              <p className="text-sm text-muted-foreground mb-3">See beautiful obituary examples</p>
+              <Link href="/search" className="text-primary text-sm font-medium hover:underline">
+                Browse Examples →
+              </Link>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
+              <Clock className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="font-semibold mb-2">Support</h3>
+              <p className="text-sm text-muted-foreground mb-3">Get help when you need it most</p>
+              <Link href="/contact" className="text-primary text-sm font-medium hover:underline">
+                Contact Us →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
-}
+};
+
+export default Index;
