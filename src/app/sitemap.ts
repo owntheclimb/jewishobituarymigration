@@ -1,10 +1,9 @@
 import { MetadataRoute } from 'next';
-import { supabase } from '@/integrations/supabase/client';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://jewishobituary.com';
 
-  // Static pages
+  // Static pages - dynamic obituaries will be added via API route or incremental generation
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -140,51 +139,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/obituaries`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
   ];
 
-  // Fetch dynamic obituary pages
-  let obituaryPages: MetadataRoute.Sitemap = [];
-  try {
-    const { data: obituaries } = await supabase
-      .from('obituaries')
-      .select('id, updated_at')
-      .eq('published', true)
-      .eq('visibility', 'public')
-      .order('created_at', { ascending: false })
-      .limit(1000);
-
-    if (obituaries) {
-      obituaryPages = obituaries.map((obit) => ({
-        url: `${baseUrl}/obituary/${obit.id}`,
-        lastModified: obit.updated_at ? new Date(obit.updated_at) : new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      }));
-    }
-  } catch (error) {
-    console.error('Error fetching obituaries for sitemap:', error);
-  }
-
-  // Fetch dynamic community pages
-  let communityPages: MetadataRoute.Sitemap = [];
-  try {
-    const { data: communities } = await supabase
-      .from('communities')
-      .select('type, slug')
-      .order('stats_recent_count', { ascending: false })
-      .limit(500);
-
-    if (communities) {
-      communityPages = communities.map((community) => ({
-        url: `${baseUrl}/communities/${community.type}/${community.slug}`,
-        lastModified: new Date(),
-        changeFrequency: 'daily' as const,
-        priority: 0.6,
-      }));
-    }
-  } catch (error) {
-    console.error('Error fetching communities for sitemap:', error);
-  }
-
-  return [...staticPages, ...obituaryPages, ...communityPages];
+  return staticPages;
 }
