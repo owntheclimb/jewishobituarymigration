@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 /* Jewish Obits Design System - Elegant, Professional, Warm */
 
