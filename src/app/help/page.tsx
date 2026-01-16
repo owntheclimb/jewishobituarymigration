@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import writingHelpHero from "@/assets/writing-help-hero.jpg";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -156,7 +157,7 @@ const WritingHelp = () => {
       <section className="relative bg-foreground text-background py-32 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(/images/writing-help-hero.jpg)` }}
+          style={{ backgroundImage: `url(${writingHelpHero.src})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/60" />
         </div>

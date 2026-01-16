@@ -1,10 +1,19 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/Providers';
 import CartDrawer from '@/components/cart/CartDrawer';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-cormorant',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jewishobituary.com'),
@@ -58,7 +67,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${cormorant.variable} font-sans`}>
         <Providers>
           <CartDrawer />
           {children}

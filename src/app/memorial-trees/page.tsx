@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import memorialTree from "@/assets/memorial-tree.jpg";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -213,7 +214,7 @@ const MemorialTrees = () => {
                         id: Math.floor(Math.random() * 10000),
                         name: pkg.name,
                         price: parseFloat(pkg.price.replace('$', '')),
-                        image: "/images/memorial-tree.jpg",
+                        image: memorialTree.src,
                         category: 'memorial-trees'
                       });
                     }}

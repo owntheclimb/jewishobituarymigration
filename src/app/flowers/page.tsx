@@ -26,6 +26,21 @@ import {
   Star
 } from "lucide-react";
 
+// Image imports
+import categoryBouquets from "@/assets/category-bouquets.jpg";
+import categorySprays from "@/assets/category-sprays.jpg";
+import categoryPlants from "@/assets/category-plants.jpg";
+import categoryBaskets from "@/assets/category-baskets.jpg";
+import categoryKeepsakes from "@/assets/category-keepsakes.jpg";
+import categoryTrees from "@/assets/category-trees.jpg";
+import flowersHeroBg from "@/assets/flowers-hero-bg.jpg";
+import peacefulWhiteLilies from "@/assets/peaceful-white-lilies.jpg";
+import gardenOfGraceSpray from "@/assets/garden-of-grace-spray.jpg";
+import comfortPlanter from "@/assets/comfort-planter.jpg";
+import sympathyGiftBasket from "@/assets/sympathy-gift-basket.jpg";
+import memorialWindChimes from "@/assets/memorial-wind-chimes.jpg";
+import remembranceRoseBouquet from "@/assets/remembrance-rose-bouquet.jpg";
+
 const Flowers = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { addItem } = useCart();
@@ -36,42 +51,42 @@ const Flowers = () => {
       name: "Bouquets",
       icon: Flower,
       description: "Hand-arranged fresh flowers",
-      image: "/images/category-bouquets.jpg"
+      image: categoryBouquets.src
     },
     {
       id: "sprays",
       name: "Standing Sprays",
       icon: Flower,
       description: "Elegant funeral arrangements",
-      image: "/images/category-sprays.jpg"
+      image: categorySprays.src
     },
     {
       id: "plants",
       name: "Plants",
       icon: TreePine,
       description: "Living remembrances",
-      image: "/images/category-plants.jpg"
+      image: categoryPlants.src
     },
     {
       id: "baskets",
       name: "Baskets",
       icon: Gift,
       description: "Comfort & gourmet gifts",
-      image: "/images/category-baskets.jpg"
+      image: categoryBaskets.src
     },
     {
       id: "keepsakes",
       name: "Keepsakes",
       icon: Heart,
       description: "Lasting memorial items",
-      image: "/images/category-keepsakes.jpg"
+      image: categoryKeepsakes.src
     },
     {
       id: "trees",
       name: "Memorial Trees",
       icon: TreePine,
       description: "Plant a living tribute",
-      image: "/images/category-trees.jpg"
+      image: categoryTrees.src
     }
   ];
 
@@ -82,7 +97,7 @@ const Flowers = () => {
       price: "$89.99",
       category: "bouquets",
       rating: 4.8,
-      image: "/images/peaceful-white-lilies.jpg",
+      image: peacefulWhiteLilies.src,
       description: "Elegant white lilies and roses arranged with care"
     },
     {
@@ -91,7 +106,7 @@ const Flowers = () => {
       price: "$149.99",
       category: "sprays",
       rating: 4.9,
-      image: "/images/garden-of-grace-spray.jpg",
+      image: gardenOfGraceSpray.src,
       description: "Professional funeral standing arrangement"
     },
     {
@@ -100,7 +115,7 @@ const Flowers = () => {
       price: "$64.99",
       category: "plants",
       rating: 4.7,
-      image: "/images/comfort-planter.jpg",
+      image: comfortPlanter.src,
       description: "Living peace lily in decorative planter"
     },
     {
@@ -109,7 +124,7 @@ const Flowers = () => {
       price: "$79.99",
       category: "baskets",
       rating: 4.6,
-      image: "/images/sympathy-gift-basket.jpg",
+      image: sympathyGiftBasket.src,
       description: "Thoughtful collection of gourmet treats"
     },
     {
@@ -118,7 +133,7 @@ const Flowers = () => {
       price: "$34.99",
       category: "keepsakes",
       rating: 4.8,
-      image: "/images/memorial-wind-chimes.jpg",
+      image: memorialWindChimes.src,
       description: "Beautiful keepsake with gentle sounds"
     },
     {
@@ -127,7 +142,7 @@ const Flowers = () => {
       price: "$69.99",
       category: "bouquets",
       rating: 4.9,
-      image: "/images/remembrance-rose-bouquet.jpg",
+      image: remembranceRoseBouquet.src,
       description: "Stunning roses in remembrance colors"
     }
   ];
@@ -140,7 +155,7 @@ const Flowers = () => {
       <section
         className="relative py-24 px-4 bg-gradient-to-br from-background/90 to-background/80 overflow-hidden"
         style={{
-          backgroundImage: `url(/images/flowers-hero-bg.jpg)`,
+          backgroundImage: `url(${flowersHeroBg.src})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
