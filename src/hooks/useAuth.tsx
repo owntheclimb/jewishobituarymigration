@@ -61,24 +61,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (session?.user) {
           // Fetch profile
-          const existingProfile = await fetchProfile(session.user.id);
+          try {
+            const existingProfile = await fetchProfile(session.user.id);
 
-          // Create profile if it doesn't exist
-          if (!existingProfile) {
-            const { data: newProfile } = await supabase
-              .from('profiles')
-              .insert({
-                user_id: session.user.id,
-                email: session.user.email,
-                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-                role: 'user'
-              })
-              .select()
-              .single();
+            // Create profile if it doesn't exist
+            if (!existingProfile) {
+              const { data: newProfile } = await supabase
+                .from('profiles')
+                .insert({
+                  user_id: session.user.id,
+                  email: session.user.email,
+                  full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+                  role: 'user'
+                })
+                .select()
+                .single();
 
-            if (newProfile) {
-              setProfile(newProfile as Profile);
+              if (newProfile) {
+                setProfile(newProfile as Profile);
+              }
             }
+          } catch (error) {
+            console.error('Error fetching/creating profile:', error);
           }
         } else {
           setProfile(null);
@@ -89,16 +93,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession()
+      .then(async ({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
 
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      }
+        if (session?.user) {
+          try {
+            await fetchProfile(session.user.id);
+          } catch (error) {
+            console.error('Error fetching profile:', error);
+          }
+        }
 
-      setLoading(false);
-    });
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error getting session:', error);
+        setLoading(false);
+      });
 
     return () => subscription.unsubscribe();
   }, []);
