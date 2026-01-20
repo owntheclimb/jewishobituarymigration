@@ -55,17 +55,36 @@ const Contact = () => {
 
     setLoading(true);
 
-    // Note: This currently simulates submission.
-    // In production, this should call an edge function to process the contact form.
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
       toast({
         title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
+        description: result.message || "We'll get back to you as soon as possible.",
         duration: 5000,
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const contactInfo = [

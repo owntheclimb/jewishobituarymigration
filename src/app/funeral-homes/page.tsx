@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -9,7 +9,25 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Phone, Globe, CheckCircle, Star } from 'lucide-react';
+import { Search, MapPin, Phone, Globe, CheckCircle, Star, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Vendor {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip: string | null;
+  featured: boolean;
+  verified: boolean;
+  services: { name: string }[] | null;
+}
 
 const mockFuneralHomes = [
   {
@@ -140,8 +158,66 @@ const FuneralHomes = () => {
   const [selectedState, setSelectedState] = useState('all');
   const [selectedDenomination, setSelectedDenomination] = useState('all');
   const [kosherOnly, setKosherOnly] = useState(false);
+  const [dbVendors, setDbVendors] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredHomes = mockFuneralHomes
+  useEffect(() => {
+    async function fetchVendors() {
+      try {
+        // Get the funeral home type ID
+        const { data: typeData } = await supabase
+          .from('vendor_types')
+          .select('id')
+          .eq('slug', 'funeral-home')
+          .single();
+
+        if (typeData) {
+          const { data: vendors } = await supabase
+            .from('vendors')
+            .select('*')
+            .eq('type_id', typeData.id)
+            .eq('status', 'active')
+            .order('featured', { ascending: false })
+            .order('sort_order', { ascending: true });
+
+          if (vendors && vendors.length > 0) {
+            setDbVendors(vendors);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching vendors:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchVendors();
+  }, []);
+
+  // Transform database vendors to match mockFuneralHomes format
+  const transformedDbVendors = dbVendors.map(v => ({
+    id: v.id,
+    name: v.name,
+    city: v.city || '',
+    state: v.state || '',
+    address: v.address || '',
+    zip: v.zip || '',
+    phone: v.phone || '',
+    website: v.website?.replace(/^https?:\/\//, '') || '',
+    websiteUrl: v.website || '',
+    denomination: 'All Denominations',
+    kosherCertified: v.verified,
+    chevraKadisha: false,
+    rating: 4.8,
+    recentObituaries: 0,
+    featured: v.featured,
+    description: v.description || '',
+    services: v.services ? (v.services as { name: string }[]).map(s => s.name) : []
+  }));
+
+  // Use database vendors if available, otherwise use mockFuneralHomes
+  const allHomes = dbVendors.length > 0 ? transformedDbVendors : mockFuneralHomes;
+
+  const filteredHomes = allHomes
     .filter(home => {
       const matchesSearch = home.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            home.city.toLowerCase().includes(searchTerm.toLowerCase());

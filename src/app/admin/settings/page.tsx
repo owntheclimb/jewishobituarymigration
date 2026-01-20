@@ -9,7 +9,9 @@ import {
   ExternalLink,
   Copy,
   Check,
+  Edit,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function SettingsPage() {
@@ -27,14 +29,22 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Settings className="h-8 w-8" />
-          Settings
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Configure integrations and portal settings
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Settings className="h-8 w-8" />
+            Settings
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Configure integrations and portal settings
+          </p>
+        </div>
+        <Link href="/admin/settings/edit">
+          <Button>
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Site Settings
+          </Button>
+        </Link>
       </div>
 
       <div className="space-y-6">

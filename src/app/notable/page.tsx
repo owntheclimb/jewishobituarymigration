@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Star, BookOpen, Heart, Users } from "lucide-react";
-import { notableFigures } from "@/data/notableFigures";
+import { notableFigures as fallbackFigures, NotableFigure } from "@/data/notableFigures";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   { name: "All", icon: Star },
@@ -27,6 +28,54 @@ const NotableFigures = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [displayCount, setDisplayCount] = useState(11);
+  const [dbFigures, setDbFigures] = useState<NotableFigure[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchNotableFigures() {
+      try {
+        const { data, error } = await supabase
+          .from('notable_figures')
+          .select('*')
+          .eq('status', 'active')
+          .order('featured', { ascending: false })
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Transform database records to match NotableFigure interface
+          const transformed: NotableFigure[] = data.map(figure => ({
+            id: figure.slug || figure.id,
+            name: figure.name,
+            hebrewName: figure.hebrew_name || '',
+            dates: figure.birth_date && figure.death_date
+              ? `${figure.birth_date} - ${figure.death_date}`
+              : figure.death_date || '',
+            age: 0, // Calculate if needed
+            category: figure.category || 'Notable Figure',
+            image: figure.image_url || 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=600&h=600&fit=crop',
+            excerpt: figure.bio ? figure.bio.substring(0, 200) + '...' : '',
+            candles: figure.candle_count || 0,
+            memories: figure.memory_count || 0,
+            biography: figure.bio || '',
+            quote: figure.quote || '',
+            location: figure.location || '',
+            achievements: figure.achievements || []
+          }));
+          setDbFigures(transformed);
+        }
+      } catch (error) {
+        console.error('Error fetching notable figures:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNotableFigures();
+  }, []);
+
+  // Use database figures if available, otherwise use fallback data
+  const notableFigures = dbFigures.length > 0 ? dbFigures : fallbackFigures;
 
   // Filter logic
   const filteredFigures = notableFigures.filter(figure => {

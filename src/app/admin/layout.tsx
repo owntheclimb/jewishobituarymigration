@@ -14,6 +14,9 @@ import {
   Menu,
   X,
   UserPlus,
+  Package,
+  Building2,
+  Newspaper,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -26,6 +29,9 @@ const navItems = [
   { href: '/admin/clicks', label: 'Click Tracking', icon: MousePointerClick },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/content', label: 'Content', icon: FileText },
+  { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/vendors', label: 'Vendors', icon: Building2 },
+  { href: '/admin/pages', label: 'Pages', icon: Newspaper },
   { href: '/admin/admins', label: 'Manage Admins', icon: UserPlus },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];

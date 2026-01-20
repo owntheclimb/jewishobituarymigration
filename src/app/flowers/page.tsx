@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -23,8 +23,10 @@ import {
   TreePine,
   ShoppingCart,
   Filter,
-  Star
+  Star,
+  Loader2
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Image imports
 import categoryBouquets from "@/assets/category-bouquets.jpg";
@@ -41,9 +43,64 @@ import sympathyGiftBasket from "@/assets/sympathy-gift-basket.jpg";
 import memorialWindChimes from "@/assets/memorial-wind-chimes.jpg";
 import remembranceRoseBouquet from "@/assets/remembrance-rose-bouquet.jpg";
 
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  compare_at_price: number | null;
+  description: string | null;
+  short_description: string | null;
+  image_url: string | null;
+  category_id: string | null;
+  featured: boolean;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+}
+
 const Flowers = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([
+          supabase
+            .from('products')
+            .select('*')
+            .eq('status', 'active')
+            .order('featured', { ascending: false })
+            .order('sort_order', { ascending: true }),
+          supabase
+            .from('product_categories')
+            .select('*')
+            .eq('active', true)
+            .order('sort_order', { ascending: true }),
+        ]);
+
+        if (productsRes.data && productsRes.data.length > 0) {
+          setProducts(productsRes.data);
+        }
+        if (categoriesRes.data && categoriesRes.data.length > 0) {
+          setDbCategories(categoriesRes.data);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const categories = [
     {
@@ -90,62 +147,82 @@ const Flowers = () => {
     }
   ];
 
-  const featuredProducts = [
+  // Fallback products if database is empty
+  const fallbackProducts = [
     {
-      id: 1,
+      id: "1",
       name: "Peaceful White Lilies",
-      price: "$89.99",
+      price: 89.99,
       category: "bouquets",
       rating: 4.8,
       image: peacefulWhiteLilies.src,
       description: "Elegant white lilies and roses arranged with care"
     },
     {
-      id: 2,
+      id: "2",
       name: "Garden of Grace Standing Spray",
-      price: "$149.99",
+      price: 149.99,
       category: "sprays",
       rating: 4.9,
       image: gardenOfGraceSpray.src,
       description: "Professional funeral standing arrangement"
     },
     {
-      id: 3,
+      id: "3",
       name: "Comfort Planter",
-      price: "$64.99",
+      price: 64.99,
       category: "plants",
       rating: 4.7,
       image: comfortPlanter.src,
       description: "Living peace lily in decorative planter"
     },
     {
-      id: 4,
+      id: "4",
       name: "Sympathy Fruit & Gourmet Basket",
-      price: "$79.99",
+      price: 79.99,
       category: "baskets",
       rating: 4.6,
       image: sympathyGiftBasket.src,
       description: "Thoughtful collection of gourmet treats"
     },
     {
-      id: 5,
+      id: "5",
       name: "Memorial Wind Chimes",
-      price: "$34.99",
+      price: 34.99,
       category: "keepsakes",
       rating: 4.8,
       image: memorialWindChimes.src,
       description: "Beautiful keepsake with gentle sounds"
     },
     {
-      id: 6,
+      id: "6",
       name: "Remembrance Rose Bouquet",
-      price: "$69.99",
+      price: 69.99,
       category: "bouquets",
       rating: 4.9,
       image: remembranceRoseBouquet.src,
       description: "Stunning roses in remembrance colors"
     }
   ];
+
+  // Use database products if available, otherwise fallback
+  const displayProducts = products.length > 0
+    ? products.map(p => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        category: getCategorySlug(p.category_id),
+        rating: 4.8,
+        image: p.image_url || peacefulWhiteLilies.src,
+        description: p.short_description || p.description || ''
+      }))
+    : fallbackProducts;
+
+  function getCategorySlug(categoryId: string | null): string {
+    if (!categoryId) return 'all';
+    const cat = dbCategories.find(c => c.id === categoryId);
+    return cat?.slug || 'all';
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -289,61 +366,67 @@ const Flowers = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts
-              .filter(product => selectedCategory === "all" || product.category === selectedCategory)
-              .map((product) => (
-              <Card
-                key={product.id}
-                className="group overflow-hidden shadow-subtle hover:shadow-xl transition-all duration-500 hover:scale-[1.02] bg-background border-border/50 flex flex-col h-full"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <CardContent className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground">({product.rating})</span>
+          {loading ? (
+            <div className="col-span-3 flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {displayProducts
+                .filter(product => selectedCategory === "all" || product.category === selectedCategory)
+                .map((product) => (
+                <Card
+                  key={product.id}
+                  className="group overflow-hidden shadow-subtle hover:shadow-xl transition-all duration-500 hover:scale-[1.02] bg-background border-border/50 flex flex-col h-full"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <CardTitle className="text-xl font-serif mb-2 leading-tight">{product.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed flex-1">{product.description}</p>
-                    <div className="mt-auto">
-                    <p className="text-2xl font-bold text-primary mb-6">{product.price}</p>
-                    <div className="flex gap-3">
-                      <Button variant="outline" className="flex-1 font-medium" asChild>
-                        <Link href={`/product/${product.id}`}>View Details</Link>
-                      </Button>
-                      <Button
-                        className="gap-2 font-medium shadow-subtle hover:shadow-elegant"
-                        onClick={() => addItem({
-                          id: product.id,
-                          name: product.name,
-                          price: parseFloat(product.price.replace('$', '')),
-                          image: product.image,
-                          category: product.category
-                        })}
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        Add
-                      </Button>
+                  <CardContent className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground">({product.rating})</span>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <CardTitle className="text-xl font-serif mb-2 leading-tight">{product.name}</CardTitle>
+                    <p className="text-sm text-muted-foreground mb-6 leading-relaxed flex-1">{product.description}</p>
+                      <div className="mt-auto">
+                      <p className="text-2xl font-bold text-primary mb-6">${product.price.toFixed(2)}</p>
+                      <div className="flex gap-3">
+                        <Button variant="outline" className="flex-1 font-medium" asChild>
+                          <Link href={`/product/${product.id}`}>View Details</Link>
+                        </Button>
+                        <Button
+                          className="gap-2 font-medium shadow-subtle hover:shadow-elegant"
+                          onClick={() => addItem({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            image: product.image,
+                            category: product.category
+                          })}
+                        >
+                          <ShoppingCart className="h-4 w-4" />
+                          Add
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

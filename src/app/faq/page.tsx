@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,8 +110,33 @@ const FAQ = () => {
     }
   ];
 
+  // Generate FAQ schema for SEO
+  const faqSchemaItems = faqCategories.flatMap(category =>
+    category.questions.map(faq => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a
+      }
+    }))
+  );
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqSchemaItems
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema)
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}
