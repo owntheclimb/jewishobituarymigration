@@ -10,6 +10,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Search, FileText, Heart, Clock, Users, BookOpen, MapPin, User, ArrowRight, Flame } from "lucide-react";
+import { TrackedLink } from "@/components/TrackedLink";
+import { TrackedButton } from "@/components/TrackedButton";
+import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { notableFigures } from "@/data/notableFigures";
 import heroImage from "@/assets/hero-image.jpg";
 import legacyMemorialUI from "@/assets/legacy-memorial-ui.jpg";
@@ -70,18 +73,24 @@ const Index = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button variant="elegant" size="lg" className="text-lg px-8 py-4" asChild>
-              <Link href="/create-obituary">
-                <Heart className="mr-2 h-5 w-5" />
-                Create an Obituary
-              </Link>
-            </Button>
-            <Button variant="soft" size="lg" className="text-lg px-8 py-4 bg-white/10 text-white border-white/20 hover:bg-white/20" asChild>
-              <Link href="/help">
-                <BookOpen className="mr-2 h-5 w-5" />
-                Writing Help
-              </Link>
-            </Button>
+            <TrackedLink
+              href="/create-obituary"
+              eventName={ANALYTICS_EVENTS.CTA_CREATE_OBITUARY}
+              eventProperties={{ location: 'hero' }}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl h-12 rounded-xl px-8 text-lg"
+            >
+              <Heart className="mr-2 h-5 w-5" />
+              Create an Obituary
+            </TrackedLink>
+            <TrackedLink
+              href="/help"
+              eventName={ANALYTICS_EVENTS.CTA_WRITING_HELP}
+              eventProperties={{ location: 'hero' }}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 h-12 rounded-xl px-8 text-lg bg-white/10 text-white border border-white/20 hover:bg-white/20"
+            >
+              <BookOpen className="mr-2 h-5 w-5" />
+              Writing Help
+            </TrackedLink>
           </div>
 
           {/* Search Bar */}
@@ -95,13 +104,16 @@ const Index = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && searchQuery.trim()) {
+                    trackEvent(ANALYTICS_EVENTS.CTA_SEARCH, { query: searchQuery, location: 'hero' });
                     router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
                   }
                 }}
               />
-              <Button
+              <TrackedButton
                 size="sm"
                 className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10"
+                eventName={ANALYTICS_EVENTS.CTA_SEARCH}
+                eventProperties={{ query: searchQuery, location: 'hero' }}
                 onClick={() => {
                   if (searchQuery.trim()) {
                     router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
@@ -109,7 +121,7 @@ const Index = () => {
                 }}
               >
                 Search
-              </Button>
+              </TrackedButton>
             </div>
           </div>
         </div>
@@ -135,9 +147,14 @@ const Index = () => {
               <p className="text-muted-foreground mb-4">
                 Easy-to-use tools and templates to create beautiful, personalized obituaries that honor your loved one's memory.
               </p>
-              <Button variant="outline" asChild>
-                <Link href="/create-obituary">Get Started</Link>
-              </Button>
+              <TrackedLink
+                href="/create-obituary"
+                eventName={ANALYTICS_EVENTS.CTA_GET_STARTED}
+                eventProperties={{ location: 'features', section: 'create_obituaries' }}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+              >
+                Get Started
+              </TrackedLink>
             </div>
 
             {/* Find Obituaries */}
@@ -149,9 +166,14 @@ const Index = () => {
               <p className="text-muted-foreground mb-4">
                 Search our comprehensive database by name, location, school, or funeral home to find and honor those who have passed.
               </p>
-              <Button variant="outline" asChild>
-                <Link href="/search">Search Now</Link>
-              </Button>
+              <TrackedLink
+                href="/search"
+                eventName={ANALYTICS_EVENTS.CTA_SEARCH}
+                eventProperties={{ location: 'features', section: 'find_obituaries' }}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+              >
+                Search Now
+              </TrackedLink>
             </div>
 
             {/* Planning Services */}
@@ -163,9 +185,14 @@ const Index = () => {
               <p className="text-muted-foreground mb-4">
                 Find funeral homes, compare services, and access resources for estate planning and grief support.
               </p>
-              <Button variant="outline" asChild>
-                <Link href="/planning">Learn More</Link>
-              </Button>
+              <TrackedLink
+                href="/planning"
+                eventName="cta_learn_more_clicked"
+                eventProperties={{ location: 'features', section: 'funeral_planning' }}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+              >
+                Learn More
+              </TrackedLink>
             </div>
           </div>
         </div>
@@ -399,12 +426,15 @@ const Index = () => {
           </div>
 
           <div className="text-center mt-16">
-            <Link href="/obituary-helper">
-              <Button size="lg" className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300">
-                Get Started Now
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <TrackedLink
+              href="/obituary-helper"
+              eventName={ANALYTICS_EVENTS.CTA_GET_STARTED}
+              eventProperties={{ location: 'how_it_works' }}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl h-11 rounded-md px-8 text-base"
+            >
+              Get Started Now
+              <ArrowRight className="h-4 w-4" />
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -425,9 +455,14 @@ const Index = () => {
                 <p className="text-lg text-muted-foreground mb-6">
                   Honoring the lives and legacies of those we've recently lost
                 </p>
-                <Link href="/search">
-                  <Button variant="outline">View All Obituaries →</Button>
-                </Link>
+                <TrackedLink
+                  href="/search"
+                  eventName="cta_view_all_obituaries_clicked"
+                  eventProperties={{ location: 'recent_tributes' }}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                >
+                  View All Obituaries →
+                </TrackedLink>
               </div>
             </div>
             <div className="lg:col-span-1">
@@ -475,9 +510,14 @@ const Index = () => {
                   </span>
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link href={`/notable/${notableFigures[1].id}`}>View Memorial</Link>
-                </Button>
+                <TrackedLink
+                  href={`/notable/${notableFigures[1].id}`}
+                  eventName={ANALYTICS_EVENTS.CTA_VIEW_MEMORIAL}
+                  eventProperties={{ location: 'notable_figures', figure_id: notableFigures[1].id, figure_name: notableFigures[1].name }}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 w-full"
+                >
+                  View Memorial
+                </TrackedLink>
               </div>
             </Card>
 
@@ -508,9 +548,14 @@ const Index = () => {
                   </span>
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link href={`/notable/${notableFigures[0].id}`}>View Memorial</Link>
-                </Button>
+                <TrackedLink
+                  href={`/notable/${notableFigures[0].id}`}
+                  eventName={ANALYTICS_EVENTS.CTA_VIEW_MEMORIAL}
+                  eventProperties={{ location: 'notable_figures', figure_id: notableFigures[0].id, figure_name: notableFigures[0].name }}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 w-full"
+                >
+                  View Memorial
+                </TrackedLink>
               </div>
             </Card>
 
@@ -541,19 +586,27 @@ const Index = () => {
                   </span>
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link href={`/notable/${notableFigures[2].id}`}>View Memorial</Link>
-                </Button>
+                <TrackedLink
+                  href={`/notable/${notableFigures[2].id}`}
+                  eventName={ANALYTICS_EVENTS.CTA_VIEW_MEMORIAL}
+                  eventProperties={{ location: 'notable_figures', figure_id: notableFigures[2].id, figure_name: notableFigures[2].name }}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 w-full"
+                >
+                  View Memorial
+                </TrackedLink>
               </div>
             </Card>
           </div>
 
           <div className="text-center mt-8">
-            <Link href="/notable">
-              <Button variant="soft" size="lg">
-                Explore All Notable Figures →
-              </Button>
-            </Link>
+            <TrackedLink
+              href="/notable"
+              eventName="cta_explore_notable_figures_clicked"
+              eventProperties={{ location: 'notable_figures' }}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-muted/50 text-foreground shadow-sm hover:bg-muted h-11 px-8"
+            >
+              Explore All Notable Figures →
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -569,43 +622,48 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Link href="/synagogues" className="group">
+            <TrackedLink href="/synagogues" eventName={ANALYTICS_EVENTS.NAV_SYNAGOGUES} eventProperties={{ location: 'community_section' }} className="group">
               <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <Users className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-1">Synagogues</h3>
                 <p className="text-xs text-muted-foreground">50+ communities</p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/schools" className="group">
+            <TrackedLink href="/schools" eventName={ANALYTICS_EVENTS.NAV_SCHOOLS} eventProperties={{ location: 'community_section' }} className="group">
               <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <BookOpen className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-1">Schools</h3>
                 <p className="text-xs text-muted-foreground">Alumni memorials</p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/organizations" className="group">
+            <TrackedLink href="/organizations" eventName={ANALYTICS_EVENTS.NAV_ORGANIZATIONS} eventProperties={{ location: 'community_section' }} className="group">
               <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <Heart className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-1">Organizations</h3>
                 <p className="text-xs text-muted-foreground">Member tributes</p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/communities" className="group">
+            <TrackedLink href="/communities" eventName={ANALYTICS_EVENTS.NAV_CITIES} eventProperties={{ location: 'community_section' }} className="group">
               <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <MapPin className="h-8 w-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-1">Cities</h3>
                 <p className="text-xs text-muted-foreground">Browse by location</p>
               </Card>
-            </Link>
+            </TrackedLink>
           </div>
 
           <div className="text-center">
-            <Link href="/communities">
-              <Button variant="outline">Browse All Communities</Button>
-            </Link>
+            <TrackedLink
+              href="/communities"
+              eventName={ANALYTICS_EVENTS.CTA_BROWSE_COMMUNITIES}
+              eventProperties={{ location: 'community_section' }}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+            >
+              Browse All Communities
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -621,7 +679,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/help" className="group">
+            <TrackedLink href="/help" eventName={ANALYTICS_EVENTS.CTA_WRITING_HELP} eventProperties={{ location: 'resources_section' }} className="group">
               <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <FileText className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-2">Writing Guides</h3>
@@ -629,9 +687,9 @@ const Index = () => {
                   Expert tips for crafting meaningful obituaries
                 </p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/funeral-homes" className="group">
+            <TrackedLink href="/funeral-homes" eventName={ANALYTICS_EVENTS.NAV_FUNERAL_HOMES} eventProperties={{ location: 'resources_section' }} className="group">
               <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <MapPin className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-2">Funeral Homes</h3>
@@ -639,9 +697,9 @@ const Index = () => {
                   Find trusted Jewish funeral service providers
                 </p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/grief-support" className="group">
+            <TrackedLink href="/grief-support" eventName="nav_grief_support_clicked" eventProperties={{ location: 'resources_section' }} className="group">
               <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <Heart className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-2">Grief Support</h3>
@@ -649,9 +707,9 @@ const Index = () => {
                   Resources and community for healing
                 </p>
               </Card>
-            </Link>
+            </TrackedLink>
 
-            <Link href="/resources" className="group">
+            <TrackedLink href="/resources" eventName={ANALYTICS_EVENTS.NAV_RESOURCES} eventProperties={{ location: 'resources_section' }} className="group">
               <Card className="p-6 hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <BookOpen className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="font-semibold mb-2">Jewish Customs</h3>
@@ -659,7 +717,7 @@ const Index = () => {
                   Learn about mourning traditions
                 </p>
               </Card>
-            </Link>
+            </TrackedLink>
           </div>
 
           <div className="mt-12 text-center">
@@ -668,9 +726,14 @@ const Index = () => {
               <p className="text-muted-foreground mb-4 max-w-md">
                 "Understanding the Practice of Sitting Shiva: A Guide for Families and Friends"
               </p>
-              <Button variant="outline" asChild>
-                <Link href="/resources">Read Article</Link>
-              </Button>
+              <TrackedLink
+                href="/resources"
+                eventName={ANALYTICS_EVENTS.CTA_VIEW_RESOURCES}
+                eventProperties={{ location: 'featured_article', article: 'shiva_guide' }}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+              >
+                Read Article
+              </TrackedLink>
             </Card>
           </div>
         </div>
@@ -691,36 +754,36 @@ const Index = () => {
               <BookOpen className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-semibold mb-2">Writing Tips</h3>
               <p className="text-sm text-muted-foreground mb-3">Learn how to write meaningful obituaries</p>
-              <Link href="/help" className="text-primary text-sm font-medium hover:underline">
+              <TrackedLink href="/help" eventName={ANALYTICS_EVENTS.CTA_WRITING_HELP} eventProperties={{ location: 'quick_links' }} className="text-primary text-sm font-medium hover:underline">
                 Read Guide →
-              </Link>
+              </TrackedLink>
             </div>
 
             <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
               <FileText className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-semibold mb-2">Templates</h3>
               <p className="text-sm text-muted-foreground mb-3">Professional templates to get you started</p>
-              <Link href="/obituary-helper" className="text-primary text-sm font-medium hover:underline">
+              <TrackedLink href="/obituary-helper" eventName="cta_view_templates_clicked" eventProperties={{ location: 'quick_links' }} className="text-primary text-sm font-medium hover:underline">
                 View Templates →
-              </Link>
+              </TrackedLink>
             </div>
 
             <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
               <Users className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-semibold mb-2">Examples</h3>
               <p className="text-sm text-muted-foreground mb-3">See beautiful obituary examples</p>
-              <Link href="/search" className="text-primary text-sm font-medium hover:underline">
+              <TrackedLink href="/search" eventName="cta_browse_examples_clicked" eventProperties={{ location: 'quick_links' }} className="text-primary text-sm font-medium hover:underline">
                 Browse Examples →
-              </Link>
+              </TrackedLink>
             </div>
 
             <div className="bg-card p-6 rounded-lg shadow-subtle hover:shadow-elegant transition-all duration-300 group">
               <Clock className="h-8 w-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-semibold mb-2">Support</h3>
               <p className="text-sm text-muted-foreground mb-3">Get help when you need it most</p>
-              <Link href="/contact" className="text-primary text-sm font-medium hover:underline">
+              <TrackedLink href="/contact" eventName={ANALYTICS_EVENTS.CTA_CONTACT} eventProperties={{ location: 'quick_links' }} className="text-primary text-sm font-medium hover:underline">
                 Contact Us →
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </div>

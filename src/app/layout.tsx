@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter, Cormorant_Garamond } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { Providers } from '@/components/Providers';
 import CartDrawer from '@/components/cart/CartDrawer';
+import { PostHogProvider } from '@/components/PostHogProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -67,11 +69,88 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* JSON-LD Schema Markup */}
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Jewish Obituary',
+              alternateName: 'Jewish Obits',
+              url: 'https://jewishobituary.com',
+              logo: 'https://jewishobituary.com/logo.png',
+              description: 'The premier online platform for creating, publishing, and preserving Jewish obituaries and memorial tributes.',
+              sameAs: [],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'customer service',
+                availableLanguage: ['English', 'Hebrew'],
+              },
+            }),
+          }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Jewish Obituary',
+              url: 'https://jewishobituary.com',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: 'https://jewishobituary.com/search?q={search_term_string}',
+                },
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
+        {/* Microsoft Clarity */}
+        <Script
+          id="clarity-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "v46eh408ed");
+            `,
+          }}
+        />
+        {/* RB2B Visitor Identification */}
+        <Script
+          id="rb2b-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(key) {
+                if (window.reb2b) return;
+                window.reb2b = {loaded: true};
+                var s = document.createElement("script");
+                s.async = true;
+                s.src = "https://ddwl4m2hdecbv.cloudfront.net/b/" + key + "/" + key + ".js.gz";
+                document.getElementsByTagName("script")[0].parentNode.insertBefore(s, document.getElementsByTagName("script")[0]);
+              }("LNKLDHE30DOJ");
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${cormorant.variable} font-sans`}>
-        <Providers>
-          <CartDrawer />
-          {children}
-        </Providers>
+        <PostHogProvider>
+          <Providers>
+            <CartDrawer />
+            {children}
+          </Providers>
+        </PostHogProvider>
       </body>
     </html>
   );

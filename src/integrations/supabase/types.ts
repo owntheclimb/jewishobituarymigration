@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string | null
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          created_at: string | null
+          event_name: string
+          event_properties: Json | null
+          id: string
+          ip_country: string | null
+          page_url: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_name: string
+          event_properties?: Json | null
+          id?: string
+          ip_country?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_name?: string
+          event_properties?: Json | null
+          id?: string
+          ip_country?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cemeteries: {
         Row: {
           city: string
@@ -511,6 +574,7 @@ export type Database = {
           id: string
           notification_preferences: Json | null
           phone: string | null
+          role: string | null
           updated_at: string
           user_id: string
         }
@@ -523,6 +587,7 @@ export type Database = {
           id?: string
           notification_preferences?: Json | null
           phone?: string | null
+          role?: string | null
           updated_at?: string
           user_id: string
         }
@@ -535,8 +600,90 @@ export type Database = {
           id?: string
           notification_preferences?: Json | null
           phone?: string | null
+          role?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      rb2b_leads: {
+        Row: {
+          city: string | null
+          company_domain: string | null
+          company_industry: string | null
+          company_name: string | null
+          company_size: string | null
+          country: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          first_seen_at: string | null
+          full_name: string | null
+          id: string
+          job_title: string | null
+          last_name: string | null
+          last_seen_at: string | null
+          linkedin_url: string | null
+          notes: string | null
+          page_url: string | null
+          rb2b_id: string | null
+          referrer: string | null
+          state: string | null
+          status: string | null
+          updated_at: string | null
+          visit_count: number | null
+        }
+        Insert: {
+          city?: string | null
+          company_domain?: string | null
+          company_industry?: string | null
+          company_name?: string | null
+          company_size?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          first_seen_at?: string | null
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          last_name?: string | null
+          last_seen_at?: string | null
+          linkedin_url?: string | null
+          notes?: string | null
+          page_url?: string | null
+          rb2b_id?: string | null
+          referrer?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          visit_count?: number | null
+        }
+        Update: {
+          city?: string | null
+          company_domain?: string | null
+          company_industry?: string | null
+          company_name?: string | null
+          company_size?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          first_seen_at?: string | null
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          last_name?: string | null
+          last_seen_at?: string | null
+          linkedin_url?: string | null
+          notes?: string | null
+          page_url?: string | null
+          rb2b_id?: string | null
+          referrer?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          visit_count?: number | null
         }
         Relationships: []
       }

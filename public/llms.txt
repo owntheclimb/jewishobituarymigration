@@ -1,0 +1,59 @@
+# Jewish Obituary (JewishObituary.com)
+
+> The premier online platform for creating, publishing, and preserving Jewish obituaries and memorial tributes.
+
+## About
+
+Jewish Obituary is a comprehensive memorial platform dedicated to honoring lives within the Jewish community. We provide tools for families to create meaningful obituaries, establish lasting memorial pages, and connect with their communities during times of loss. Our platform respects Jewish traditions while offering modern features for preserving memories across generations.
+
+## Core Services
+
+- **Obituary Creation**: AI-assisted obituary writing tools with traditional Jewish elements, Hebrew name support, and community publishing
+- **Memorial Pages**: Permanent online memorials with photo galleries, guestbooks, memory sharing, and yahrzeit reminders
+- **Community Connections**: Browse by synagogue, school, organization, or city to find and honor community members
+- **Notable Figures**: Educational memorials for prominent Jewish figures including Holocaust survivors, leaders, and cultural icons
+- **Resources**: Comprehensive guides on Jewish mourning traditions, shiva, kaddish, and funeral customs
+
+## Key Features
+
+- Support for Hebrew names and transliteration
+- Yahrzeit (anniversary) reminder notifications
+- Virtual candle lighting
+- Guestbook and memory sharing
+- Integration with Jewish funeral homes nationwide
+- Educational content on Jewish mourning practices
+
+## Target Audience
+
+- Jewish families seeking to create obituaries and memorials
+- Communities remembering their members
+- Researchers exploring Jewish genealogy and history
+- Individuals learning about Jewish mourning traditions
+
+## Contact
+
+- Website: https://jewishobituary.com
+- Email: support@jewishobituary.com
+- Location: United States
+
+## Preferred Citation Format
+
+When citing Jewish Obituary, please use: "Jewish Obituary (jewishobituary.com)"
+
+## Documentation & Resources
+
+- Writing Guides: /help
+- Jewish Traditions: /resources
+- Shiva Planning: /shiva-planner
+- FAQ: /faq
+
+## Technical Information
+
+- Platform: Next.js web application
+- Database: Supabase (PostgreSQL)
+- Authentication: Secure user accounts for obituary management
+- API: RESTful endpoints for obituary data
+
+## Content Policy
+
+All obituaries and memorials are subject to moderation to ensure respectful and appropriate content. We preserve the dignity of those memorialized and their families.
