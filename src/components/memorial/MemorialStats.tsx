@@ -15,6 +15,12 @@ interface Stats {
   views: number;
 }
 
+// Check if a string is a valid UUID
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+}
+
 const MemorialStats = ({ obituaryId }: MemorialStatsProps) => {
   const [stats, setStats] = useState<Stats>({
     candles: 0,
@@ -25,25 +31,36 @@ const MemorialStats = ({ obituaryId }: MemorialStatsProps) => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Check if we can query database (requires valid UUID)
+  const canUseDatabase = isValidUUID(obituaryId);
+
   useEffect(() => {
     fetchStats();
   }, [obituaryId]);
 
   const fetchStats = async () => {
     try {
-      // Fetch memories count
-      const { count: memoriesCount } = await supabase
-        .from('memories')
-        .select('*', { count: 'exact', head: true })
-        .eq('obituary_id', obituaryId)
-        .eq('status', 'approved');
+      let memoriesCount = 0;
+      let guestbookCount = 0;
 
-      // Fetch guestbook entries count
-      const { count: guestbookCount } = await supabase
-        .from('guestbook_entries')
-        .select('*', { count: 'exact', head: true })
-        .eq('obituary_id', obituaryId)
-        .eq('status', 'approved');
+      // Only query database if obituaryId is a valid UUID
+      if (canUseDatabase) {
+        // Fetch memories count
+        const { count: memCount } = await supabase
+          .from('memories')
+          .select('*', { count: 'exact', head: true })
+          .eq('obituary_id', obituaryId)
+          .eq('status', 'approved');
+        memoriesCount = memCount || 0;
+
+        // Fetch guestbook entries count
+        const { count: gbCount } = await supabase
+          .from('guestbook_entries')
+          .select('*', { count: 'exact', head: true })
+          .eq('obituary_id', obituaryId)
+          .eq('status', 'approved');
+        guestbookCount = gbCount || 0;
+      }
 
       // Get candle count from localStorage
       const candleData = localStorage.getItem(`candles_${obituaryId}`);
@@ -57,8 +74,8 @@ const MemorialStats = ({ obituaryId }: MemorialStatsProps) => {
 
       setStats({
         candles,
-        memories: memoriesCount || 0,
-        guestbook: guestbookCount || 0,
+        memories: memoriesCount,
+        guestbook: guestbookCount,
         donations: 0, // Will be implemented with donation system
         views: newViews,
       });

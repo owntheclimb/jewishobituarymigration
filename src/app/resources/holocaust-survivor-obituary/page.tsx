@@ -166,7 +166,7 @@ export default function ArticleHolocaustSurvivorObituaryPage() {
           <p className="text-foreground">Begin with basic information, and consider mentioning their survivor status early if it was a central part of their identity.</p>
           <div className="bg-muted/50 p-6 rounded-lg my-4">
             <p className="text-foreground italic mb-2">Example Opening:</p>
-            <p className="text-foreground">"Miriam Sarah Levy, a Holocaust survivor who dedicated her life to education and remembrance, passed away peacefully on January 15, 2025, at age 91, surrounded by three generations of the family she built from the ashes of tragedy."</p>
+            <p className="text-foreground">"Sarah, a Holocaust survivor who dedicated her life to education and remembrance, passed away peacefully at age 91, surrounded by three generations of the family she built from the ashes of tragedy."</p>
           </div>
 
           <h3 className="text-foreground">2. Holocaust Experience</h3>

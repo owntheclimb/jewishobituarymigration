@@ -6,76 +6,11 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Flame, Heart, BookOpen, Users, ArrowRight } from 'lucide-react';
+import { Flame, Heart, BookOpen, Users, ArrowRight, ExternalLink } from 'lucide-react';
+import { notableFigures } from '@/data/notableFigures';
 
-const survivors = [
-  {
-    id: 'survivor-1',
-    name: 'Miriam Sarah Levy',
-    hebrewName: 'מרים שרה לוי',
-    dates: '1932-2024',
-    camp: 'Auschwitz Survivor',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop',
-    story: 'Survived Auschwitz and dedicated her life to Holocaust education, ensuring future generations would never forget.',
-    candles: 3421,
-    memories: 187
-  },
-  {
-    id: 'survivor-2',
-    name: 'Isaac Rosenbaum',
-    hebrewName: 'יצחק רוזנבאום',
-    dates: '1928-2023',
-    camp: 'Bergen-Belsen Survivor',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    story: 'Liberated from Bergen-Belsen in 1945, became a prominent voice for remembrance and reconciliation.',
-    candles: 2876,
-    memories: 156
-  },
-  {
-    id: 'survivor-3',
-    name: 'Ruth Goldberg',
-    hebrewName: 'רות גולדברג',
-    dates: '1930-2024',
-    camp: 'Hidden Child Survivor',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    story: 'Hidden by a Christian family in Poland, dedicated her life to interfaith dialogue and understanding.',
-    candles: 4102,
-    memories: 203
-  },
-  {
-    id: 'survivor-4',
-    name: 'Abraham Stein',
-    hebrewName: 'אברהם שטיין',
-    dates: '1925-2022',
-    camp: 'Dachau Survivor',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
-    story: 'Author of multiple testimonies, spoke at schools and universities worldwide about his experiences.',
-    candles: 3654,
-    memories: 178
-  },
-  {
-    id: 'survivor-5',
-    name: 'Esther Weinstein',
-    hebrewName: 'אסתר ויינשטיין',
-    dates: '1931-2023',
-    camp: 'Mauthausen Survivor',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
-    story: 'Reunited with family after the war, established a foundation supporting Holocaust education.',
-    candles: 2943,
-    memories: 142
-  },
-  {
-    id: 'survivor-6',
-    name: 'David Klein',
-    hebrewName: 'דוד קליין',
-    dates: '1929-2024',
-    camp: 'Treblinka Survivor',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
-    story: 'One of the few survivors of Treblinka, devoted his life to bearing witness and teaching tolerance.',
-    candles: 5234,
-    memories: 267
-  }
-];
+// Get Elie Wiesel from notable figures - a real Holocaust survivor
+const elieWiesel = notableFigures.find(f => f.id === 'elie-wiesel');
 
 const HolocaustMemorial = () => {
   return (
@@ -112,153 +47,177 @@ const HolocaustMemorial = () => {
 
           <div className="prose prose-lg mx-auto text-left bg-card p-8 rounded-xl shadow-subtle border">
             <p className="text-foreground leading-relaxed italic">
-              "For the dead and the living, we must bear witness. Not only are we responsible for the memories of the dead, we are also responsible for what we are doing with those memories."
+              &quot;For the dead and the living, we must bear witness. Not only are we responsible for the memories of the dead, we are also responsible for what we are doing with those memories.&quot;
             </p>
             <p className="text-sm text-muted-foreground text-right">- Elie Wiesel</p>
           </div>
         </div>
       </section>
 
-      {/* Featured Survivor */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-12 text-center">
-            <Badge variant="secondary" className="mb-4">Featured Memorial</Badge>
-            <h2 className="text-3xl font-bold mb-4">In Loving Memory</h2>
-          </div>
-
-          <Card className="overflow-hidden shadow-elegant">
-            <div className="grid md:grid-cols-2 gap-0">
-              <div className="aspect-[4/3] bg-muted">
-                <img
-                  src={survivors[0].image}
-                  alt={survivors[0].name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardContent className="p-8 flex flex-col justify-center">
-                <Badge className="mb-4 w-fit">{survivors[0].camp}</Badge>
-                <h3 className="text-3xl font-bold mb-2">{survivors[0].name}</h3>
-                <p className="text-muted-foreground mb-1">{survivors[0].hebrewName}</p>
-                <p className="text-muted-foreground mb-6">{survivors[0].dates}</p>
-
-                <p className="text-foreground leading-relaxed mb-6">
-                  {survivors[0].story}
-                </p>
-
-                <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Flame className="h-4 w-4" />
-                    {survivors[0].candles.toLocaleString()} candles lit
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Heart className="h-4 w-4" />
-                    {survivors[0].memories} memories
-                  </span>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button asChild>
-                    <Link href={`/memorial/${survivors[0].id}`}>
-                      View Memorial
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button variant="outline">
-                    <Flame className="mr-2 h-4 w-4" />
-                    Light Candle
-                  </Button>
-                </div>
-              </CardContent>
+      {/* Featured Survivor - Elie Wiesel */}
+      {elieWiesel && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12 text-center">
+              <Badge variant="secondary" className="mb-4">Featured Memorial</Badge>
+              <h2 className="text-3xl font-bold mb-4">In Loving Memory</h2>
             </div>
-          </Card>
-        </div>
-      </section>
 
-      {/* Survivors Grid */}
+            <Card className="overflow-hidden shadow-elegant">
+              <div className="grid md:grid-cols-2 gap-0">
+                <div className="aspect-[4/3] bg-muted">
+                  <img
+                    src={elieWiesel.image}
+                    alt={elieWiesel.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-8 flex flex-col justify-center">
+                  <Badge className="mb-4 w-fit">{elieWiesel.category}</Badge>
+                  <h3 className="text-3xl font-bold mb-2">{elieWiesel.name}</h3>
+                  <p className="text-muted-foreground mb-1">{elieWiesel.hebrewName}</p>
+                  <p className="text-muted-foreground mb-6">{elieWiesel.dates}</p>
+
+                  <p className="text-foreground leading-relaxed mb-6">
+                    {elieWiesel.excerpt}
+                  </p>
+
+                  <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Flame className="h-4 w-4" />
+                      {elieWiesel.candles.toLocaleString()} candles lit
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-4 w-4" />
+                      {elieWiesel.memories} memories
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button asChild>
+                      <Link href={`/notable/${elieWiesel.id}`}>
+                        View Memorial
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button variant="outline">
+                      <Flame className="mr-2 h-4 w-4" />
+                      Light Candle
+                    </Button>
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
+        </section>
+      )}
+
+      {/* Holocaust Remembrance Resources */}
       <section className="py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-4">Remembered with Love & Honor</h2>
-            <p className="text-muted-foreground">
-              Each survivor carried an extraordinary story of resilience, courage, and hope. Their memories are eternal.
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold mb-4">Holocaust Remembrance Resources</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Access archives, testimonies, and educational resources to learn about and honor Holocaust survivors.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {survivors.slice(1).map((survivor) => (
-              <Card key={survivor.id} className="overflow-hidden hover:shadow-elegant transition-all duration-300 group">
-                <div className="aspect-[4/3] bg-muted overflow-hidden">
-                  <img
-                    src={survivor.image}
-                    alt={survivor.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <Badge variant="outline" className="mb-3 text-xs">
-                    {survivor.camp}
-                  </Badge>
-                  <h3 className="text-xl font-bold mb-1">{survivor.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-1">{survivor.hebrewName}</p>
-                  <p className="text-sm text-muted-foreground mb-4">{survivor.dates}</p>
-
-                  <p className="text-sm text-foreground mb-4 line-clamp-3">
-                    {survivor.story}
-                  </p>
-
-                  <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Flame className="h-3 w-3" />
-                      {survivor.candles.toLocaleString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-3 w-3" />
-                      {survivor.memories}
-                    </span>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <Link href={`/memorial/${survivor.id}`}>View Memorial</Link>
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Flame className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline">
-              View All Holocaust Survivor Memorials
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Educational Resources */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-6">
             <Card className="p-6 hover:shadow-elegant transition-all">
               <CardHeader className="p-0 mb-4">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <BookOpen className="h-5 w-5 text-primary" />
-                  Holocaust Education Resources
+                  Yad Vashem
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <p className="text-muted-foreground mb-4">
-                  Learn about the Holocaust, its history, and the importance of remembrance through curated educational materials.
+                <p className="text-muted-foreground mb-4 text-sm">
+                  The World Holocaust Remembrance Center. Search their database of over 4.8 million names.
                 </p>
-                <Button variant="outline" asChild>
-                  <Link href="/resources/holocaust-education">
-                    Explore Resources
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                <Button variant="outline" size="sm" asChild>
+                  <a href="https://www.yadvashem.org" target="_blank" rel="noopener noreferrer">
+                    Visit Yad Vashem
+                    <ExternalLink className="ml-2 h-3 w-3" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 hover:shadow-elegant transition-all">
+              <CardHeader className="p-0 mb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Users className="h-5 w-5 text-primary" />
+                  USC Shoah Foundation
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p className="text-muted-foreground mb-4 text-sm">
+                  Access the Visual History Archive containing over 55,000 survivor testimonies.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="https://sfi.usc.edu" target="_blank" rel="noopener noreferrer">
+                    View Archive
+                    <ExternalLink className="ml-2 h-3 w-3" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 hover:shadow-elegant transition-all">
+              <CardHeader className="p-0 mb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Flame className="h-5 w-5 text-primary" />
+                  United States Holocaust Memorial Museum
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p className="text-muted-foreground mb-4 text-sm">
+                  America&apos;s national institution for Holocaust documentation, education, and research.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="https://www.ushmm.org" target="_blank" rel="noopener noreferrer">
+                    Explore Museum
+                    <ExternalLink className="ml-2 h-3 w-3" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 hover:shadow-elegant transition-all">
+              <CardHeader className="p-0 mb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Heart className="h-5 w-5 text-primary" />
+                  Claims Conference
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p className="text-muted-foreground mb-4 text-sm">
+                  Supporting Holocaust survivors and preserving their memory worldwide.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="https://www.claimscon.org" target="_blank" rel="noopener noreferrer">
+                    Learn More
+                    <ExternalLink className="ml-2 h-3 w-3" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 hover:shadow-elegant transition-all">
+              <CardHeader className="p-0 mb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  Writing Guide
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p className="text-muted-foreground mb-4 text-sm">
+                  Our guide to writing meaningful obituaries for Holocaust survivors.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/resources/holocaust-survivor-obituary">
+                    Read Guide
+                    <ArrowRight className="ml-2 h-3 w-3" />
                   </Link>
                 </Button>
               </CardContent>
@@ -266,20 +225,20 @@ const HolocaustMemorial = () => {
 
             <Card className="p-6 hover:shadow-elegant transition-all">
               <CardHeader className="p-0 mb-4">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Users className="h-5 w-5 text-primary" />
-                  Support Holocaust Education
+                  International Tracing Service
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <p className="text-muted-foreground mb-4">
-                  Support organizations dedicated to Holocaust education, remembrance, and combating antisemitism.
+                <p className="text-muted-foreground mb-4 text-sm">
+                  Search records of Nazi persecution and locate information about victims.
                 </p>
-                <Button variant="outline" asChild>
-                  <Link href="/charities/holocaust">
-                    View Organizations
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="https://arolsen-archives.org" target="_blank" rel="noopener noreferrer">
+                    Search Archives
+                    <ExternalLink className="ml-2 h-3 w-3" />
+                  </a>
                 </Button>
               </CardContent>
             </Card>
@@ -294,12 +253,20 @@ const HolocaustMemorial = () => {
           <p className="text-xl text-muted-foreground mb-8">
             Create a memorial to preserve their story and ensure their memory lives on forever.
           </p>
-          <Button size="lg" asChild>
-            <Link href="/create-obituary">
-              <Heart className="mr-2 h-5 w-5" />
-              Create Memorial
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button size="lg" asChild>
+              <Link href="/create-obituary">
+                <Heart className="mr-2 h-5 w-5" />
+                Create Memorial
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/resources/holocaust-survivor-obituary">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Writing Guide
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 

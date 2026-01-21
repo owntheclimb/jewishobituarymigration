@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Flame, Heart } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCandleContext } from '@/contexts/CandleContext';
+import AnimatedFlame from './AnimatedFlame';
 
 interface VirtualCandleProps {
   obituaryId: string;
@@ -36,6 +38,7 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
   const [candleData, setCandleData] = useState<CandleData>({ count: 0, lit: false });
   const [loading, setLoading] = useState(false);
   const [animating, setAnimating] = useState(false);
+  const { darkenPage } = useCandleContext();
 
   // Check if we can use database (requires valid UUID for entity_id)
   const canUseDatabase = isValidUUID(obituaryId);
@@ -114,6 +117,9 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
     setLoading(true);
     setAnimating(true);
 
+    // Trigger page darkening effect
+    darkenPage();
+
     try {
       const sessionId = getSessionId();
 
@@ -147,8 +153,8 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
         icon: <Flame className="h-4 w-4 text-amber-500" />,
       });
 
-      // Animate for 2 seconds
-      setTimeout(() => setAnimating(false), 2000);
+      // Animate for 3 seconds
+      setTimeout(() => setAnimating(false), 3000);
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
         console.error('Error lighting candle:', error);
@@ -161,37 +167,26 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 border-amber-200/50 dark:border-amber-800/50 shadow-subtle">
+    <Card className={`p-6 transition-all duration-700 ${
+      candleData.lit
+        ? 'bg-gradient-to-br from-amber-900/90 to-orange-950/90 border-amber-500/50 shadow-[0_0_40px_rgba(251,191,36,0.4)]'
+        : 'bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 border-amber-200/50 dark:border-amber-800/50'
+    } shadow-subtle`}>
       <div className="text-center space-y-4">
-        <div className="relative inline-block">
-          {/* Animated Candle */}
-          <div className={`relative transition-all duration-500 ${animating ? 'scale-110' : 'scale-100'}`}>
-            <div className="w-16 h-24 bg-gradient-to-b from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 rounded-t-lg mx-auto relative">
-              {/* Flame */}
-              <div 
-                className={`absolute -top-8 left-1/2 -translate-x-1/2 transition-opacity duration-500 ${
-                  candleData.lit ? 'opacity-100' : 'opacity-30'
-                }`}
-              >
-                <Flame 
-                  className={`h-8 w-8 text-amber-500 ${
-                    candleData.lit ? 'animate-pulse' : ''
-                  }`} 
-                  fill={candleData.lit ? '#f59e0b' : 'none'}
-                />
-                {candleData.lit && (
-                  <div className="absolute inset-0 blur-xl bg-amber-400/40 rounded-full animate-pulse" />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Animated Candle */}
+        <AnimatedFlame isLit={candleData.lit} isAnimating={animating} />
 
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-foreground">Light a Virtual Candle</h3>
-          <p className="text-sm text-muted-foreground">
-            {candleData.count === 0 
-              ? 'Be the first to light a candle' 
+          <h3 className={`text-xl font-semibold transition-colors duration-500 ${
+            candleData.lit ? 'text-amber-100' : 'text-foreground'
+          }`}>
+            {candleData.lit ? 'Your Candle Burns Bright' : 'Light a Virtual Candle'}
+          </h3>
+          <p className={`text-sm transition-colors duration-500 ${
+            candleData.lit ? 'text-amber-200/80' : 'text-muted-foreground'
+          }`}>
+            {candleData.count === 0
+              ? 'Be the first to light a candle'
               : `${candleData.count.toLocaleString()} ${candleData.count === 1 ? 'candle has' : 'candles have'} been lit`}
           </p>
         </div>
@@ -199,15 +194,15 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
         <Button
           onClick={lightCandle}
           disabled={loading || candleData.lit}
-          className={`gap-2 ${
-            candleData.lit 
-              ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-900 dark:text-amber-100' 
-              : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white'
+          className={`gap-2 transition-all duration-500 ${
+            candleData.lit
+              ? 'bg-amber-100/20 text-amber-100 border border-amber-400/30 hover:bg-amber-100/30'
+              : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-amber-500/25'
           }`}
         >
           {candleData.lit ? (
             <>
-              <Heart className="h-4 w-4" />
+              <Heart className="h-4 w-4 fill-current" />
               Candle Lit
             </>
           ) : (
@@ -219,7 +214,9 @@ const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandlePro
         </Button>
 
         {candleData.lit && (
-          <p className="text-xs text-muted-foreground italic">
+          <p className={`text-xs italic transition-colors duration-500 ${
+            candleData.lit ? 'text-amber-200/60' : 'text-muted-foreground'
+          }`}>
             Your light shines in loving memory
           </p>
         )}

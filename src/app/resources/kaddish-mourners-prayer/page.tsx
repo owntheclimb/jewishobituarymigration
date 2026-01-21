@@ -124,7 +124,7 @@ export default function ArticleKaddishPage() {
 
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>By Rabbi David Goldstein</span>
+              <span>By Jewish Obituary Editorial Team</span>
               <Separator orientation="vertical" className="h-4" />
               <span>Updated January 2025</span>
             </div>

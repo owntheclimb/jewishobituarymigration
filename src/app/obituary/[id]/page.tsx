@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { toast } from 'sonner';
+import { CandleProvider } from '@/contexts/CandleContext';
 
 interface Obituary {
   id: string;
@@ -303,6 +304,7 @@ const ObituaryDetail = () => {
   };
 
   return (
+    <CandleProvider>
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
 
       <Navbar />
@@ -491,6 +493,7 @@ const ObituaryDetail = () => {
 
       <Footer />
     </div>
+    </CandleProvider>
   );
 };
 

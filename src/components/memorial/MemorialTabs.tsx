@@ -10,6 +10,12 @@ import MemorySection from './MemorySection';
 import GuestbookSection from './GuestbookSection';
 import { Camera, Video, Heart, MessageSquare, Settings } from 'lucide-react';
 
+// Check if a string is a valid UUID
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+}
+
 interface MemorialTabsProps {
   obituaryId: string;
   isOwner: boolean;
@@ -45,12 +51,27 @@ const MemorialTabs = ({ obituaryId, isOwner, onOpenThemeDrawer, className = "" }
   const [showVideoUploader, setShowVideoUploader] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Check if we can query database (requires valid UUID)
+  const canUseDatabase = isValidUUID(obituaryId);
+
   useEffect(() => {
     fetchData();
   }, [obituaryId]);
 
   const fetchData = async () => {
     try {
+      // Only query database if obituaryId is a valid UUID
+      if (!canUseDatabase) {
+        // For non-UUID IDs (external obituaries), use default settings
+        setSettings({
+          allow_public_uploads: false,
+          guestbook_enabled: false,
+          max_video_seconds: 120
+        });
+        setLoading(false);
+        return;
+      }
+
       // Fetch media assets
       const { data: mediaData, error: mediaError } = await supabase
         .from('media_assets')

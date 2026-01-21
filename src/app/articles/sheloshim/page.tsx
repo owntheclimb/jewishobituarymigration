@@ -18,7 +18,7 @@ export default function ArticleSheloshimPage() {
               Sheloshim: The 30-Day Mourning Period
             </h1>
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
-              <span>By Rabbi David Goldstein</span>
+              <span>By Jewish Obituary Editorial Team</span>
               <span>-</span>
               <span>10 min read</span>
               <span>-</span>

@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, ArrowRight, Quote } from 'lucide-react';
+import { notableFigures } from '@/data/notableFigures';
 
 interface FeaturedStory {
   id: string;
@@ -15,39 +16,17 @@ interface FeaturedStory {
   category: string;
 }
 
-// Featured obituaries showcasing beautiful life stories
-const featuredStories: FeaturedStory[] = [
-  {
-    id: 'story-1',
-    name: 'Rabbi David Goldstein',
-    dates: '1945-2024',
-    location: 'Brooklyn, New York',
-    imageUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=600&h=400&fit=crop',
-    category: 'Community Leader',
-    excerpt: 'For over 40 years, Rabbi Goldstein served his community with wisdom, compassion, and an unwavering commitment to Torah study. His door was always open, his counsel always sought, and his smile could light up the darkest of days.',
-    quote: 'He taught us that every soul is precious, every question deserves thoughtful consideration, and every act of kindness creates ripples that extend far beyond our sight.'
-  },
-  {
-    id: 'story-2',
-    name: 'Miriam Sarah Levy',
-    dates: '1932-2024',
-    location: 'Jerusalem, Israel',
-    imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop',
-    category: 'Holocaust Survivor',
-    excerpt: 'Miriam survived the unthinkable with grace and emerged as a beacon of hope for future generations. She dedicated her life to education, ensuring that the memories of those lost would never fade and that hatred would be met with understanding.',
-    quote: 'From the ashes of despair, I chose to build a garden of remembrance. Each student I taught, each story I shared, was my way of saying: we remember, we persist, we triumph through love.'
-  },
-  {
-    id: 'story-3',
-    name: 'Dr. Benjamin Rosenthal',
-    dates: '1958-2024',
-    location: 'Chicago, Illinois',
-    imageUrl: 'https://images.unsplash.com/photo-1590086782792-42dd2350140d?w=600&h=400&fit=crop',
-    category: 'Physician & Philanthropist',
-    excerpt: 'A renowned pediatric cardiologist who treated thousands of children, Dr. Rosenthal believed that healing extended beyond medicine. He established free clinics in underserved communities and mentored countless young physicians.',
-    quote: 'Medicine is not just about fixing hearts—it\'s about understanding them, caring for them, and teaching others to do the same with compassion and humility.'
-  }
-];
+// Transform notable figures to featured stories format (using real people with licensed photos)
+const featuredStories: FeaturedStory[] = notableFigures.slice(0, 3).map((figure) => ({
+  id: figure.id,
+  name: figure.name,
+  dates: figure.dates,
+  location: figure.location || 'United States',
+  imageUrl: figure.image,
+  excerpt: figure.excerpt,
+  quote: figure.quote || '',
+  category: figure.category,
+}));
 
 const NeshamaStories = () => {
   const mainStory = featuredStories[0];
@@ -103,7 +82,7 @@ const NeshamaStories = () => {
 
               <div className="flex gap-3">
                 <Button asChild>
-                  <Link href={`/memorial/${mainStory.id}`}>
+                  <Link href={`/notable/${mainStory.id}`}>
                     Read Full Story
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -139,7 +118,7 @@ const NeshamaStories = () => {
                     {story.excerpt}
                   </p>
                   <Button size="sm" variant="ghost" className="p-0 h-auto" asChild>
-                    <Link href={`/memorial/${story.id}`}>
+                    <Link href={`/notable/${story.id}`}>
                       Read More <ArrowRight className="ml-1 h-3 w-3" />
                     </Link>
                   </Button>
