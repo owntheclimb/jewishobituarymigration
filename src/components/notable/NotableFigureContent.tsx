@@ -141,17 +141,6 @@ const NotableFigureContent = ({ figure }: NotableFigureContentProps) => {
                 <span>{figure.location}</span>
               </div>
 
-              <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Heart className="h-4 w-4" />
-                  <span>{figure.candles.toLocaleString()} candles lit</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>{figure.memories.toLocaleString()} memories</span>
-                </div>
-              </div>
-
               <div className="flex gap-3">
                 <Button
                   size="lg"

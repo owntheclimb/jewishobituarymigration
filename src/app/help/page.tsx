@@ -200,11 +200,11 @@ const WritingHelp = () => {
             <div className="flex flex-wrap justify-center gap-6 mb-10 text-background/80">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                <span>Trusted by 50,000+ families</span>
+                <span>Trusted by Jewish families</span>
               </div>
               <div className="flex items-center gap-2">
                 <FileCheck className="h-5 w-5" />
-                <span>500+ memorials created monthly</span>
+                <span>AI-assisted writing tools</span>
               </div>
               <div className="flex items-center gap-2">
                 <Heart className="h-5 w-5" />

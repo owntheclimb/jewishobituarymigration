@@ -178,11 +178,6 @@ const NotableFigures = () => {
                 <p className="text-muted-foreground mb-4">{notableFigures[0].dates}</p>
                 <p className="text-foreground leading-relaxed mb-6">{notableFigures[0].excerpt}</p>
 
-                <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
-                  <span>{notableFigures[0].candles.toLocaleString()} candles lit</span>
-                  <span>{notableFigures[0].memories.toLocaleString()} memories shared</span>
-                </div>
-
                 <div className="flex gap-3">
                   <Button asChild>
                     <Link href={`/notable/${notableFigures[0].id}`}>View Memorial</Link>
@@ -227,11 +222,6 @@ const NotableFigures = () => {
                   <p className="text-sm text-muted-foreground mb-1">{figure.hebrewName}</p>
                   <p className="text-sm text-muted-foreground mb-3">{figure.dates}</p>
                   <p className="text-sm text-foreground mb-4 line-clamp-2">{figure.excerpt}</p>
-
-                  <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
-                    <span>{figure.candles.toLocaleString()} candles</span>
-                    <span>{figure.memories.toLocaleString()} memories</span>
-                  </div>
 
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" className="flex-1" asChild>

@@ -82,17 +82,6 @@ const HolocaustMemorial = () => {
                     {elieWiesel.excerpt}
                   </p>
 
-                  <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Flame className="h-4 w-4" />
-                      {elieWiesel.candles.toLocaleString()} candles lit
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-4 w-4" />
-                      {elieWiesel.memories} memories
-                    </span>
-                  </div>
-
                   <div className="flex gap-3">
                     <Button asChild>
                       <Link href={`/notable/${elieWiesel.id}`}>
