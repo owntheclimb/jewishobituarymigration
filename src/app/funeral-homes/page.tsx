@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, MapPin, Phone, Globe, CheckCircle, Star, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { generateFuneralHomeSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
 
 interface Vendor {
   id: string;
@@ -166,22 +168,22 @@ const FuneralHomes = () => {
       try {
         // Get the funeral home type ID
         const { data: typeData } = await supabase
-          .from('vendor_types')
+          .from('vendor_types' as any)
           .select('id')
           .eq('slug', 'funeral-home')
           .single();
 
         if (typeData) {
           const { data: vendors } = await supabase
-            .from('vendors')
+            .from('vendors' as any)
             .select('*')
-            .eq('type_id', typeData.id)
+            .eq('type_id', (typeData as any).id)
             .eq('status', 'active')
             .order('featured', { ascending: false })
             .order('sort_order', { ascending: true });
 
           if (vendors && vendors.length > 0) {
-            setDbVendors(vendors);
+            setDbVendors(vendors as unknown as Vendor[]);
           }
         }
       } catch (error) {
@@ -232,8 +234,71 @@ const FuneralHomes = () => {
       return 0;
     });
 
+  // Generate LocalBusiness schema for each funeral home
+  const funeralHomeSchemas = useMemo(() => {
+    return allHomes.slice(0, 10).map(home => generateFuneralHomeSchema({
+      name: home.name,
+      description: home.description,
+      url: home.websiteUrl || `https://${home.website}`,
+      phone: home.phone,
+      address: {
+        street: home.address,
+        city: home.city,
+        state: home.state,
+        zip: home.zip,
+        country: 'US',
+      },
+      priceRange: '$$',
+    }));
+  }, [allHomes]);
+
+  // Generate breadcrumb schema
+  const breadcrumbSchema = useMemo(() => generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://jewishobituary.com' },
+    { name: 'Funeral Homes', url: 'https://jewishobituary.com/funeral-homes' },
+  ]), []);
+
+  // Generate ItemList schema for the directory
+  const directorySchema = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Jewish Funeral Home Directory',
+    description: 'Find trusted funeral homes serving the Jewish community in the United States',
+    numberOfItems: allHomes.length,
+    itemListElement: allHomes.slice(0, 10).map((home, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'FuneralHome',
+        name: home.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: home.address,
+          addressLocality: home.city,
+          addressRegion: home.state,
+          postalCode: home.zip,
+          addressCountry: 'US',
+        },
+        telephone: home.phone,
+        url: home.websiteUrl || `https://${home.website}`,
+      },
+    })),
+  }), [allHomes]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      {/* Schema.org structured data for rich search results */}
+      <Script
+        id="directory-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(directorySchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+
       <Navbar />
 
       <main className="flex-1">

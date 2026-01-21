@@ -107,17 +107,17 @@ export default function ProductsPage() {
     try {
       const [productsRes, categoriesRes] = await Promise.all([
         supabase
-          .from('products')
+          .from('products' as any)
           .select('*')
           .order('created_at', { ascending: false }),
         supabase
-          .from('product_categories')
+          .from('product_categories' as any)
           .select('*')
           .order('sort_order', { ascending: true }),
       ]);
 
-      if (productsRes.data) setProducts(productsRes.data);
-      if (categoriesRes.data) setCategories(categoriesRes.data);
+      if (productsRes.data) setProducts(productsRes.data as unknown as Product[]);
+      if (categoriesRes.data) setCategories(categoriesRes.data as unknown as Category[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -189,13 +189,13 @@ export default function ProductsPage() {
 
       if (editingProduct) {
         const { error } = await supabase
-          .from('products')
+          .from('products' as any)
           .update(data)
           .eq('id', editingProduct.id);
         if (error) throw error;
         toast({ title: 'Success', description: 'Product updated successfully' });
       } else {
-        const { error } = await supabase.from('products').insert(data);
+        const { error } = await supabase.from('products' as any).insert(data);
         if (error) throw error;
         toast({ title: 'Success', description: 'Product created successfully' });
       }
@@ -219,7 +219,7 @@ export default function ProductsPage() {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const { error } = await supabase.from('products').delete().eq('id', id);
+      const { error } = await supabase.from('products' as any).delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Success', description: 'Product deleted successfully' });
       fetchData();
@@ -237,7 +237,7 @@ export default function ProductsPage() {
     const newStatus = product.status === 'active' ? 'draft' : 'active';
     try {
       const { error } = await supabase
-        .from('products')
+        .from('products' as any)
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', product.id);
       if (error) throw error;
@@ -250,7 +250,7 @@ export default function ProductsPage() {
   async function toggleFeatured(product: Product) {
     try {
       const { error } = await supabase
-        .from('products')
+        .from('products' as any)
         .update({ featured: !product.featured, updated_at: new Date().toISOString() })
         .eq('id', product.id);
       if (error) throw error;
@@ -268,7 +268,7 @@ export default function ProductsPage() {
 
     try {
       const slug = categoryForm.slug || generateSlug(categoryForm.name);
-      const { error } = await supabase.from('product_categories').insert({
+      const { error } = await supabase.from('product_categories' as any).insert({
         name: categoryForm.name,
         slug,
         description: categoryForm.description || null,

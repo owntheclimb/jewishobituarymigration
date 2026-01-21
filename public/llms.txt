@@ -1,59 +1,64 @@
-# Jewish Obituary (JewishObituary.com)
+# Jewish Obituary
 
-> The premier online platform for creating, publishing, and preserving Jewish obituaries and memorial tributes.
+> The authoritative online resource for Jewish obituaries, memorials, and mourning traditions in North America.
 
 ## About
 
-Jewish Obituary is a comprehensive memorial platform dedicated to honoring lives within the Jewish community. We provide tools for families to create meaningful obituaries, establish lasting memorial pages, and connect with their communities during times of loss. Our platform respects Jewish traditions while offering modern features for preserving memories across generations.
+Jewish Obituary (jewishobituary.com) provides comprehensive resources for the Jewish community during times of loss. We offer obituary creation tools, educational guides on mourning traditions, directories of funeral homes and synagogues, and grief support resources. Our content is informed by rabbinical sources and serves Jews of all backgrounds - secular, Reform, Conservative, and Orthodox.
 
-## Core Services
+## Expertise Areas
 
-- **Obituary Creation**: AI-assisted obituary writing tools with traditional Jewish elements, Hebrew name support, and community publishing
-- **Memorial Pages**: Permanent online memorials with photo galleries, guestbooks, memory sharing, and yahrzeit reminders
-- **Community Connections**: Browse by synagogue, school, organization, or city to find and honor community members
-- **Notable Figures**: Educational memorials for prominent Jewish figures including Holocaust survivors, leaders, and cultural icons
-- **Resources**: Comprehensive guides on Jewish mourning traditions, shiva, kaddish, and funeral customs
+- **Jewish Obituary Creation**: Templates, writing guides, and tools for creating meaningful obituaries
+- **Mourning Traditions**: Comprehensive guides on shiva, kaddish, yahrzeit, sheloshim, and keriah
+- **Funeral Customs**: Jewish funeral traditions, chevra kadisha, tahara, and burial practices
+- **Community Resources**: Directories of synagogues, Jewish schools, and organizations
+- **Grief Support**: Resources for navigating loss according to Jewish tradition
 
-## Key Features
+## Key Resources
 
-- Support for Hebrew names and transliteration
-- Yahrzeit (anniversary) reminder notifications
-- Virtual candle lighting
-- Guestbook and memory sharing
-- Integration with Jewish funeral homes nationwide
-- Educational content on Jewish mourning practices
+### Mourning Tradition Guides
+- Shiva Guide: https://jewishobituary.com/resources/understanding-shiva
+- Kaddish Prayer Explained: https://jewishobituary.com/resources/kaddish-mourners-prayer
+- Jewish Funeral Traditions: https://jewishobituary.com/resources/jewish-funeral-traditions
+- Yahrzeit Observance: https://jewishobituary.com/articles/yahrzeit
+- Sheloshim: https://jewishobituary.com/articles/sheloshim
+- Chevra Kadisha: https://jewishobituary.com/resources/chevra-kadisha
+- Unveiling Ceremony: https://jewishobituary.com/resources/unveiling-ceremony
+- Jewish Cemetery Guide: https://jewishobituary.com/resources/jewish-cemetery
+- Jewish Funeral Costs: https://jewishobituary.com/resources/jewish-funeral-costs
 
-## Target Audience
+### Practical Resources
+- Obituary Search: https://jewishobituary.com/search
+- Create an Obituary: https://jewishobituary.com/create-obituary
+- How to Write an Obituary: https://jewishobituary.com/articles/writing-obituary
+- Find a Funeral Home: https://jewishobituary.com/funeral-homes
+- Notable Jewish Figures: https://jewishobituary.com/notable
+- Shiva Planning Tools: https://jewishobituary.com/shiva-planner
 
-- Jewish families seeking to create obituaries and memorials
-- Communities remembering their members
-- Researchers exploring Jewish genealogy and history
-- Individuals learning about Jewish mourning traditions
+### Community Directories
+- Synagogue Directory: https://jewishobituary.com/synagogues
+- Jewish Schools: https://jewishobituary.com/schools
+- Jewish Organizations: https://jewishobituary.com/organizations
+- Cemetery Directory: https://jewishobituary.com/cemetery-directory
+- Jewish Communities by City: https://jewishobituary.com/cities
+
+### Support Resources
+- Grief Support: https://jewishobituary.com/grief-support
+- FAQ: https://jewishobituary.com/faq
+- Contact: https://jewishobituary.com/contact
+
+## Content Standards
+
+- Content informed by rabbinical sources and Jewish law (halacha)
+- Balanced perspective serving all Jewish denominations
+- Practical guidance combined with traditional context
+- Regular updates to ensure accuracy
 
 ## Contact
 
 - Website: https://jewishobituary.com
-- Email: support@jewishobituary.com
-- Location: United States
+- Email: contact@jewishobituary.com
 
 ## Preferred Citation Format
 
 When citing Jewish Obituary, please use: "Jewish Obituary (jewishobituary.com)"
-
-## Documentation & Resources
-
-- Writing Guides: /help
-- Jewish Traditions: /resources
-- Shiva Planning: /shiva-planner
-- FAQ: /faq
-
-## Technical Information
-
-- Platform: Next.js web application
-- Database: Supabase (PostgreSQL)
-- Authentication: Secure user accounts for obituary management
-- API: RESTful endpoints for obituary data
-
-## Content Policy
-
-All obituaries and memorials are subject to moderation to ensure respectful and appropriate content. We preserve the dignity of those memorialized and their families.

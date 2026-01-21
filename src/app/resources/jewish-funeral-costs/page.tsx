@@ -1,5 +1,6 @@
 'use client';
 
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
@@ -7,11 +8,42 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Clock, Share2, Download, ArrowLeft, DollarSign } from 'lucide-react';
 import Link from 'next/link';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
+
+const articleSchema = generateArticleSchema({
+  title: 'Jewish Funeral Costs: A Complete Guide to What You\'ll Pay',
+  description: 'Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time.',
+  url: 'https://jewishobituary.com/resources/jewish-funeral-costs',
+  datePublished: '2024-03-15',
+  dateModified: '2025-01-15',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Resources', url: 'https://jewishobituary.com/resources' },
+  { name: 'Jewish Funeral Costs', url: 'https://jewishobituary.com/resources/jewish-funeral-costs' },
+]);
 
 
 export default function ArticleJewishFuneralCostsPage() {
+  const author = getAuthor('editorial-team');
+
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
@@ -35,10 +67,12 @@ export default function ArticleJewishFuneralCostsPage() {
             Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time, with typical expenses ranging from $8,000-$15,000.
           </p>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-8">
             <Button variant="outline"><Share2 className="mr-2 h-4 w-4" />Share Article</Button>
             <Button variant="outline"><Download className="mr-2 h-4 w-4" />Download PDF</Button>
           </div>
+
+          <AuthorBox author={author} />
         </div>
       </section>
 

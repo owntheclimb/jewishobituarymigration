@@ -37,31 +37,14 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Video - Optimized for all mobile devices including iOS */}
-        <video
-          className="absolute inset-0 w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          controls={false}
-          style={{ objectFit: 'cover' }}
-          onLoadedMetadata={(e) => {
-            const video = e.currentTarget;
-            video.play().catch(() => {
-              console.log('Video autoplay prevented by browser');
-            });
-          }}
-        >
-          {/* TODO: Consider hosting an optimized mobile version of this video */}
-          {/* Current video might be too large for mobile autoplay */}
-          <source src="https://www.legacy.com/static/globalassets/framercontent/legacy-home-hero.mp4" type="video/mp4" />
-        </video>
+        {/* Background Image - Warm, professional aesthetic */}
+        <div
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroImage.src})` }}
+        />
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/40"></div>
+        {/* Warm gradient overlay for dignified feel */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
 
         <div className="text-center text-white max-w-4xl px-4 animate-fade-in relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
@@ -128,7 +111,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-[hsl(var(--background-warm))]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need</h2>
@@ -612,7 +595,7 @@ const Index = () => {
       </section>
 
       {/* Community Connections Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-[hsl(var(--background-warm))]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Find Your Community</h2>
@@ -740,7 +723,7 @@ const Index = () => {
       </section>
 
       {/* Quick Links Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-[hsl(var(--background-soft))]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Need Help Getting Started?</h2>

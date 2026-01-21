@@ -1,5 +1,6 @@
 'use client';
 
+import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,11 +9,70 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Clock, Share2, Bookmark, Book, Users, Heart, Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { AuthorBox } from "@/components/AuthorBox";
+import { getAuthor } from "@/data/authors";
+import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from "@/lib/schema";
+
+const articleSchema = generateArticleSchema({
+  title: 'Kaddish: Complete Guide to the Mourner\'s Prayer',
+  description: 'Comprehensive guide to the Mourner\'s Kaddish including the full text with transliteration, historical origins, when and how to recite it, and denominational practices.',
+  url: 'https://jewishobituary.com/resources/kaddish-mourners-prayer',
+  datePublished: '2024-02-01',
+  dateModified: '2026-01-21',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Resources', url: 'https://jewishobituary.com/resources' },
+  { name: 'Kaddish Prayer', url: 'https://jewishobituary.com/resources/kaddish-mourners-prayer' },
+]);
+
+const faqSchema = generateFAQSchema([
+  {
+    question: "Why is Kaddish recited for 11 months instead of 12?",
+    answer: "According to tradition, the soul's judgment period is a maximum of 12 months. By reciting Kaddish for only 11 months, we demonstrate confidence that our loved one was righteous and does not require the full judgment period."
+  },
+  {
+    question: "Can women say Kaddish?",
+    answer: "In Conservative, Reform, and Reconstructionist Judaism, women equally recite Kaddish and are counted in the minyan. In Modern Orthodox communities, women may say Kaddish though this varies by congregation. In Haredi communities, women typically do not recite Kaddish publicly."
+  },
+  {
+    question: "Why doesn't the Mourner's Kaddish mention death?",
+    answer: "The Kaddish is a prayer of praise and faith, not a prayer for the dead. By affirming faith and sanctifying God's name during a time of grief, the mourner brings merit to the deceased's soul while also finding healing through an act of faith rather than despair."
+  },
+  {
+    question: "What is a minyan and why is it required for Kaddish?",
+    answer: "A minyan is a quorum of 10 adult Jews required for certain communal prayers, including Kaddish. This requirement emphasizes that mourning is supported by community, not experienced in isolation. The congregation's responses ('Amen' and 'Y'hei sh'mei raba') complete the prayer."
+  },
+  {
+    question: "Can someone else say Kaddish on my behalf?",
+    answer: "Yes, if you cannot attend services, you can arrange for someone else to say Kaddish on your behalf. Many synagogues offer this service, and there are organizations dedicated to ensuring Kaddish is recited for those who have no one to say it for them."
+  }
+]);
 
 
 export default function ArticleKaddishPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -54,13 +114,15 @@ export default function ArticleKaddishPage() {
           </div>
 
           {/* Featured Image */}
-          <div className="aspect-video bg-muted rounded-lg overflow-hidden shadow-lg">
+          <div className="aspect-video bg-muted rounded-lg overflow-hidden shadow-lg mb-8">
             <img
               src="https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=1200&h=600&fit=crop"
               alt="Jewish prayer book opened to Kaddish with tallit"
               className="w-full h-full object-cover"
             />
           </div>
+
+          <AuthorBox author={author} />
         </div>
       </section>
 
@@ -136,7 +198,35 @@ export default function ArticleKaddishPage() {
           <section id="origins" className="scroll-mt-20">
             <h2 className="text-3xl font-bold mb-6">The Origins of Kaddish</h2>
             <p>
-              The Kaddish prayer dates back to the Talmudic period, originally serving as a concluding prayer for study sessions. Over time, it evolved into various forms, with the Mourner's Kaddish becoming a central part of Jewish mourning rituals. The prayer is written in Aramaic, the common language of Jews during the Talmudic era, rather than Hebrew.
+              The Kaddish prayer has a rich history spanning nearly two millennia. The opening phrase—"May His great
+              name be exalted and sanctified"—echoes Ezekiel 38:23: "Thus will I magnify Myself, and sanctify Myself,
+              and I will make Myself known in the eyes of many nations."
+            </p>
+            <p>
+              The oldest written version of Kaddish appears in the <em>Siddur of Rab Amram Gaon</em> (circa 900 CE).
+              Originally, Kaddish was not a prayer for mourners at all—it was recited by rabbis at the conclusion
+              of public Torah study sessions and sermons.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-6 mb-3">Why Aramaic Instead of Hebrew?</h3>
+            <p>
+              The Kaddish was composed in Aramaic, the spoken language of Jews in ancient Babylonia and Israel
+              during the Talmudic period. Rabbis wanted everyone to understand this important prayer, not just
+              scholars who knew Hebrew. Some scholars, including Professor Yoel Elitzur, argue that Kaddish was
+              originally written in Hebrew and later translated to Aramaic.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-6 mb-3">The Legend of Rabbi Akiva</h3>
+            <p>
+              The association of Kaddish with mourning began in the 12th-13th centuries, linked to a medieval legend
+              about Rabbi Akiva. According to this story, Rabbi Akiva encountered the tormented soul of a dead man
+              who told him his suffering could only be relieved if his son would recite Kaddish and lead the
+              congregation in prayer. Rabbi Akiva found the man's son, taught him, and when the boy recited Kaddish,
+              his father's soul was elevated.
+            </p>
+            <p>
+              The first halakhic mention of mourners reciting Kaddish appears in the 13th-century work <em>Or Zarua</em>
+              by Rabbi Isaac ben Moses of Vienna. From there, the practice spread throughout the Jewish world.
             </p>
           </section>
 
@@ -185,18 +275,83 @@ export default function ArticleKaddishPage() {
           <section id="text" className="scroll-mt-20">
             <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
               <Book className="h-7 w-7 text-primary" />
-              The Text and Meaning
+              The Full Text of the Mourner's Kaddish
             </h2>
-            <p>
-              The prayer consists of several key phrases:
+            <p className="mb-6">
+              The Kaddish is written in Aramaic, the everyday language of Jews during the Talmudic period.
+              Below is the complete text with transliteration and translation.
             </p>
-            <ul>
-              <li>Exaltation of God's name</li>
-              <li>Prayer for the coming of God's kingdom</li>
-              <li>Request for peace</li>
-            </ul>
-            <p>
-              While the prayer doesn't mention death, its recitation honors the deceased by affirming faith and sanctifying God's name, which brings merit to the soul of the departed.
+
+            <Card className="p-6 bg-muted/50 my-6">
+              <div className="space-y-4">
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">יִתְגַּדַּל וְיִתְקַדַּשׁ שְׁמֵהּ רַבָּא</p>
+                  <p className="text-primary italic">Yitgadal v'yitkadash sh'mei raba</p>
+                  <p className="text-muted-foreground">May His great name be exalted and sanctified</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">בְּעָלְמָא דִּי בְרָא כִרְעוּתֵהּ</p>
+                  <p className="text-primary italic">B'alma di v'ra chirutei</p>
+                  <p className="text-muted-foreground">In the world which He created according to His will</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">וְיַמְלִיךְ מַלְכוּתֵהּ בְּחַיֵּיכוֹן וּבְיוֹמֵיכוֹן</p>
+                  <p className="text-primary italic">V'yamlich malchutei b'chayeichon uv'yomeichon</p>
+                  <p className="text-muted-foreground">May He establish His kingdom during your lifetime and during your days</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">וּבְחַיֵּי דְכָל בֵּית יִשְׂרָאֵל</p>
+                  <p className="text-primary italic">Uv'chayei d'chol beit Yisrael</p>
+                  <p className="text-muted-foreground">And during the lifetimes of all the House of Israel</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">בַּעֲגָלָא וּבִזְמַן קָרִיב. וְאִמְרוּ אָמֵן</p>
+                  <p className="text-primary italic">Ba'agala uvizman kariv, v'imru amen</p>
+                  <p className="text-muted-foreground">Speedily and in the near future, and say Amen</p>
+                </div>
+                <div className="bg-primary/10 p-4 rounded-lg border-b">
+                  <p className="text-sm text-muted-foreground mb-1">Congregation responds:</p>
+                  <p className="text-lg font-semibold text-right" dir="rtl">יְהֵא שְׁמֵהּ רַבָּא מְבָרַךְ לְעָלַם וּלְעָלְמֵי עָלְמַיָּא</p>
+                  <p className="text-primary italic font-semibold">Y'hei sh'mei raba m'varach l'alam ul'almei almaya</p>
+                  <p className="text-muted-foreground">May His great name be blessed forever and for all eternity</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">יִתְבָּרַךְ וְיִשְׁתַּבַּח וְיִתְפָּאַר וְיִתְרוֹמַם וְיִתְנַשֵּׂא</p>
+                  <p className="text-primary italic">Yitbarach v'yishtabach v'yitpaar v'yitromam v'yitnasei</p>
+                  <p className="text-muted-foreground">Blessed and praised and glorified and exalted and extolled</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">וְיִתְהַדָּר וְיִתְעַלֶּה וְיִתְהַלָּל שְׁמֵהּ דְּקֻדְשָׁא בְּרִיךְ הוּא</p>
+                  <p className="text-primary italic">V'yit'hadar v'yit'aleh v'yit'halal sh'mei d'kudsha b'rich hu</p>
+                  <p className="text-muted-foreground">And honored and elevated and praised be the name of the Holy One, Blessed is He</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">לְעֵלָּא מִן כָּל בִּרְכָתָא וְשִׁירָתָא תֻּשְׁבְּחָתָא וְנֶחֱמָתָא</p>
+                  <p className="text-primary italic">L'eila min kol birchata v'shirata tushb'chata v'nechemata</p>
+                  <p className="text-muted-foreground">Above all blessings and songs, praises and consolations</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">דַּאֲמִירָן בְּעָלְמָא. וְאִמְרוּ אָמֵן</p>
+                  <p className="text-primary italic">Da'amiran b'alma, v'imru amen</p>
+                  <p className="text-muted-foreground">Which are uttered in the world, and say Amen</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="text-lg font-semibold text-right" dir="rtl">יְהֵא שְׁלָמָא רַבָּא מִן שְׁמַיָּא וְחַיִּים עָלֵינוּ וְעַל כָּל יִשְׂרָאֵל. וְאִמְרוּ אָמֵן</p>
+                  <p className="text-primary italic">Y'hei sh'lama raba min sh'maya v'chayim aleinu v'al kol Yisrael, v'imru amen</p>
+                  <p className="text-muted-foreground">May there be abundant peace from heaven, and life, upon us and upon all Israel, and say Amen</p>
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-right" dir="rtl">עוֹשֶׂה שָׁלוֹם בִּמְרוֹמָיו הוּא יַעֲשֶׂה שָׁלוֹם עָלֵינוּ וְעַל כָּל יִשְׂרָאֵל. וְאִמְרוּ אָמֵן</p>
+                  <p className="text-primary italic">Oseh shalom bimromav, hu ya'aseh shalom aleinu v'al kol Yisrael, v'imru amen</p>
+                  <p className="text-muted-foreground">May He who makes peace in His high places make peace upon us and upon all Israel, and say Amen</p>
+                </div>
+              </div>
+            </Card>
+
+            <p className="mt-6">
+              Notice that the prayer never mentions death. Instead, it is a powerful affirmation of faith—a declaration
+              that even in the depths of grief, the mourner sanctifies God's name and affirms hope for the coming
+              of His kingdom. This act of faith is believed to bring merit to the soul of the departed.
             </p>
           </section>
 

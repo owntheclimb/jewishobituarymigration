@@ -120,12 +120,12 @@ export default function PagesManagementPage() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('notable_figures')
+        .from('notable_figures' as any)
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      if (data) setFigures(data);
+      if (data) setFigures(data as unknown as NotableFigure[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -207,13 +207,13 @@ export default function PagesManagementPage() {
 
       if (editingFigure) {
         const { error } = await supabase
-          .from('notable_figures')
+          .from('notable_figures' as any)
           .update(data)
           .eq('id', editingFigure.id);
         if (error) throw error;
         toast({ title: 'Success', description: 'Notable figure updated successfully' });
       } else {
-        const { error } = await supabase.from('notable_figures').insert(data);
+        const { error } = await supabase.from('notable_figures' as any).insert(data);
         if (error) throw error;
         toast({ title: 'Success', description: 'Notable figure created successfully' });
       }
@@ -237,7 +237,7 @@ export default function PagesManagementPage() {
     if (!confirm('Are you sure you want to delete this notable figure?')) return;
 
     try {
-      const { error } = await supabase.from('notable_figures').delete().eq('id', id);
+      const { error } = await supabase.from('notable_figures' as any).delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Success', description: 'Notable figure deleted successfully' });
       fetchData();
@@ -255,7 +255,7 @@ export default function PagesManagementPage() {
     const newStatus = figure.status === 'published' ? 'draft' : 'published';
     try {
       const { error } = await supabase
-        .from('notable_figures')
+        .from('notable_figures' as any)
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', figure.id);
       if (error) throw error;
@@ -268,7 +268,7 @@ export default function PagesManagementPage() {
   async function toggleFeatured(figure: NotableFigure) {
     try {
       const { error } = await supabase
-        .from('notable_figures')
+        .from('notable_figures' as any)
         .update({ featured: !figure.featured, updated_at: new Date().toISOString() })
         .eq('id', figure.id);
       if (error) throw error;

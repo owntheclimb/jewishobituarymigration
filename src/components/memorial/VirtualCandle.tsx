@@ -38,7 +38,7 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
     try {
       // Fetch total candle count from database
       const { data: candles, error: countError } = await supabase
-        .from('virtual_candles')
+        .from('virtual_candles' as any)
         .select('id')
         .eq('obituary_id', obituaryId);
 
@@ -46,7 +46,7 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
         console.error('Error fetching candle count:', countError);
       }
 
-      const count = candles?.length || 0;
+      const count = (candles as any[] | null)?.length || 0;
 
       // Check if current session already lit a candle
       const sessionId = getSessionId();
@@ -54,7 +54,7 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
 
       if (sessionId) {
         const { data: existingCandle } = await supabase
-          .from('virtual_candles')
+          .from('virtual_candles' as any)
           .select('id')
           .eq('obituary_id', obituaryId)
           .eq('session_id', sessionId)
@@ -98,7 +98,7 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
 
       // Insert candle into database
       const { error } = await supabase
-        .from('virtual_candles')
+        .from('virtual_candles' as any)
         .insert({
           obituary_id: obituaryId,
           session_id: sessionId,

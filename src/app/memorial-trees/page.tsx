@@ -211,7 +211,7 @@ const MemorialTrees = () => {
                     onClick={() => {
                       setSelectedPackage(pkg.id);
                       addItem({
-                        id: Math.floor(Math.random() * 10000),
+                        id: `tree-${pkg.id}-${Date.now()}`,
                         name: pkg.name,
                         price: parseFloat(pkg.price.replace('$', '')),
                         image: memorialTree.src,

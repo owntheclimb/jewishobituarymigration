@@ -3,18 +3,25 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://jewishobituary.com';
 
-  // Static pages - dynamic obituaries will be added via API route or incremental generation
+  // Static pages - optimized priorities based on content value
   const staticPages: MetadataRoute.Sitemap = [
+    // Core pages (highest priority)
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/search`,
       lastModified: new Date(),
       changeFrequency: 'hourly',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/create-obituary`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
@@ -174,12 +181,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/create-obituary`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
     },
     {
       url: `${baseUrl}/obituary-helper`,

@@ -35,7 +35,7 @@ const NotableFigures = () => {
     async function fetchNotableFigures() {
       try {
         const { data, error } = await supabase
-          .from('notable_figures')
+          .from('notable_figures' as any)
           .select('*')
           .eq('status', 'active')
           .order('featured', { ascending: false })
@@ -43,9 +43,9 @@ const NotableFigures = () => {
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
+        if (data && (data as any[]).length > 0) {
           // Transform database records to match NotableFigure interface
-          const transformed: NotableFigure[] = data.map(figure => ({
+          const transformed: NotableFigure[] = (data as any[]).map(figure => ({
             id: figure.slug || figure.id,
             name: figure.name,
             hebrewName: figure.hebrew_name || '',

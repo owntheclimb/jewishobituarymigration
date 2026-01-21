@@ -2,7 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import Script from "next/script";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,6 +15,7 @@ import VirtualCandle from "@/components/memorial/VirtualCandle";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Heart, Share2, BookOpen, Users, Calendar, MapPin, Quote } from "lucide-react";
 import { notableFigures } from "@/data/notableFigures";
+import { generatePersonSchema, generateBreadcrumbSchema, schemaToString } from "@/lib/schema";
 
 const NotableFigureDetail = () => {
   const params = useParams();
@@ -52,8 +54,51 @@ const NotableFigureDetail = () => {
     .filter(f => f.id !== figure.id && (f.category === figure.category))
     .slice(0, 3);
 
+  // Parse dates for schema (extracting years from "1897-1994" format)
+  const parseDates = (dates: string) => {
+    const parts = dates.split(' - ');
+    return {
+      birthDate: parts[0] || undefined,
+      deathDate: parts[1] || undefined,
+    };
+  };
+
+  const { birthDate, deathDate } = parseDates(figure.dates);
+
+  // Generate Person schema for rich results
+  const personSchema = useMemo(() => generatePersonSchema({
+    name: figure.name,
+    alternateName: figure.hebrewName || undefined,
+    birthDate,
+    deathDate,
+    description: figure.biography || figure.excerpt,
+    image: figure.image,
+    url: `https://jewishobituary.com/notable/${figure.id}`,
+    birthPlace: figure.location || undefined,
+    jobTitle: figure.category,
+  }), [figure, birthDate, deathDate]);
+
+  // Generate breadcrumb schema
+  const breadcrumbSchema = useMemo(() => generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://jewishobituary.com' },
+    { name: 'Notable Figures', url: 'https://jewishobituary.com/notable' },
+    { name: figure.name, url: `https://jewishobituary.com/notable/${figure.id}` },
+  ]), [figure]);
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Schema.org structured data for rich search results */}
+      <Script
+        id="person-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(personSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+
       <Navbar />
 
       {/* Breadcrumbs */}

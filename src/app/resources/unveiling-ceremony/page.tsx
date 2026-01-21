@@ -1,16 +1,48 @@
 'use client';
 
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, Share2, Download, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
+
+const articleSchema = generateArticleSchema({
+  title: 'Planning an Unveiling Ceremony: Honoring Memory with a Headstone Dedication',
+  description: 'The unveiling ceremony marks the dedication of a headstone, typically occurring 11-12 months after burial, providing closure and a lasting memorial.',
+  url: 'https://jewishobituary.com/resources/unveiling-ceremony',
+  datePublished: '2024-05-01',
+  dateModified: '2025-01-15',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Resources', url: 'https://jewishobituary.com/resources' },
+  { name: 'Unveiling Ceremony', url: 'https://jewishobituary.com/resources/unveiling-ceremony' },
+]);
 
 
 export default function ArticleUnveilingCeremonyPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
@@ -34,10 +66,12 @@ export default function ArticleUnveilingCeremonyPage() {
             The unveiling ceremony marks the dedication of a headstone, typically occurring 11-12 months after burial, providing closure and a lasting memorial.
           </p>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-8">
             <Button variant="outline"><Share2 className="mr-2 h-4 w-4" />Share Article</Button>
             <Button variant="outline"><Download className="mr-2 h-4 w-4" />Download PDF</Button>
           </div>
+
+          <AuthorBox author={author} />
         </div>
       </section>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card } from '@/components/ui/card';
@@ -8,11 +9,74 @@ import { Button } from '@/components/ui/button';
 import { Clock, Share2, Download, ArrowLeft, Users } from 'lucide-react';
 import Link from 'next/link';
 import JewishWisdom from '@/components/JewishWisdom';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from '@/lib/schema';
+
+const articleSchema = generateArticleSchema({
+  title: 'What is a Chevra Kadisha? Understanding the Holy Society',
+  description: 'The chevra kadisha, or "holy society," performs one of Judaism\'s most sacred acts: preparing the deceased for burial with dignity, respect, and adherence to ancient traditions.',
+  url: 'https://jewishobituary.com/resources/chevra-kadisha',
+  datePublished: '2024-03-01',
+  dateModified: '2026-01-21',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Resources', url: 'https://jewishobituary.com/resources' },
+  { name: 'Chevra Kadisha', url: 'https://jewishobituary.com/resources/chevra-kadisha' },
+]);
+
+const faqSchema = generateFAQSchema([
+  {
+    question: "What does Chevra Kadisha mean?",
+    answer: "Chevra Kadisha literally translates to 'holy society' or 'sacred fellowship' in Hebrew. It refers to a group of Jewish community volunteers who perform taharah (ritual purification) and prepare deceased members of the Jewish community for burial according to Jewish law."
+  },
+  {
+    question: "Do families pay for chevra kadisha services?",
+    answer: "Traditionally, no. Chevra kadisha is a volunteer service considered one of the highest acts of loving-kindness (chesed shel emet). However, some communities accept donations to cover supplies and maintain facilities."
+  },
+  {
+    question: "Can family members be present during taharah?",
+    answer: "Generally, no. The sacred work of taharah is performed privately by trained chevra kadisha members to maintain the deceased's dignity and allow the volunteers to focus on their sacred duty."
+  },
+  {
+    question: "What happens if there's no chevra kadisha in my community?",
+    answer: "Larger communities may have regional chevra kadishas that travel. Some funeral homes employ trained staff who can perform taharah. Alternatively, families can work with their rabbi to establish a chevra kadisha in their community."
+  },
+  {
+    question: "Who can join a chevra kadisha?",
+    answer: "Requirements vary, but typically include: being an active member of the Jewish community, willingness to undergo training, availability on short notice, emotional maturity to handle the work, and ability to maintain confidentiality."
+  },
+  {
+    question: "What is taharah?",
+    answer: "Taharah is the ritual purification of the body before burial. It involves washing the body, pouring water over it in a prescribed manner similar to mikvah immersion, and dressing the deceased in simple white burial shrouds (tachrichim)."
+  }
+]);
 
 
 export default function ArticleChevraKadishaPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -41,7 +105,7 @@ export default function ArticleChevraKadishaPage() {
             The chevra kadisha, or "holy society," performs one of Judaism's most sacred acts: preparing the deceased for burial with dignity, respect, and adherence to ancient traditions.
           </p>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-8">
             <Button variant="outline">
               <Share2 className="mr-2 h-4 w-4" />
               Share Article
@@ -51,6 +115,8 @@ export default function ArticleChevraKadishaPage() {
               Download PDF
             </Button>
           </div>
+
+          <AuthorBox author={author} />
         </div>
       </section>
 

@@ -66,7 +66,7 @@ export default function AdminManagementPage() {
   const fetchAdmins = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('profiles')
+      .from('profiles' as any)
       .select('*')
       .eq('role', 'admin')
       .order('created_at', { ascending: false });
@@ -78,7 +78,7 @@ export default function AdminManagementPage() {
         variant: 'destructive',
       });
     } else {
-      setAdmins(data as Admin[]);
+      setAdmins(data as unknown as Admin[]);
     }
     setLoading(false);
   };
@@ -113,14 +113,14 @@ export default function AdminManagementPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const { error: updateError } = await supabase
-        .from('profiles')
+        .from('profiles' as any)
         .update({ role: 'admin', full_name: newAdminName })
         .eq('user_id', authData.user.id);
 
       if (updateError) {
         // If profile doesn't exist yet, create it
         const { error: insertError } = await supabase
-          .from('profiles')
+          .from('profiles' as any)
           .insert({
             user_id: authData.user.id,
             email: newAdminEmail,
@@ -167,7 +167,7 @@ export default function AdminManagementPage() {
 
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from('profiles' as any)
         .update({ role: 'user' })
         .eq('id', admin.id);
 
@@ -203,7 +203,7 @@ export default function AdminManagementPage() {
     try {
       // Check if user exists
       const { data: existingProfile, error: searchError } = await supabase
-        .from('profiles')
+        .from('profiles' as any)
         .select('*')
         .eq('email', newAdminEmail)
         .single();
@@ -220,9 +220,9 @@ export default function AdminManagementPage() {
 
       // Update role to admin
       const { error: updateError } = await supabase
-        .from('profiles')
+        .from('profiles' as any)
         .update({ role: 'admin' })
-        .eq('id', existingProfile.id);
+        .eq('id', (existingProfile as any).id);
 
       if (updateError) throw updateError;
 

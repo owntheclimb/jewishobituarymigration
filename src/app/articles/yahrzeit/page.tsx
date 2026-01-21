@@ -1,5 +1,6 @@
 'use client';
 
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Calendar, Flame, Heart, Book, Clock, Share2, Bookmark, ChevronRight } from 'lucide-react';
@@ -8,11 +9,73 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from '@/lib/schema';
 
+const articleSchema = generateArticleSchema({
+  title: 'Yahrzeit: Complete Guide to the Jewish Death Anniversary',
+  description: 'Understanding yahrzeit - the Jewish tradition of commemorating the anniversary of death. Learn about lighting memorial candles, reciting Kaddish, and honoring loved ones.',
+  url: 'https://jewishobituary.com/articles/yahrzeit',
+  datePublished: '2024-02-01',
+  dateModified: '2026-01-21',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Articles', url: 'https://jewishobituary.com/articles' },
+  { name: 'Yahrzeit', url: 'https://jewishobituary.com/articles/yahrzeit' },
+]);
+
+const faqSchema = generateFAQSchema([
+  {
+    question: "What is yahrzeit and when is it observed?",
+    answer: "Yahrzeit (Yiddish for 'year's time') is the annual anniversary of a death according to the Hebrew calendar. It is observed on the Hebrew date of death, beginning at sunset the evening before."
+  },
+  {
+    question: "How do I calculate the yahrzeit date?",
+    answer: "The yahrzeit is based on the Hebrew calendar date of death, not the secular date. Use a Hebrew calendar converter or your synagogue's yahrzeit notification service to determine the correct date each year."
+  },
+  {
+    question: "What do you do on a yahrzeit?",
+    answer: "Traditional observances include: lighting a 24-hour memorial candle at sunset, attending synagogue to recite Kaddish, giving tzedakah (charity), studying Torah, visiting the grave, and sharing memories with family."
+  },
+  {
+    question: "Why is a 24-hour candle lit on yahrzeit?",
+    answer: "The yahrzeit candle represents the soul of the deceased, based on Proverbs 20:27: 'The soul of man is the lamp of God.' The flame symbolizes the eternal nature of the soul and serves as a physical reminder of the departed."
+  },
+  {
+    question: "Do I observe yahrzeit on the Hebrew or English date?",
+    answer: "Traditional practice uses the Hebrew calendar date. Since the Hebrew calendar differs from the secular calendar, the secular date changes each year. Many synagogues provide annual yahrzeit notifications."
+  },
+  {
+    question: "What happens to yahrzeit during a Hebrew leap year?",
+    answer: "If the death occurred in Adar during a non-leap year, the yahrzeit is observed in Adar II (the second Adar) during leap years. For deaths on the 30th of a month that sometimes has only 29 days, observe on the 1st of the following month."
+  }
+]);
 
 export default function ArticleYahrzeitPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">
@@ -62,6 +125,8 @@ export default function ArticleYahrzeitPage() {
                 className="w-full h-full object-cover"
               />
             </div>
+
+            <AuthorBox author={author} />
           </div>
         </section>
 
@@ -241,6 +306,37 @@ export default function ArticleYahrzeitPage() {
                 <li>Calendar apps that support Hebrew dates</li>
               </ul>
             </Card>
+
+            {/* Frequently Asked Questions */}
+            <section id="faq" className="scroll-mt-20 my-12">
+              <h2 className="text-3xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
+              <div className="space-y-6">
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">What is yahrzeit and when is it observed?</h4>
+                  <p className="text-muted-foreground">Yahrzeit (Yiddish for "year's time") is the annual anniversary of a death according to the Hebrew calendar. It is observed on the Hebrew date of death, beginning at sunset the evening before.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">How do I calculate the yahrzeit date?</h4>
+                  <p className="text-muted-foreground">The yahrzeit is based on the Hebrew calendar date of death, not the secular date. Use a Hebrew calendar converter or your synagogue's yahrzeit notification service to determine the correct date each year.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">What do you do on a yahrzeit?</h4>
+                  <p className="text-muted-foreground">Traditional observances include: lighting a 24-hour memorial candle at sunset, attending synagogue to recite Kaddish, giving tzedakah (charity), studying Torah, visiting the grave, and sharing memories with family.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">Why is a 24-hour candle lit on yahrzeit?</h4>
+                  <p className="text-muted-foreground">The yahrzeit candle represents the soul of the deceased, based on Proverbs 20:27: "The soul of man is the lamp of God." The flame symbolizes the eternal nature of the soul and serves as a physical reminder of the departed.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">Do I observe yahrzeit on the Hebrew or English date?</h4>
+                  <p className="text-muted-foreground">Traditional practice uses the Hebrew calendar date. Since the Hebrew calendar differs from the secular calendar, the secular date changes each year. Many synagogues provide annual yahrzeit notifications.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2 text-foreground">What happens to yahrzeit during a Hebrew leap year?</h4>
+                  <p className="text-muted-foreground">If the death occurred in Adar during a non-leap year, the yahrzeit is observed in Adar II (the second Adar) during leap years. For deaths on the 30th of a month that sometimes has only 29 days, observe on the 1st of the following month.</p>
+                </div>
+              </div>
+            </section>
 
             {/* Key Takeaways */}
             <Card className="p-6 my-8 bg-primary/5 border-primary/20 shadow-lg">

@@ -75,23 +75,23 @@ const Flowers = () => {
       try {
         const [productsRes, categoriesRes] = await Promise.all([
           supabase
-            .from('products')
+            .from('products' as any)
             .select('*')
             .eq('status', 'active')
             .order('featured', { ascending: false })
             .order('sort_order', { ascending: true }),
           supabase
-            .from('product_categories')
+            .from('product_categories' as any)
             .select('*')
             .eq('active', true)
             .order('sort_order', { ascending: true }),
         ]);
 
         if (productsRes.data && productsRes.data.length > 0) {
-          setProducts(productsRes.data);
+          setProducts(productsRes.data as unknown as Product[]);
         }
         if (categoriesRes.data && categoriesRes.data.length > 0) {
-          setDbCategories(categoriesRes.data);
+          setDbCategories(categoriesRes.data as unknown as Category[]);
         }
       } catch (error) {
         console.error('Error fetching products:', error);

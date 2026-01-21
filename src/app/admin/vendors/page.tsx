@@ -119,17 +119,17 @@ export default function VendorsPage() {
     try {
       const [vendorsRes, typesRes] = await Promise.all([
         supabase
-          .from('vendors')
+          .from('vendors' as any)
           .select('*')
           .order('created_at', { ascending: false }),
         supabase
-          .from('vendor_types')
+          .from('vendor_types' as any)
           .select('*')
           .order('sort_order', { ascending: true }),
       ]);
 
-      if (vendorsRes.data) setVendors(vendorsRes.data);
-      if (typesRes.data) setVendorTypes(typesRes.data);
+      if (vendorsRes.data) setVendors(vendorsRes.data as unknown as Vendor[]);
+      if (typesRes.data) setVendorTypes(typesRes.data as unknown as VendorType[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -213,13 +213,13 @@ export default function VendorsPage() {
 
       if (editingVendor) {
         const { error } = await supabase
-          .from('vendors')
+          .from('vendors' as any)
           .update(data)
           .eq('id', editingVendor.id);
         if (error) throw error;
         toast({ title: 'Success', description: 'Vendor updated successfully' });
       } else {
-        const { error } = await supabase.from('vendors').insert(data);
+        const { error } = await supabase.from('vendors' as any).insert(data);
         if (error) throw error;
         toast({ title: 'Success', description: 'Vendor created successfully' });
       }
@@ -243,7 +243,7 @@ export default function VendorsPage() {
     if (!confirm('Are you sure you want to delete this vendor?')) return;
 
     try {
-      const { error } = await supabase.from('vendors').delete().eq('id', id);
+      const { error } = await supabase.from('vendors' as any).delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Success', description: 'Vendor deleted successfully' });
       fetchData();
@@ -261,7 +261,7 @@ export default function VendorsPage() {
     const newStatus = vendor.status === 'active' ? 'inactive' : 'active';
     try {
       const { error } = await supabase
-        .from('vendors')
+        .from('vendors' as any)
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', vendor.id);
       if (error) throw error;
@@ -274,7 +274,7 @@ export default function VendorsPage() {
   async function toggleFeatured(vendor: Vendor) {
     try {
       const { error } = await supabase
-        .from('vendors')
+        .from('vendors' as any)
         .update({ featured: !vendor.featured, updated_at: new Date().toISOString() })
         .eq('id', vendor.id);
       if (error) throw error;
@@ -287,7 +287,7 @@ export default function VendorsPage() {
   async function toggleVerified(vendor: Vendor) {
     try {
       const { error } = await supabase
-        .from('vendors')
+        .from('vendors' as any)
         .update({ verified: !vendor.verified, updated_at: new Date().toISOString() })
         .eq('id', vendor.id);
       if (error) throw error;

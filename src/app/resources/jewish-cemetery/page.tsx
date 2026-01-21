@@ -1,14 +1,46 @@
 'use client';
 
+import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { MapPin, Heart, TreePine, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
+
+const articleSchema = generateArticleSchema({
+  title: 'Jewish Cemetery Customs and Etiquette',
+  description: 'Understanding the customs and etiquette of Jewish cemeteries helps visitors show proper respect while connecting with cherished memories.',
+  url: 'https://jewishobituary.com/resources/jewish-cemetery',
+  datePublished: '2024-02-15',
+  dateModified: '2025-01-15',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Resources', url: 'https://jewishobituary.com/resources' },
+  { name: 'Jewish Cemetery', url: 'https://jewishobituary.com/resources/jewish-cemetery' },
+]);
 
 
 export default function ArticleJewishCemeteryPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">
@@ -17,13 +49,13 @@ export default function ArticleJewishCemeteryPage() {
             <h1 className="text-4xl font-bold text-foreground mb-4">
               Jewish Cemetery Customs and Etiquette
             </h1>
-            <div className="flex items-center gap-4 text-muted-foreground text-sm">
-              <span>By Rabbi Michael Weiss</span>
-              <span>-</span>
+            <div className="flex items-center gap-4 text-muted-foreground text-sm mb-6">
               <span>12 min read</span>
               <span>-</span>
               <span>Jewish Traditions</span>
             </div>
+
+            <AuthorBox author={author} />
           </header>
 
           <div className="prose prose-lg max-w-none space-y-6 text-foreground">

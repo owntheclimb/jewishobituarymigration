@@ -1,39 +1,127 @@
 'use client';
 
+import Script from "next/script";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { PenTool, Heart, Users, Star } from 'lucide-react';
+import { PenTool, Heart, Users, Star, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { AuthorBox } from '@/components/AuthorBox';
+import { getAuthor } from '@/data/authors';
+import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from '@/lib/schema';
 
+const articleSchema = generateArticleSchema({
+  title: 'How to Write a Meaningful Jewish Obituary: Complete Guide',
+  description: 'Step-by-step guide to writing a Jewish obituary with examples, templates, and traditional elements. Includes Hebrew names, family listings, and memorial contributions.',
+  url: 'https://jewishobituary.com/articles/writing-obituary',
+  datePublished: '2024-01-15',
+  dateModified: '2026-01-21',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Articles', url: 'https://jewishobituary.com/articles' },
+  { name: 'Writing a Jewish Obituary', url: 'https://jewishobituary.com/articles/writing-obituary' },
+]);
+
+const faqSchema = generateFAQSchema([
+  {
+    question: "What should be included in a Jewish obituary?",
+    answer: "A Jewish obituary should include: full English and Hebrew names, age and date of death (including Hebrew date), place of death, surviving and predeceased family members, life story and achievements, Jewish communal involvement, funeral and shiva details, and memorial contribution suggestions in lieu of flowers."
+  },
+  {
+    question: "How do I write the Hebrew name in an obituary?",
+    answer: "Include the Hebrew name after the English name, formatted as: '[English name], known in Hebrew as [Hebrew name] bat/ben [father's Hebrew name]'. For example: 'Miriam Ruth Cohen, known in Hebrew as Miriam Rivka bat Avraham.' Some also include the mother's Hebrew name."
+  },
+  {
+    question: "What does 'z\"l' mean in a Jewish obituary?",
+    answer: "Z\"l is an abbreviation for 'zichrono livracha' (for a man) or 'zichrona livracha' (for a woman), meaning 'may their memory be for a blessing.' It's customary to add this honorific after the name of the deceased in Jewish obituaries."
+  },
+  {
+    question: "Should I include the Hebrew date of death?",
+    answer: "Yes, including the Hebrew date alongside the secular date is traditional and meaningful, as the Hebrew date (yahrzeit) is used to observe the annual commemoration. Example: 'January 15, 2024, corresponding to the 4th of Shevat, 5784.'"
+  },
+  {
+    question: "How long should a Jewish obituary be?",
+    answer: "Jewish obituaries typically range from 250-500 words for a standard obituary with good biographical detail. Brief obituaries run 150-250 words, while comprehensive ones with detailed life stories may be 500-800 words."
+  },
+  {
+    question: "Why do Jewish obituaries say 'in lieu of flowers'?",
+    answer: "Traditional Jewish funerals do not include flowers, as they emphasize simplicity and equality in death. Instead, charitable donations in memory of the deceased are encouraged—continuing their legacy through tzedakah (righteous giving)."
+  }
+]);
 
 export default function ArticleWritingObituaryPage() {
+  const author = getAuthor('tradition-expert');
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">
         <article className="container mx-auto px-4 py-12 max-w-4xl">
           <header className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Badge>Writing Guide</Badge>
+              <span className="text-sm text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                15 min read
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               How to Write a Meaningful Jewish Obituary
             </h1>
-            <div className="flex items-center gap-4 text-muted-foreground text-sm">
-              <span>By Rachel Levine</span>
-              <span>-</span>
-              <span>15 min read</span>
-              <span>-</span>
-              <span>Writing Guide</span>
-            </div>
+            <p className="text-xl text-muted-foreground">
+              A complete guide with examples, traditional elements, and step-by-step instructions
+            </p>
           </header>
+
+          <AuthorBox author={author} className="mb-8" />
+
+          {/* Table of Contents */}
+          <Card className="p-6 mb-8 bg-muted/30">
+            <h2 className="text-lg font-bold mb-4">In This Guide</h2>
+            <nav className="grid md:grid-cols-2 gap-2 text-sm">
+              <a href="#essential-elements" className="block hover:text-primary transition-colors">Essential Elements</a>
+              <a href="#opening-lines" className="block hover:text-primary transition-colors">Opening Lines</a>
+              <a href="#family-listing" className="block hover:text-primary transition-colors">Listing Family Members</a>
+              <a href="#life-story" className="block hover:text-primary transition-colors">Crafting the Life Story</a>
+              <a href="#jewish-elements" className="block hover:text-primary transition-colors">Jewish-Specific Elements</a>
+              <a href="#service-info" className="block hover:text-primary transition-colors">Service and Shiva Information</a>
+              <a href="#memorial-contributions" className="block hover:text-primary transition-colors">Memorial Contributions</a>
+              <a href="#length-style" className="block hover:text-primary transition-colors">Length and Style</a>
+              <a href="#mistakes" className="block hover:text-primary transition-colors">Common Mistakes to Avoid</a>
+              <a href="#sample" className="block hover:text-primary transition-colors">Sample Jewish Obituary</a>
+              <a href="#faq" className="block hover:text-primary transition-colors">Frequently Asked Questions</a>
+              <a href="#help" className="block hover:text-primary transition-colors">Getting Help</a>
+            </nav>
+          </Card>
 
           <div className="prose prose-lg max-w-none space-y-6 text-foreground">
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Writing an obituary is an act of love and remembrance. A well-crafted obituary honors the deceased's life, provides essential information, and offers comfort to those who mourn. This guide will help you create a meaningful tribute that blends traditional Jewish elements with personal touches.
+              Writing an obituary is an act of love and remembrance—what Jewish tradition calls a final act of <em>chesed shel emet</em>, true kindness that can never be repaid. A well-crafted obituary honors the deceased's life, provides essential information, and offers comfort to those who mourn. This guide will help you create a meaningful tribute that blends traditional Jewish elements with personal touches.
             </p>
 
-            <section>
+            <section id="essential-elements">
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <PenTool className="h-6 w-6 text-primary" />
                 Essential Elements of a Jewish Obituary
@@ -58,7 +146,7 @@ export default function ArticleWritingObituaryPage() {
               </Card>
             </section>
 
-            <section>
+            <section id="opening-lines">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Opening Lines: Setting the Tone
               </h2>
@@ -91,7 +179,7 @@ export default function ArticleWritingObituaryPage() {
               </p>
             </section>
 
-            <section>
+            <section id="family-listing">
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Users className="h-6 w-6 text-primary" />
                 Listing Family Members
@@ -128,7 +216,7 @@ export default function ArticleWritingObituaryPage() {
               </Card>
             </section>
 
-            <section>
+            <section id="life-story">
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Heart className="h-6 w-6 text-primary" />
                 Crafting the Life Story
@@ -165,7 +253,7 @@ export default function ArticleWritingObituaryPage() {
               </div>
             </section>
 
-            <section>
+            <section id="jewish-elements">
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Star className="h-6 w-6 text-primary" />
                 Jewish-Specific Elements
@@ -202,7 +290,7 @@ export default function ArticleWritingObituaryPage() {
               </div>
             </section>
 
-            <section>
+            <section id="service-info">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Service and Shiva Information
               </h2>
@@ -227,7 +315,7 @@ export default function ArticleWritingObituaryPage() {
               </p>
             </section>
 
-            <section>
+            <section id="memorial-contributions">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Memorial Contributions
               </h2>
@@ -253,7 +341,7 @@ export default function ArticleWritingObituaryPage() {
               </div>
             </section>
 
-            <section>
+            <section id="length-style">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Length and Style Guidelines
               </h2>
@@ -278,7 +366,7 @@ export default function ArticleWritingObituaryPage() {
               </div>
             </section>
 
-            <section>
+            <section id="mistakes">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Common Mistakes to Avoid
               </h2>
@@ -293,7 +381,7 @@ export default function ArticleWritingObituaryPage() {
               </ul>
             </section>
 
-            <section>
+            <section id="sample">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Sample Jewish Obituary
               </h2>
@@ -328,7 +416,7 @@ export default function ArticleWritingObituaryPage() {
               </Card>
             </section>
 
-            <section>
+            <section id="help">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Getting Help
               </h2>
@@ -354,6 +442,38 @@ export default function ArticleWritingObituaryPage() {
                   </Link>
                 </Button>
               </Card>
+            </section>
+
+            <section id="faq">
+              <h2 className="text-2xl font-semibold text-foreground mb-4">
+                Frequently Asked Questions
+              </h2>
+              <div className="space-y-6 not-prose">
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">What should be included in a Jewish obituary?</h4>
+                  <p className="text-muted-foreground">A Jewish obituary should include: full English and Hebrew names, age and date of death (including Hebrew date), place of death, surviving and predeceased family members, life story and achievements, Jewish communal involvement, funeral and shiva details, and memorial contribution suggestions in lieu of flowers.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">How do I write the Hebrew name in an obituary?</h4>
+                  <p className="text-muted-foreground">Include the Hebrew name after the English name, formatted as: "[English name], known in Hebrew as [Hebrew name] bat/ben [father's Hebrew name]". For example: "Miriam Ruth Cohen, known in Hebrew as Miriam Rivka bat Avraham." Some also include the mother's Hebrew name.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">What does "z"l" mean in a Jewish obituary?</h4>
+                  <p className="text-muted-foreground">Z"l is an abbreviation for "zichrono livracha" (for a man) or "zichrona livracha" (for a woman), meaning "may their memory be for a blessing." It's customary to add this honorific after the name of the deceased in Jewish obituaries.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">Should I include the Hebrew date of death?</h4>
+                  <p className="text-muted-foreground">Yes, including the Hebrew date alongside the secular date is traditional and meaningful, as the Hebrew date (yahrzeit) is used to observe the annual commemoration. Example: "January 15, 2024, corresponding to the 4th of Shevat, 5784."</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">How long should a Jewish obituary be?</h4>
+                  <p className="text-muted-foreground">Jewish obituaries typically range from 250-500 words for a standard obituary with good biographical detail. Brief obituaries run 150-250 words, while comprehensive ones with detailed life stories may be 500-800 words.</p>
+                </div>
+                <div className="border-l-4 border-primary pl-4">
+                  <h4 className="font-bold mb-2">Why do Jewish obituaries say "in lieu of flowers"?</h4>
+                  <p className="text-muted-foreground">Traditional Jewish funerals do not include flowers, as they emphasize simplicity and equality in death. Instead, charitable donations in memory of the deceased are encouraged—continuing their legacy through tzedakah (righteous giving).</p>
+                </div>
+              </div>
             </section>
 
             <section>
