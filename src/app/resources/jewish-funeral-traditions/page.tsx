@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from "next/script";
+
+export const metadata: Metadata = {
+  title: "Jewish Funeral Traditions: Complete Guide to Customs and Practices",
+  description: "Comprehensive guide to Jewish funeral traditions including preparation, burial customs, Chevra Kadisha, and what to expect. With sources from Torah and Talmud.",
+  keywords: ["Jewish funeral", "Jewish burial", "tahara", "chevra kadisha", "Jewish customs", "shiva", "funeral traditions"],
+  openGraph: {
+    title: "Jewish Funeral Traditions: Complete Guide to Customs and Practices",
+    description: "Comprehensive guide to Jewish funeral traditions including preparation, burial customs, Chevra Kadisha, and what to expect.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/jewish-funeral-traditions",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/jewish-funeral-traditions",
+  },
+};
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";

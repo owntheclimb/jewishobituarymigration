@@ -135,7 +135,7 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* RB2B Visitor Identification */}
+        {/* RB2B Visitor Identification with Client-Side Lead Capture */}
         <Script
           id="rb2b-script"
           strategy="afterInteractive"
@@ -144,6 +144,36 @@ export default function RootLayout({
               !function(key) {
                 if (window.reb2b) return;
                 window.reb2b = {loaded: true};
+
+                // Callback to capture identified visitors and send to our API
+                window.reb2b.identifyCallback = function(data) {
+                  if (data && data.email) {
+                    fetch('/api/webhooks/rb2b', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        email: data.email,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        fullName: data.fullName,
+                        linkedInUrl: data.linkedInUrl,
+                        title: data.title,
+                        companyName: data.companyName,
+                        companyDomain: data.companyDomain,
+                        companyIndustry: data.companyIndustry,
+                        companySize: data.companySize,
+                        city: data.city,
+                        state: data.state,
+                        country: data.country,
+                        pageUrl: window.location.href,
+                        referrer: document.referrer
+                      })
+                    }).catch(function(err) {
+                      console.error('RB2B lead capture error:', err);
+                    });
+                  }
+                };
+
                 var s = document.createElement("script");
                 s.async = true;
                 s.src = "https://ddwl4m2hdecbv.cloudfront.net/b/" + key + "/" + key + ".js.gz";

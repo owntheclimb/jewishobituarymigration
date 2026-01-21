@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from 'next/script';
+
+export const metadata: Metadata = {
+  title: "Writing Obituaries for Holocaust Survivors: Honoring Their Testimony",
+  description: "Creating meaningful tributes for Holocaust survivors requires sensitivity, respect, and an understanding of how to honor both their suffering and their resilience.",
+  keywords: ["Holocaust survivor obituary", "Shoah memorial", "survivor tribute", "Holocaust remembrance", "obituary writing guide"],
+  openGraph: {
+    title: "Writing Obituaries for Holocaust Survivors: Honoring Their Testimony",
+    description: "Creating meaningful tributes for Holocaust survivors requires sensitivity, respect, and an understanding of how to honor both their suffering and their resilience.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/holocaust-survivor-obituary",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/holocaust-survivor-obituary",
+  },
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';

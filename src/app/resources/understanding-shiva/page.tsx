@@ -1,5 +1,4 @@
-'use client';
-
+import { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
@@ -11,6 +10,21 @@ import { BookOpen, Heart, Clock, ArrowLeft, Share2, ExternalLink } from "lucide-
 import { AuthorBox } from "@/components/AuthorBox";
 import { getAuthor } from "@/data/authors";
 import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from "@/lib/schema";
+
+export const metadata: Metadata = {
+  title: "Shiva: A Complete Guide to the Jewish Mourning Period",
+  description: "Comprehensive guide to sitting shiva with biblical origins, Talmudic sources, denominational practices, customs explained, and visitor etiquette. Includes FAQ and expert citations.",
+  keywords: ["shiva", "Jewish mourning", "sitting shiva", "shiva customs", "Jewish funeral", "mourning period", "shiva etiquette"],
+  openGraph: {
+    title: "Shiva: A Complete Guide to the Jewish Mourning Period",
+    description: "Comprehensive guide to sitting shiva with biblical origins, Talmudic sources, denominational practices, customs explained, and visitor etiquette.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/understanding-shiva",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/understanding-shiva",
+  },
+};
 
 const articleSchema = generateArticleSchema({
   title: 'Shiva: A Complete Guide to the Jewish Mourning Period',

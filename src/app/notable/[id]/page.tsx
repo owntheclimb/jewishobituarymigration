@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : figure.excerpt;
 
   return {
-    title: `${figure.name} - ${figure.category} | Jewish Obits`,
+    title: `${figure.name} - ${figure.category}`,
     description,
     keywords: [
       figure.name,

@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from 'next/script';
+
+export const metadata: Metadata = {
+  title: "Jewish Funeral Costs: A Complete Guide to What You'll Pay",
+  description: "Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time, with typical expenses ranging from $8,000-$15,000.",
+  keywords: ["Jewish funeral cost", "funeral expenses", "burial costs", "casket prices", "cemetery plot", "shiva costs"],
+  openGraph: {
+    title: "Jewish Funeral Costs: A Complete Guide to What You'll Pay",
+    description: "Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/jewish-funeral-costs",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/jewish-funeral-costs",
+  },
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';

@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from 'next/script';
+
+export const metadata: Metadata = {
+  title: "Planning an Unveiling Ceremony: Honoring Memory with a Headstone Dedication",
+  description: "The unveiling ceremony marks the dedication of a headstone, typically occurring 11-12 months after burial, providing closure and a lasting memorial.",
+  keywords: ["unveiling ceremony", "headstone dedication", "Jewish memorial", "tombstone unveiling", "matzeivah", "Jewish cemetery"],
+  openGraph: {
+    title: "Planning an Unveiling Ceremony: Honoring Memory with a Headstone Dedication",
+    description: "The unveiling ceremony marks the dedication of a headstone, typically occurring 11-12 months after burial, providing closure and a lasting memorial.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/unveiling-ceremony",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/unveiling-ceremony",
+  },
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';

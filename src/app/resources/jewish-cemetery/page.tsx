@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from 'next/script';
+
+export const metadata: Metadata = {
+  title: "Jewish Cemetery Customs and Etiquette",
+  description: "Understanding the customs and etiquette of Jewish cemeteries helps visitors show proper respect while connecting with cherished memories.",
+  keywords: ["Jewish cemetery", "cemetery etiquette", "placing stones", "Jewish burial ground", "visiting graves", "beit olam"],
+  openGraph: {
+    title: "Jewish Cemetery Customs and Etiquette",
+    description: "Understanding the customs and etiquette of Jewish cemeteries helps visitors show proper respect while connecting with cherished memories.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/jewish-cemetery",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/jewish-cemetery",
+  },
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { MapPin, Heart, TreePine, Star } from 'lucide-react';

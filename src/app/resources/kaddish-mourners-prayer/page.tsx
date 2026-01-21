@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from "next/script";
+
+export const metadata: Metadata = {
+  title: "Kaddish: Complete Guide to the Mourner's Prayer",
+  description: "Comprehensive guide to the Mourner's Kaddish including the full text with transliteration, historical origins, when and how to recite it, and denominational practices.",
+  keywords: ["kaddish", "mourner's prayer", "Jewish prayer", "kaddish text", "kaddish transliteration", "minyan", "Jewish mourning"],
+  openGraph: {
+    title: "Kaddish: Complete Guide to the Mourner's Prayer",
+    description: "Comprehensive guide to the Mourner's Kaddish including the full text with transliteration, historical origins, when and how to recite it, and denominational practices.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/kaddish-mourners-prayer",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/kaddish-mourners-prayer",
+  },
+};
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

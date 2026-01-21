@@ -1,6 +1,20 @@
-'use client';
-
+import { Metadata } from "next";
 import Script from 'next/script';
+
+export const metadata: Metadata = {
+  title: "What is a Chevra Kadisha? Understanding the Holy Society",
+  description: "The chevra kadisha, or 'holy society,' performs one of Judaism's most sacred acts: preparing the deceased for burial with dignity, respect, and adherence to ancient traditions.",
+  keywords: ["chevra kadisha", "holy society", "tahara", "Jewish burial", "ritual purification", "tachrichim"],
+  openGraph: {
+    title: "What is a Chevra Kadisha? Understanding the Holy Society",
+    description: "The chevra kadisha, or 'holy society,' performs one of Judaism's most sacred acts: preparing the deceased for burial with dignity and respect.",
+    type: "article",
+    url: "https://jewishobituary.com/resources/chevra-kadisha",
+  },
+  alternates: {
+    canonical: "https://jewishobituary.com/resources/chevra-kadisha",
+  },
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card } from '@/components/ui/card';
