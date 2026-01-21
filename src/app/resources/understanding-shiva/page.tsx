@@ -6,10 +6,11 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Heart, Clock, ArrowLeft, Share2, ExternalLink } from "lucide-react";
+import { BookOpen, Heart, Clock, ArrowLeft, Share2, ExternalLink, Calendar, Users, Flame } from "lucide-react";
 import { AuthorBox } from "@/components/AuthorBox";
 import { getAuthor } from "@/data/authors";
-import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from "@/lib/schema";
+import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, generateSpeakableSchema, schemaToString } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
 
 export const metadata: Metadata = {
   title: "Shiva: A Complete Guide to the Jewish Mourning Period",
@@ -41,6 +42,12 @@ const breadcrumbSchema = generateBreadcrumbSchema([
   { name: 'Resources', url: 'https://jewishobituary.com/resources' },
   { name: 'Understanding Shiva', url: 'https://jewishobituary.com/resources/understanding-shiva' },
 ]);
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/understanding-shiva',
+  name: 'Shiva: A Complete Guide to the Jewish Mourning Period',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 const faqSchema = generateFAQSchema([
   {
@@ -88,6 +95,11 @@ export default function ArticleShivaPage() {
         id="faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(speakableSchema) }}
       />
       <Navbar />
 
@@ -169,6 +181,40 @@ export default function ArticleShivaPage() {
                 or returning immediately to normal life, Jewish tradition acknowledges that mourning is holy work
                 that requires time, presence, and community.
               </p>
+
+              {/* Key Statistics */}
+              <div className="my-8">
+                <h3 className="text-xl font-semibold mb-4">Key Facts About Shiva</h3>
+                <StatisticGrid columns={3}>
+                  <StatisticHighlight
+                    value="7 days"
+                    label="Traditional mourning period based on Genesis 50:10 and Job 2:13"
+                    source="Torah"
+                    icon={Calendar}
+                  />
+                  <StatisticHighlight
+                    value="5 stages"
+                    label="Aninut, Shiva (with 3 intense days), Sheloshim, Year"
+                    source="Shulchan Aruch, Yoreh De'ah"
+                    icon={Users}
+                  />
+                  <StatisticHighlight
+                    value="3 daily"
+                    label="Prayer services for mourners to say Kaddish"
+                    source="Jewish law"
+                    icon={Flame}
+                  />
+                </StatisticGrid>
+              </div>
+
+              {/* Expert Quote */}
+              <ExpertQuote
+                quote="The Shiva period is designed to give the mourner the opportunity to withdraw from the concerns of daily life and to concentrate on the memory of the deceased."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+                variant="prominent"
+              />
             </section>
 
             {/* Biblical Origins */}
@@ -214,12 +260,20 @@ export default function ArticleShivaPage() {
               </p>
 
               <h3 className="text-2xl font-semibold mb-3 mt-8">Later Codification</h3>
-              <p className="text-foreground/90 leading-relaxed mb-8">
+              <p className="text-foreground/90 leading-relaxed mb-6">
                 Jewish mourning practices were first comprehensively codified by Maimonides (Rabbi Moses
                 ben Maimon, 1138-1204) in his <em>Mishneh Torah</em>, specifically in the Laws of Mourning.
                 The practices were further clarified in the <em>Shulchan Aruch</em> (Code of Jewish Law)
                 written by Rabbi Joseph Caro in the 16th century, particularly in the Yoreh De'ah section.
               </p>
+
+              {/* Talmudic Expert Quote */}
+              <ExpertQuote
+                quote="Originally, the expense of burying the dead was harder for the family than the death itself... until Rabban Gamliel established the practice of simplicity."
+                expertName="Talmud Moed Katan 27b"
+                credentials="Talmudic Source"
+                source="Talmud Bavli"
+              />
             </section>
 
             {/* Who Observes */}
@@ -359,18 +413,58 @@ export default function ArticleShivaPage() {
                 remove the distractions of ordinary life.
               </p>
 
-              <Card className="p-6 bg-primary/5 border-primary/20 my-8">
-                <p className="text-foreground/90 leading-relaxed italic mb-3">
-                  "Mourning is an in-depth experience of loneliness. The ties that bind one soul to
-                  another have been severed, and there is a gnawing sense of solitude. To remain
-                  incommunicado is to express grief over the disruption of communication with someone
-                  we love. At certain times every person has a right, even an obligation, to be alone.
-                  This is such a time."
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  — Rabbi Maurice Lamm, <em>The Jewish Way in Death and Mourning</em>
-                </p>
-              </Card>
+              {/* Halachic Expert Quote */}
+              <div className="my-8">
+                <ExpertQuote
+                  quote="A mourner is forbidden to work during all seven days of shiva."
+                  expertName="Shulchan Aruch"
+                  credentials="Code of Jewish Law"
+                  source="Yoreh De'ah 376:1"
+                />
+              </div>
+
+              <ExpertQuote
+                quote="Mourning is an in-depth experience of loneliness. The ties that bind one soul to another have been severed, and there is a gnawing sense of solitude. To remain incommunicado is to express grief over the disruption of communication with someone we love. At certain times every person has a right, even an obligation, to be alone. This is such a time."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+                variant="prominent"
+              />
+
+              {/* Key Hebrew Terms */}
+              <div className="my-8">
+                <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+                <DefinitionGrid>
+                  <DefinitionBox
+                    term="שִׁבְעָה"
+                    transliteration="Shiva"
+                    meaning="Seven"
+                    definition="The seven-day mourning period observed for immediate family members."
+                    pronunciation="shih-VAH"
+                  />
+                  <DefinitionBox
+                    term="אָבֵל"
+                    transliteration="Avel"
+                    meaning="Mourner"
+                    definition="One who is obligated to observe the laws of mourning for a close relative."
+                    pronunciation="ah-VELL"
+                  />
+                  <DefinitionBox
+                    term="נִחוּם אֲבֵלִים"
+                    transliteration="Nichum Aveilim"
+                    meaning="Comforting mourners"
+                    definition="The mitzvah of visiting and providing comfort to those in mourning."
+                    pronunciation="nee-KHOOM ah-vay-LEEM"
+                  />
+                  <DefinitionBox
+                    term="סְעוּדַת הַבְרָאָה"
+                    transliteration="Seudat Havra'ah"
+                    meaning="Meal of recovery"
+                    definition="The first meal after burial, prepared by others for the mourners."
+                    pronunciation="say-oo-DAHT hahv-rah-AH"
+                  />
+                </DefinitionGrid>
+              </div>
             </section>
 
             {/* Denominational Differences */}
@@ -649,13 +743,22 @@ export default function ArticleShivaPage() {
               </div>
             </section>
 
+            {/* Sources Section */}
+            <SourcesCitation
+              sources={[
+                { title: 'Moed Katan 14b-28b', type: 'talmud', section: 'Laws of Mourning' },
+                { title: 'Sanhedrin 108b', type: 'talmud', section: 'Mourning for Methuselah' },
+                { title: 'Sotah 14a', type: 'talmud', section: 'Divine Imitation' },
+                { title: 'Yoreh De\'ah 375-403', type: 'halacha', author: 'Shulchan Aruch' },
+                { title: 'Mishneh Torah, Hilchot Avel', type: 'halacha', author: 'Maimonides' },
+                { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers, 1969' },
+                { title: 'Shiva and Mourning Observances', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/281541/jewish/Shiva.htm' },
+              ]}
+            />
+
             {/* Article Footer */}
-            <div className="article-footer mt-12">
+            <div className="article-footer mt-8">
               <p>Last reviewed: January 2026</p>
-              <p className="mt-2">
-                Sources: Talmud Sanhedrin 108b, Sotah 14a, Moed Katan 20a; Mishneh Torah, Laws of Mourning;
-                Shulchan Aruch, Yoreh De'ah; Reform Judaism Movement; Chabad.org; My Jewish Learning.
-              </p>
             </div>
           </div>
 

@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from 'next/script';
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Calendar, Clock as ClockIcon, BookOpen } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/unveiling-ceremony',
+  name: 'Planning an Unveiling Ceremony: Honoring Memory with a Headstone Dedication',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Planning an Unveiling Ceremony: Honoring Memory with a Headstone Dedication",
@@ -57,6 +66,11 @@ export default function ArticleUnveilingCeremonyPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
@@ -93,11 +107,89 @@ export default function ArticleUnveilingCeremonyPage() {
         <div className="max-w-4xl mx-auto prose prose-lg max-w-none">
           <p className="text-foreground">The unveiling ceremony represents an important milestone in the Jewish mourning process, bringing family and friends together to dedicate the permanent marker that will memorialize their loved one for generations to come.</p>
 
+          {/* Key Statistics */}
+          <div className="my-8 not-prose">
+            <StatisticGrid columns={3}>
+              <StatisticHighlight
+                value="11-12 months"
+                label="Traditional timing after burial"
+                source="Jewish custom"
+                icon={Calendar}
+              />
+              <StatisticHighlight
+                value="15-30 minutes"
+                label="Typical ceremony length"
+                source="Traditional practice"
+                icon={ClockIcon}
+              />
+              <StatisticHighlight
+                value="Psalm 23"
+                label="Most commonly recited psalm"
+                source="Jewish liturgy"
+                icon={BookOpen}
+              />
+            </StatisticGrid>
+          </div>
+
+          {/* Expert Quotes */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="And Jacob set up a pillar upon her grave; this is the pillar of Rachel's grave to this day."
+              expertName="Genesis 35:20"
+              credentials="Torah Source"
+              source="Torah"
+              variant="prominent"
+            />
+          </div>
+
           <h2 className="text-foreground">When to Hold an Unveiling</h2>
           <p className="text-foreground">Jewish tradition typically holds unveiling ceremonies 11-12 months after death, though customs vary by community. This timing allows the family to complete the formal year of mourning while the stone is being prepared.</p>
 
+          {/* Expert Quote */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="The unveiling ceremony marks the formal end of the mourning period and the beginning of eternal remembrance."
+              expertName="Rabbi Maurice Lamm"
+              credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+              source="The Jewish Way in Death and Mourning"
+            />
+          </div>
+
           <h2 className="text-foreground">Planning the Ceremony</h2>
           <p className="text-foreground">Most unveilings are brief, intimate gatherings of 15-30 minutes, including prayers, readings, and personal reflections. Contact your rabbi or cantor to officiate and guide the ceremony.</p>
+
+          {/* Key Hebrew Terms */}
+          <div className="my-8 not-prose">
+            <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+            <DefinitionGrid>
+              <DefinitionBox
+                term="מַצֵּבָה"
+                transliteration="Matzeivah"
+                meaning="Headstone/monument"
+                definition="The marker placed at a grave to memorialize the deceased."
+                pronunciation="mah-tzay-VAH"
+              />
+              <DefinitionBox
+                term="הֲקָמַת מַצֵּבָה"
+                transliteration="Hakamat Matzeivah"
+                meaning="Setting up the headstone"
+                definition="The formal name for the unveiling ceremony."
+                pronunciation="hah-kah-MAHT mah-tzay-VAH"
+              />
+            </DefinitionGrid>
+          </div>
+
+          {/* Sources Section */}
+          <div className="not-prose">
+            <SourcesCitation
+              sources={[
+                { title: 'Genesis 35:20', type: 'talmud', section: 'Jacob\'s pillar for Rachel' },
+                { title: 'Yoreh De\'ah 364', type: 'halacha', author: 'Shulchan Aruch' },
+                { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+                { title: 'Unveiling Guide', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/281556/jewish/Unveiling.htm' },
+              ]}
+            />
+          </div>
         </div>
       </article>
 

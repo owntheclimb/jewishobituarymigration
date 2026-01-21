@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from 'next/script';
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { DollarSign as DollarIcon, TrendingDown, Percent } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/jewish-funeral-costs',
+  name: 'Jewish Funeral Costs: A Complete Guide to What You\'ll Pay',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Jewish Funeral Costs: A Complete Guide to What You'll Pay",
@@ -58,6 +67,11 @@ export default function ArticleJewishFuneralCostsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
@@ -93,6 +107,41 @@ export default function ArticleJewishFuneralCostsPage() {
       <article className="py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="prose prose-lg max-w-none">
+            {/* Key Statistics */}
+            <div className="my-8 not-prose">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="$8,000-$15,000"
+                  label="Typical Jewish funeral total cost"
+                  source="Industry average"
+                  icon={DollarIcon}
+                />
+                <StatisticHighlight
+                  value="$800-$2,500"
+                  label="Simple pine casket (tradition)"
+                  source="Jewish burial custom"
+                  icon={TrendingDown}
+                />
+                <StatisticHighlight
+                  value="30% lower"
+                  label="Jewish funerals vs. elaborate Western funerals (due to simplicity tradition)"
+                  source="Industry comparison"
+                  icon={Percent}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="Originally the expense of burying the dead was harder for the family than the death itself, so that sometimes they would abandon the corpse and flee. Until Rabban Gamliel came and treated himself lightly, being carried out in linen garments."
+                expertName="Talmud Moed Katan 27b"
+                credentials="Talmudic Source"
+                source="Talmud Bavli"
+                variant="prominent"
+              />
+            </div>
+
             <h2 className="text-foreground">Typical Jewish Funeral Expenses</h2>
 
             <Card className="p-6 my-6 bg-card">
@@ -143,6 +192,48 @@ export default function ArticleJewishFuneralCostsPage() {
               <li>Use synagogue connections for funeral home recommendations</li>
               <li>Apply for assistance from Jewish social services if needed</li>
             </ul>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="The tradition of equality in death—dressing all in simple white shrouds—ensures that the poor are not embarrassed and the rich do not display their wealth."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+              />
+            </div>
+
+            {/* Key Hebrew Terms */}
+            <div className="my-8 not-prose">
+              <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+              <DefinitionGrid>
+                <DefinitionBox
+                  term="אָרוֹן"
+                  transliteration="Aron"
+                  meaning="Casket"
+                  definition="Simple wooden casket used in traditional Jewish burial."
+                  pronunciation="ah-ROHN"
+                />
+                <DefinitionBox
+                  term="תַּכְרִיכִין"
+                  transliteration="Tachrichim"
+                  meaning="Shrouds"
+                  definition="Simple white burial garments with no pockets—symbolizing we take nothing with us."
+                  pronunciation="tahkh-ree-KHEEN"
+                />
+              </DefinitionGrid>
+            </div>
+
+            {/* Sources Section */}
+            <div className="not-prose">
+              <SourcesCitation
+                sources={[
+                  { title: 'Moed Katan 27b', type: 'talmud', section: 'Equality in burial' },
+                  { title: 'Yoreh De\'ah 352', type: 'halacha', author: 'Shulchan Aruch' },
+                  { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </article>

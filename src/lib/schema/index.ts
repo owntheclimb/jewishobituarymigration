@@ -262,6 +262,28 @@ export function generateProductSchema(data: ProductSchemaData) {
 }
 
 // ============================================
+// Speakable Schema - For AI/voice assistant optimization (GEO)
+// ============================================
+export interface SpeakableSchemaData {
+  url: string;
+  name: string;
+  cssSelectors: string[];
+}
+
+export function generateSpeakableSchema(data: SpeakableSchemaData) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': data.url,
+    name: data.name,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: data.cssSelectors,
+    },
+  };
+}
+
+// ============================================
 // Helper: Render schema as script tag content
 // ============================================
 export function schemaToString(schema: object): string {

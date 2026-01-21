@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from 'next/script';
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Droplets, Users as UsersIcon, Calendar } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/chevra-kadisha',
+  name: 'What is a Chevra Kadisha? Understanding the Holy Society',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "What is a Chevra Kadisha? Understanding the Holy Society",
@@ -91,6 +100,11 @@ export default function ArticleChevraKadishaPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -152,6 +166,41 @@ export default function ArticleChevraKadishaPage() {
             <p className="text-foreground leading-relaxed mb-6">
               This mitzvah is considered one of the highest acts of loving-kindness (<em>chesed shel emet</em>) because it's performed for someone who can never repay the kindness. Members serve with the understanding that they're honoring the deceased and fulfilling a sacred obligation to the community.
             </p>
+
+            {/* Key Statistics */}
+            <div className="my-8 not-prose">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="9 kavim"
+                  label="Minimum water (24+ quarts) for tahara purification"
+                  source="Shulchan Aruch"
+                  icon={Droplets}
+                />
+                <StatisticHighlight
+                  value="4-6 volunteers"
+                  label="Typical tahara team size"
+                  source="Traditional practice"
+                  icon={UsersIcon}
+                />
+                <StatisticHighlight
+                  value="7 Adar"
+                  label="Annual Chevra Kadisha observance day (Moses's yahrzeit)"
+                  source="Jewish tradition"
+                  icon={Calendar}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="Rabbi Chama bar Chanina said: What is the meaning of 'You shall walk after the Lord your God'? ... Just as He buries the dead, so you should bury the dead."
+                expertName="Talmud Sotah 14a"
+                credentials="Talmudic Source"
+                source="Talmud Bavli"
+                variant="prominent"
+              />
+            </div>
 
             <div className="my-8">
               <JewishWisdom
@@ -353,6 +402,66 @@ export default function ArticleChevraKadishaPage() {
               <p className="text-sm text-muted-foreground text-right">-- Rabbi Simkha Weintraub</p>
             </div>
 
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="There is no mystery to the Tahara. It is a simple, yet dignified ritual that allows the person to meet his Maker with the utmost respect and dignity."
+                expertName="Chabad.org"
+                credentials="Contemporary Orthodox Resource"
+                source="Tahara Guide"
+                sourceUrl="https://www.chabad.org/library/article_cdo/aid/510874/jewish/Taharah.htm"
+              />
+            </div>
+
+            {/* Key Hebrew Terms */}
+            <div className="my-8 not-prose">
+              <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+              <DefinitionGrid>
+                <DefinitionBox
+                  term="חֶבְרָא קַדִּישָׁא"
+                  transliteration="Chevra Kadisha"
+                  meaning="Holy Society"
+                  definition="A group of volunteers who prepare the deceased for burial according to Jewish law."
+                  pronunciation="KHEV-rah kah-DEE-shah"
+                />
+                <DefinitionBox
+                  term="שְׁמִירָה"
+                  transliteration="Shemirah"
+                  meaning="Guarding"
+                  definition="Watching over the body from death until burial, often reciting Psalms."
+                  pronunciation="sheh-mee-RAH"
+                />
+                <DefinitionBox
+                  term="שׁוֹמֵר / שׁוֹמֶרֶת"
+                  transliteration="Shomer/Shomeret"
+                  meaning="Guardian (m/f)"
+                  definition="One who watches over the deceased before burial."
+                  pronunciation="shoh-MEHR / shoh-MEH-ret"
+                />
+                <DefinitionBox
+                  term="רְחִיצָה"
+                  transliteration="Rechitzah"
+                  meaning="Washing"
+                  definition="The physical washing of the body before purification."
+                  pronunciation="reh-khee-TZAH"
+                />
+                <DefinitionBox
+                  term="הַלְבָּשָׁה"
+                  transliteration="Halbashah"
+                  meaning="Dressing"
+                  definition="Clothing the deceased in tachrichim (burial shrouds)."
+                  pronunciation="hahl-bah-SHAH"
+                />
+                <DefinitionBox
+                  term="טָהֳרָה"
+                  transliteration="Tahara"
+                  meaning="Purification"
+                  definition="The ritual purification of the body with water before burial."
+                  pronunciation="tah-hah-RAH"
+                />
+              </DefinitionGrid>
+            </div>
+
             <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 my-8">
               <h3 className="text-2xl font-bold mb-4 text-foreground">Interested in Joining?</h3>
               <p className="text-foreground mb-6">
@@ -368,6 +477,17 @@ export default function ArticleChevraKadishaPage() {
               </div>
             </Card>
           </div>
+
+          {/* Sources Section */}
+          <SourcesCitation
+            sources={[
+              { title: 'Sotah 14a', type: 'talmud', section: 'Walking in God\'s ways' },
+              { title: 'Bereishit Rabbah 96:5', type: 'talmud', section: 'Chesed shel emet' },
+              { title: 'Yoreh De\'ah 352', type: 'halacha', author: 'Shulchan Aruch' },
+              { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+              { title: 'Tahara Guide', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/510874/jewish/Taharah.htm' },
+            ]}
+          />
 
           {/* Related Articles */}
           <div className="mt-12 pt-8 border-t">

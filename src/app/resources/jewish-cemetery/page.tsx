@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from 'next/script';
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Users, Calendar, Ruler } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/jewish-cemetery',
+  name: 'Jewish Cemetery Customs and Etiquette',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Jewish Cemetery Customs and Etiquette",
@@ -55,6 +64,11 @@ export default function ArticleJewishCemeteryPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">
@@ -76,6 +90,41 @@ export default function ArticleJewishCemeteryPage() {
             <p className="text-xl text-muted-foreground leading-relaxed">
               Jewish cemeteries are sacred spaces known as Beit HaChaim (House of Life) or Beit Olam (House of Eternity). Understanding the customs and etiquette of these holy grounds helps visitors show proper respect while connecting with cherished memories.
             </p>
+
+            {/* Key Statistics */}
+            <div className="my-8 not-prose">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="4 amot"
+                  label="Distance (6-8 feet) kohanim must maintain from graves"
+                  source="Shulchan Aruch"
+                  icon={Ruler}
+                />
+                <StatisticHighlight
+                  value="30 days"
+                  label="Minimum wait before unveiling (some traditions)"
+                  source="Custom varies"
+                  icon={Calendar}
+                />
+                <StatisticHighlight
+                  value="1+ years"
+                  label="Common unveiling timing after burial"
+                  source="Traditional practice"
+                  icon={Users}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="Why do we visit cemeteries? So that the deceased may intercede for mercy on our behalf."
+                expertName="Talmud Ta'anit 16a"
+                credentials="Talmudic Source"
+                source="Talmud Bavli"
+                variant="prominent"
+              />
+            </div>
 
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -333,6 +382,51 @@ export default function ArticleJewishCemeteryPage() {
               </p>
             </section>
 
+            {/* Key Hebrew Terms */}
+            <div className="my-8 not-prose">
+              <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+              <DefinitionGrid>
+                <DefinitionBox
+                  term="בֵּית הַחַיִּים"
+                  transliteration="Beit HaChaim"
+                  meaning="House of Life"
+                  definition="A euphemism for cemetery, reflecting belief in the eternal soul."
+                  pronunciation="BAYT hah-khah-YEEM"
+                />
+                <DefinitionBox
+                  term="בֵּית עוֹלָם"
+                  transliteration="Beit Olam"
+                  meaning="House of Eternity"
+                  definition="Another name for cemetery, emphasizing eternal rest."
+                  pronunciation="BAYT oh-LAHM"
+                />
+                <DefinitionBox
+                  term="מַצֵּבָה"
+                  transliteration="Matzeivah"
+                  meaning="Headstone"
+                  definition="The monument placed at a grave to mark the burial site."
+                  pronunciation="mah-tzay-VAH"
+                />
+                <DefinitionBox
+                  term="כֹּהֵן"
+                  transliteration="Kohen"
+                  meaning="Priest"
+                  definition="Descendants of the priestly class with special cemetery restrictions."
+                  pronunciation="koh-HAYN"
+                />
+              </DefinitionGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="The Jewish cemetery is called Beit HaChaim—the House of Life—expressing belief in the eternal nature of the soul."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+              />
+            </div>
+
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Conclusion
@@ -344,6 +438,18 @@ export default function ArticleJewishCemeteryPage() {
                 The simple act of placing a stone on a headstone connects us to thousands of years of Jewish tradition and to all who came before us. In these sacred spaces, memory becomes tangible, heritage is preserved, and love transcends the boundary between life and death.
               </p>
             </section>
+
+            {/* Sources Section */}
+            <div className="not-prose">
+              <SourcesCitation
+                sources={[
+                  { title: 'Ta\'anit 16a', type: 'talmud', section: 'Visiting cemeteries' },
+                  { title: 'Yoreh De\'ah 364-376', type: 'halacha', author: 'Shulchan Aruch' },
+                  { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+                  { title: 'Jewish Cemetery Customs', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/510876/jewish/Cemetery.htm' },
+                ]}
+              />
+            </div>
           </div>
         </article>
       </main>

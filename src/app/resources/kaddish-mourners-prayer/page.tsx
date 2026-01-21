@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from "next/script";
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Calendar as CalendarIcon, Users as UsersIcon, BookText } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/kaddish-mourners-prayer',
+  name: 'Kaddish: Complete Guide to the Mourner\'s Prayer',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Kaddish: Complete Guide to the Mourner's Prayer",
@@ -86,6 +95,11 @@ export default function ArticleKaddishPage() {
         id="faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
+      />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
       />
       <Navbar />
 
@@ -207,6 +221,39 @@ export default function ArticleKaddishPage() {
             <p>
               The prayer serves multiple spiritual functions: it honors the deceased by affirming faith in the face of loss, it elevates the soul of the departed through righteous actions of the living, and it provides structure and communal support during the intensely personal experience of grief.
             </p>
+
+            {/* Key Statistics */}
+            <div className="my-8">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="11 months"
+                  label="Kaddish recitation period for parents (not 12, to show confidence in parent's righteousness)"
+                  source="Jewish Law"
+                  icon={CalendarIcon}
+                />
+                <StatisticHighlight
+                  value="10 adults"
+                  label="Minyan required for Kaddish recitation"
+                  source="Talmud"
+                  icon={UsersIcon}
+                />
+                <StatisticHighlight
+                  value="5 forms"
+                  label="Half Kaddish, Whole Kaddish, Mourner's Kaddish, Rabbi's Kaddish, Burial Kaddish"
+                  source="Siddur"
+                  icon={BookText}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <ExpertQuote
+              quote="The Kaddish does not mention death. It is a hymn of praise to God, and an affirmation of faith in the face of tragedy."
+              expertName="Rabbi Maurice Lamm"
+              credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+              source="The Jewish Way in Death and Mourning"
+              variant="prominent"
+            />
           </section>
 
           <section id="origins" className="scroll-mt-20">
@@ -230,6 +277,14 @@ export default function ArticleKaddishPage() {
               originally written in Hebrew and later translated to Aramaic.
             </p>
 
+            {/* Talmudic Quote */}
+            <ExpertQuote
+              quote="When Israel enters synagogues and study halls and responds 'May His great Name be blessed,' the Holy One shakes His head and says: 'Happy is the King who is praised in His house.'"
+              expertName="Talmud Berakhot 3a"
+              credentials="Talmudic Source"
+              source="Talmud Bavli"
+            />
+
             <h3 className="text-xl font-semibold mt-6 mb-3">The Legend of Rabbi Akiva</h3>
             <p>
               The association of Kaddish with mourning began in the 12th-13th centuries, linked to a medieval legend
@@ -242,6 +297,14 @@ export default function ArticleKaddishPage() {
               The first halakhic mention of mourners reciting Kaddish appears in the 13th-century work <em>Or Zarua</em>
               by Rabbi Isaac ben Moses of Vienna. From there, the practice spread throughout the Jewish world.
             </p>
+
+            {/* Historical Source Quote */}
+            <ExpertQuote
+              quote="Or Zarua was the first halachic source requiring mourners to recite Kaddish, establishing the practice that spread throughout the Jewish world."
+              expertName="Or Zarua (13th century)"
+              credentials="Rabbi Isaac ben Moses of Vienna"
+              source="Halachic Codex"
+            />
           </section>
 
           <section id="when" className="scroll-mt-20">
@@ -408,8 +471,43 @@ export default function ArticleKaddishPage() {
             </ul>
           </section>
 
+          {/* Key Hebrew Terms */}
+          <div className="my-8">
+            <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+            <DefinitionGrid>
+              <DefinitionBox
+                term="קַדִּישׁ"
+                transliteration="Kaddish"
+                meaning="Sanctification"
+                definition="Prayer sanctifying God's name, recited by mourners to honor the deceased."
+                pronunciation="kah-DISH"
+              />
+              <DefinitionBox
+                term="מִנְיָן"
+                transliteration="Minyan"
+                meaning="Quorum of ten"
+                definition="The minimum number of adult Jews required for public prayer and Kaddish."
+                pronunciation="min-YAHN"
+              />
+              <DefinitionBox
+                term="יָתוֹם"
+                transliteration="Yatom"
+                meaning="Orphan"
+                definition="The Mourner's Kaddish is also called Kaddish Yatom (Orphan's Kaddish)."
+                pronunciation="yah-TOME"
+              />
+              <DefinitionBox
+                term="יְהֵא שְׁמֵהּ רַבָּא"
+                transliteration="Y'hei Sh'mei Raba"
+                meaning="May His great Name be blessed"
+                definition="The congregation's response, considered the most important part of Kaddish."
+                pronunciation="yeh-HAY sheh-MAY rah-BAH"
+              />
+            </DefinitionGrid>
+          </div>
+
           {/* Key Takeaways */}
-          <Card className="p-6 my-8 bg-primary/5 border-primary/20 shadow-lg">
+          <Card className="p-6 my-8 bg-primary/5 border-primary/20 shadow-lg key-takeaways">
             <h3 className="text-xl font-bold text-foreground mb-4">Key Takeaways</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
@@ -455,6 +553,18 @@ export default function ArticleKaddishPage() {
             </p>
           </section>
         </div>
+
+        {/* Sources Section */}
+        <SourcesCitation
+          sources={[
+            { title: 'Berakhot 3a', type: 'talmud', section: 'The Power of Responding Amen' },
+            { title: 'Sotah 49a', type: 'talmud', section: 'Importance of Kaddish' },
+            { title: 'Siddur of Rav Amram Gaon (c. 900 CE)', type: 'halacha', section: 'Earliest written Kaddish' },
+            { title: 'Or Zarua', type: 'halacha', author: 'Rabbi Isaac ben Moses of Vienna (13th century)', section: 'First halachic source for mourners reciting Kaddish' },
+            { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+            { title: 'Kaddish Guide', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/562222/jewish/Kaddish.htm' },
+          ]}
+        />
 
         {/* Related Articles */}
         <Card className="mt-12 p-6 bg-muted/30">

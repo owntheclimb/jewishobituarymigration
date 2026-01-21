@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from "next/script";
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Clock as ClockIcon, Scale, Droplets } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/jewish-funeral-traditions',
+  name: 'Jewish Funeral Traditions: Complete Guide to Customs and Practices',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Jewish Funeral Traditions: Complete Guide to Customs and Practices",
@@ -90,6 +99,11 @@ export default function ArticleJewishFuneralPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(faqSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       <article className="max-w-4xl mx-auto px-4 py-12">
@@ -158,9 +172,46 @@ export default function ArticleJewishFuneralPage() {
           <p>
             Jewish funeral traditions are guided by two foundational principles that have shaped mourning practices for over three millennia: <em>kavod ha-met</em> (כבוד המת, honoring the deceased) and <em>nichum aveilim</em> (נחום אבלים, comforting the mourners). These practices provide what Rabbi Maurice Lamm, author of the seminal work <em>The Jewish Way in Death and Mourning</em>, calls "a framework for dealing with death and grief that emphasizes dignity, simplicity, and community support."
           </p>
+
+          {/* Key Statistics */}
+          <div className="my-8 not-prose">
+            <StatisticGrid columns={3}>
+              <StatisticHighlight
+                value="24 hours"
+                label="Traditional burial timeframe (Deuteronomy 21:23)"
+                source="Torah"
+                icon={ClockIcon}
+              />
+              <StatisticHighlight
+                value="613 mitzvot"
+                label="Burial counted among Torah commandments"
+                source="Talmud"
+                icon={Scale}
+              />
+              <StatisticHighlight
+                value="9 kavim"
+                label="Water (24+ quarts) for tahara purification"
+                source="Shulchan Aruch"
+                icon={Droplets}
+              />
+            </StatisticGrid>
+          </div>
+
           <p>
             The Talmudic sages considered care for the dead to be the purest form of <em>gemilut chasadim</em> (acts of loving-kindness). Why purest? Because unlike other acts of kindness, the deceased cannot repay or even acknowledge what is done for them. This concept is called <em>chesed shel emet</em>—"true kindness" (Bereishit Rabbah 96:5).
           </p>
+
+          {/* Expert Quote */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="Just as the Holy One, blessed be He, buries the dead—as it is written, 'And He buried him in the valley'—so too should you bury the dead."
+              expertName="Talmud Sotah 14a"
+              credentials="Talmudic Source"
+              source="Talmud Bavli"
+              variant="prominent"
+            />
+          </div>
+
           <p>
             As Lord Immanuel Jakobovits, former Chief Rabbi of the British Empire, observed: "That a book on death should today be a Jewish best-seller of all times testifies to the pre-eminence of rites connected with death among the most widely kept Jewish observances."
           </p>
@@ -481,6 +532,55 @@ export default function ArticleJewishFuneralPage() {
             </li>
           </ul>
 
+          {/* Key Hebrew Terms */}
+          <div className="my-8 not-prose">
+            <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+            <DefinitionGrid>
+              <DefinitionBox
+                term="כָּבוֹד הַמֵּת"
+                transliteration="Kavod HaMet"
+                meaning="Honor of the deceased"
+                definition="The foundational principle that the deceased must be treated with dignity and respect."
+                pronunciation="kah-VOHD hah-MET"
+              />
+              <DefinitionBox
+                term="חֶסֶד שֶׁל אֱמֶת"
+                transliteration="Chesed Shel Emet"
+                meaning="True kindness"
+                definition="Kindness shown to the deceased, who cannot repay the favor."
+                pronunciation="KHEH-sed shel eh-MET"
+              />
+              <DefinitionBox
+                term="טָהֳרָה"
+                transliteration="Tahara"
+                meaning="Purification"
+                definition="The ritual washing and purification of the body before burial."
+                pronunciation="tah-hah-RAH"
+              />
+              <DefinitionBox
+                term="תַּכְרִיכִין"
+                transliteration="Tachrichim"
+                meaning="Burial shrouds"
+                definition="Simple white garments without pockets, symbolizing equality in death."
+                pronunciation="tahkh-ree-KHEEN"
+              />
+              <DefinitionBox
+                term="קְרִיעָה"
+                transliteration="Kriah"
+                meaning="Tearing"
+                definition="The ritual tearing of a garment by mourners to symbolize grief."
+                pronunciation="kree-AH"
+              />
+              <DefinitionBox
+                term="לְוָיָה"
+                transliteration="Levayah"
+                meaning="Accompaniment"
+                definition="The funeral procession, accompanying the deceased to burial."
+                pronunciation="leh-vah-YAH"
+              />
+            </DefinitionGrid>
+          </div>
+
           <h2>Conclusion</h2>
           <p>
             Jewish funeral traditions provide a time-tested framework for honoring the deceased and supporting the bereaved. From the moment of death through the burial, every practice serves to affirm the dignity of the human being created in God's image, the equality of all people in death, and the importance of community in times of grief.
@@ -488,7 +588,30 @@ export default function ArticleJewishFuneralPage() {
           <p>
             These practices have sustained Jewish communities through millennia of joy and sorrow. Whether you're planning a funeral, preparing to attend one, or simply seeking to understand these ancient customs, the principles of kavod ha-met and chesed shel emet offer profound wisdom about how to face death with dignity and compassion.
           </p>
+
+          {/* Expert Quote */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="Caring for the dead is called chesed shel emet—true kindness—because the deceased can never repay the favor."
+              expertName="Rabbi Maurice Lamm"
+              credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+              source="The Jewish Way in Death and Mourning"
+            />
+          </div>
         </div>
+
+        {/* Sources Section */}
+        <SourcesCitation
+          sources={[
+            { title: 'Deuteronomy 21:23', type: 'talmud', section: 'Mandate for prompt burial' },
+            { title: 'Moed Katan 27b', type: 'talmud', section: 'Equality in burial' },
+            { title: 'Sanhedrin 46b', type: 'talmud', section: 'Mitzvah of burial' },
+            { title: 'Sotah 14a', type: 'talmud', section: 'Divine example of burial' },
+            { title: 'Yoreh De\'ah 335-403', type: 'halacha', author: 'Shulchan Aruch' },
+            { title: 'Mishneh Torah, Hilchot Avel', type: 'halacha', author: 'Maimonides' },
+            { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers, 1969' },
+          ]}
+        />
 
         <Card className="mt-12 p-6 bg-muted/30">
           <h3 className="text-xl font-bold mb-4">Related Articles</h3>

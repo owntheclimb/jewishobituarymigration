@@ -1,5 +1,14 @@
 import { Metadata } from "next";
 import Script from 'next/script';
+import { generateSpeakableSchema, schemaToString as schemaToStr } from "@/lib/schema";
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from "@/components/geo";
+import { Users, Database, Flame } from "lucide-react";
+
+const speakableSchema = generateSpeakableSchema({
+  url: 'https://jewishobituary.com/resources/holocaust-survivor-obituary',
+  name: 'Writing Obituaries for Holocaust Survivors: Honoring Their Testimony',
+  cssSelectors: ['.article-title', '.article-summary', '.key-takeaways', '.faq-question', '.faq-answer'],
+});
 
 export const metadata: Metadata = {
   title: "Writing Obituaries for Holocaust Survivors: Honoring Their Testimony",
@@ -58,6 +67,11 @@ export default function ArticleHolocaustSurvivorObituaryPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
       />
+      <Script
+        id="speakable-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToStr(speakableSchema) }}
+      />
       <Navbar />
 
       <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12 px-4">
@@ -94,6 +108,42 @@ export default function ArticleHolocaustSurvivorObituaryPage() {
         <div className="max-w-4xl mx-auto prose prose-lg max-w-none">
           <h2 className="text-foreground">Why Holocaust Survivor Obituaries Matter Differently</h2>
           <p className="text-foreground">Holocaust survivors carry extraordinary histories. Their obituaries serve not only as personal tributes but also as historical documents, bearing witness to one of humanity's darkest chapters while celebrating the triumph of survival and resilience.</p>
+
+          {/* Key Statistics */}
+          <div className="my-8 not-prose">
+            <StatisticGrid columns={3}>
+              <StatisticHighlight
+                value="~245,000"
+                label="Estimated Holocaust survivors alive globally (2024)"
+                source="Claims Conference"
+                sourceYear="2024"
+                icon={Users}
+              />
+              <StatisticHighlight
+                value="6 million"
+                label="Jews murdered during the Holocaust"
+                source="Historical record"
+                icon={Flame}
+              />
+              <StatisticHighlight
+                value="4.8 million"
+                label="Names documented in Yad Vashem's database"
+                source="Yad Vashem"
+                icon={Database}
+              />
+            </StatisticGrid>
+          </div>
+
+          {/* Expert Quotes */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="Remember what Amalek did to you... you shall not forget."
+              expertName="Deuteronomy 25:19"
+              credentials="Torah Source"
+              source="Torah"
+              variant="prominent"
+            />
+          </div>
 
           <Card className="p-6 my-8 bg-primary/5">
             <div className="flex items-start gap-3">
@@ -210,6 +260,64 @@ export default function ArticleHolocaustSurvivorObituaryPage() {
             <li>Memorial funds in their name</li>
             <li>Organizations continuing their educational work</li>
           </ul>
+
+          {/* Expert Quote */}
+          <div className="my-8 not-prose">
+            <ExpertQuote
+              quote="For the dead and the living, we must bear witness."
+              expertName="Elie Wiesel"
+              credentials="Nobel Peace Prize Laureate, Holocaust Survivor"
+              source="Night and other works"
+              variant="prominent"
+            />
+          </div>
+
+          {/* Key Hebrew Terms */}
+          <div className="my-8 not-prose">
+            <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+            <DefinitionGrid>
+              <DefinitionBox
+                term="זָכוֹר"
+                transliteration="Zachor"
+                meaning="Remember"
+                definition="The biblical commandment to remember, central to Holocaust remembrance."
+                pronunciation="zah-KHOR"
+              />
+              <DefinitionBox
+                term="שׁוֹאָה"
+                transliteration="Shoah"
+                meaning="Holocaust/Catastrophe"
+                definition="The Hebrew term for the Holocaust, meaning catastrophe or destruction."
+                pronunciation="shoh-AH"
+              />
+              <DefinitionBox
+                term="עֵד"
+                transliteration="Eid"
+                meaning="Witness"
+                definition="One who testifies; survivors are often called 'witnesses' to history."
+                pronunciation="AYD"
+              />
+              <DefinitionBox
+                term="לְדוֹר וָדוֹר"
+                transliteration="L'dor V'dor"
+                meaning="From generation to generation"
+                definition="The passing of memory and tradition from one generation to the next."
+                pronunciation="leh-DOHR vah-DOHR"
+              />
+            </DefinitionGrid>
+          </div>
+
+          {/* Sources Section */}
+          <div className="not-prose">
+            <SourcesCitation
+              sources={[
+                { title: 'Deuteronomy 25:17-19', type: 'talmud', section: 'Commandment to remember' },
+                { title: 'Yad Vashem', type: 'website', author: 'World Holocaust Remembrance Center', url: 'https://www.yadvashem.org' },
+                { title: 'USC Shoah Foundation', type: 'website', author: 'Visual History Archive', url: 'https://sfi.usc.edu' },
+                { title: 'Night', type: 'book', author: 'Elie Wiesel', section: 'Hill and Wang, 1960' },
+              ]}
+            />
+          </div>
 
           <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 my-8">
             <h3 className="text-2xl font-bold mb-4 text-foreground">Need Help?</h3>
