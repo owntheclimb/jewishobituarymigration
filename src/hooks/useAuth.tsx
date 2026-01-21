@@ -53,17 +53,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   React.useEffect(() => {
+    let isMounted = true;
+    let hasCompletedInitialLoad = false;
+
     // Set a timeout to prevent infinite loading if auth hangs
+    // Increased to 30 seconds to give more time for Supabase connection
     const loadingTimeout = setTimeout(() => {
-      if (loading) {
+      if (isMounted && loading && !hasCompletedInitialLoad) {
         console.warn('Auth loading timeout - forcing completion');
         setLoading(false);
       }
-    }, 10000); // 10 second timeout
+    }, 30000); // 30 second timeout
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return;
+
         setSession(session);
         setUser(session?.user ?? null);
 
@@ -73,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const existingProfile = await fetchProfile(session.user.id);
 
             // Create profile if it doesn't exist
-            if (!existingProfile) {
+            if (!existingProfile && isMounted) {
               const { data: newProfile } = await supabase
                 .from('profiles')
                 .insert({
@@ -85,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .select()
                 .single();
 
-              if (newProfile) {
+              if (newProfile && isMounted) {
                 setProfile(newProfile as Profile);
               }
             }
@@ -96,13 +102,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setProfile(null);
         }
 
-        setLoading(false);
+        if (isMounted) {
+          hasCompletedInitialLoad = true;
+          setLoading(false);
+        }
       }
     );
 
     // Check for existing session
     supabase.auth.getSession()
       .then(async ({ data: { session } }) => {
+        if (!isMounted) return;
+
         setSession(session);
         setUser(session?.user ?? null);
 
@@ -114,14 +125,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        setLoading(false);
+        if (isMounted) {
+          hasCompletedInitialLoad = true;
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error('Error getting session:', error);
-        setLoading(false);
+        if (isMounted) {
+          hasCompletedInitialLoad = true;
+          setLoading(false);
+        }
       });
 
     return () => {
+      isMounted = false;
       clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };

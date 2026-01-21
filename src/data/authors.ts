@@ -25,7 +25,7 @@ export const authors: Record<string, Author> = {
     title: 'Content Team',
     credentials: ['Jewish tradition researchers', 'Memorial services experts'],
     bio: 'The Jewish Obituary editorial team creates comprehensive guides on Jewish mourning traditions, obituary writing, and memorial practices. Our content is informed by rabbinical sources and reviewed for accuracy.',
-    image: '/images/authors/editorial-team.jpg',
+    image: '', // Fallback avatar will be shown
     expertise: ['mourning traditions', 'obituary writing', 'memorial practices', 'shiva customs'],
   },
   'tradition-expert': {
@@ -34,7 +34,7 @@ export const authors: Record<string, Author> = {
     title: 'Religious Traditions Consultant',
     credentials: ['Judaic studies background', 'Community education experience'],
     bio: 'Our traditions expert provides guidance on Jewish mourning customs, drawing from traditional sources and contemporary practice. Content reflects the diversity of Jewish observance across denominations.',
-    image: '/images/authors/tradition-expert.jpg',
+    image: '', // Fallback avatar will be shown
     expertise: ['jewish law', 'mourning customs', 'funeral traditions', 'kaddish', 'shiva'],
   },
   'grief-support': {
@@ -43,7 +43,7 @@ export const authors: Record<string, Author> = {
     title: 'Bereavement Counseling',
     credentials: ['Mental health background', 'Grief support training'],
     bio: 'Our grief support specialist creates resources to help families navigate loss with compassion and understanding, combining practical guidance with emotional support.',
-    image: '/images/authors/grief-support.jpg',
+    image: '', // Fallback avatar will be shown
     expertise: ['grief counseling', 'bereavement support', 'mourning psychology', 'family support'],
   },
 };

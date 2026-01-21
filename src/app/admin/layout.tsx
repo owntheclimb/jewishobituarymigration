@@ -62,20 +62,29 @@ export default function AdminLayout({
       return;
     }
 
+    // If logged in but profile not yet loaded, wait
+    // (profile will be fetched by useAuth after user is set)
+    if (!profile) {
+      // Profile is still loading, don't redirect yet
+      return;
+    }
+
     // If logged in but not admin, redirect to home
     if (!isAdmin) {
       router.replace('/');
       return;
     }
-  }, [user, isAdmin, loading, router, isLoginPage]);
+  }, [user, isAdmin, loading, router, isLoginPage, profile]);
 
-  // Show loading state while checking auth
-  if (!isLoginPage && loading) {
+  // Show loading state while checking auth or loading profile
+  if (!isLoginPage && (loading || (user && !profile))) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">
+            {loading ? 'Loading...' : 'Loading profile...'}
+          </p>
         </div>
       </div>
     );
@@ -87,7 +96,7 @@ export default function AdminLayout({
   }
 
   // Don't render if not authenticated as admin
-  if (!user || !isAdmin) {
+  if (!user || !profile || !isAdmin) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center">
