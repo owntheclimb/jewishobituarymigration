@@ -7,6 +7,13 @@ import { toast } from 'sonner';
 
 interface VirtualCandleProps {
   obituaryId: string;
+  entityType?: 'obituary' | 'notable_figure';
+}
+
+// Check if a string is a valid UUID
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
 }
 
 interface CandleData {
@@ -25,10 +32,13 @@ function getSessionId(): string {
   return sessionId;
 }
 
-const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
+const VirtualCandle = ({ obituaryId, entityType = 'obituary' }: VirtualCandleProps) => {
   const [candleData, setCandleData] = useState<CandleData>({ count: 0, lit: false });
   const [loading, setLoading] = useState(false);
   const [animating, setAnimating] = useState(false);
+
+  // Check if we can use database (requires valid UUID for entity_id)
+  const canUseDatabase = isValidUUID(obituaryId);
 
   useEffect(() => {
     fetchCandleData();
@@ -36,39 +46,50 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
 
   const fetchCandleData = async () => {
     try {
-      // Fetch total candle count from database
-      const { data: candles, error: countError } = await supabase
-        .from('virtual_candles' as any)
-        .select('id')
-        .eq('obituary_id', obituaryId);
-
-      if (countError) {
-        console.error('Error fetching candle count:', countError);
-      }
-
-      const count = (candles as any[] | null)?.length || 0;
-
-      // Check if current session already lit a candle
-      const sessionId = getSessionId();
-      let lit = false;
-
-      if (sessionId) {
-        const { data: existingCandle } = await supabase
+      // Only query database if obituaryId is a valid UUID
+      if (canUseDatabase) {
+        // Fetch total candle count from database using correct column names
+        const { data: candles, error: countError } = await supabase
           .from('virtual_candles' as any)
           .select('id')
-          .eq('obituary_id', obituaryId)
-          .eq('session_id', sessionId)
-          .single();
+          .eq('entity_type', entityType)
+          .eq('entity_id', obituaryId);
 
-        lit = !!existingCandle;
+        if (countError) {
+          console.error('Error fetching candle count:', countError);
+        }
+
+        const count = (candles as any[] | null)?.length || 0;
+
+        // Check if current session already lit a candle
+        const sessionId = getSessionId();
+        let lit = false;
+
+        if (sessionId) {
+          const { data: existingCandle } = await supabase
+            .from('virtual_candles' as any)
+            .select('id')
+            .eq('entity_type', entityType)
+            .eq('entity_id', obituaryId)
+            .eq('session_id', sessionId)
+            .single();
+
+          lit = !!existingCandle;
+        }
+
+        // Also check localStorage as fallback
+        if (!lit) {
+          lit = localStorage.getItem(`candle_lit_${obituaryId}`) === 'true';
+        }
+
+        setCandleData({ count, lit });
+      } else {
+        // For non-UUID IDs (like string slugs), use localStorage only
+        const stored = localStorage.getItem(`candles_${obituaryId}`);
+        const count = stored ? JSON.parse(stored).count || 0 : 0;
+        const lit = localStorage.getItem(`candle_lit_${obituaryId}`) === 'true';
+        setCandleData({ count, lit });
       }
-
-      // Also check localStorage as fallback
-      if (!lit) {
-        lit = localStorage.getItem(`candle_lit_${obituaryId}`) === 'true';
-      }
-
-      setCandleData({ count, lit });
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
         console.error('Error fetching candle data:', error);
@@ -96,22 +117,26 @@ const VirtualCandle = ({ obituaryId }: VirtualCandleProps) => {
     try {
       const sessionId = getSessionId();
 
-      // Insert candle into database
-      const { error } = await supabase
-        .from('virtual_candles' as any)
-        .insert({
-          obituary_id: obituaryId,
-          session_id: sessionId,
-        });
+      // Only try to insert into database if obituaryId is a valid UUID
+      if (canUseDatabase) {
+        // Insert candle into database using correct column names
+        const { error } = await supabase
+          .from('virtual_candles' as any)
+          .insert({
+            entity_type: entityType,
+            entity_id: obituaryId,
+            session_id: sessionId,
+          });
 
-      if (error) {
-        // If duplicate, ignore and just mark as lit
-        if (!error.message.includes('duplicate')) {
-          throw error;
+        if (error) {
+          // If duplicate, ignore and just mark as lit
+          if (!error.message.includes('duplicate')) {
+            throw error;
+          }
         }
       }
 
-      // Update localStorage as backup
+      // Update localStorage as backup (always do this)
       const newCount = candleData.count + 1;
       localStorage.setItem(`candles_${obituaryId}`, JSON.stringify({ count: newCount }));
       localStorage.setItem(`candle_lit_${obituaryId}`, 'true');
