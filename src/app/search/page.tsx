@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
-import { Search, Calendar, MapPin, Heart, ExternalLink, Flame, Star, Home, ChevronRight, Share2, Copy, Check } from 'lucide-react';
+import { Search, Calendar, MapPin, Heart, ExternalLink, Flame, Star, Home, ChevronRight, Share2, Copy, Check, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -20,6 +20,11 @@ import ObituaryCard from '@/components/search/ObituaryCard';
 import ObituaryCardSkeleton from '@/components/search/ObituaryCardSkeleton';
 import SearchStats from '@/components/search/SearchStats';
 import { transformObituary, UnifiedObituary, markAsNotable } from '@/lib/obituaryTransformer';
+import { withTimeout } from '@/lib/utils/timeout';
+
+// Timeout constants
+const DB_TIMEOUT_MS = 10000; // 10 seconds for database queries
+const EXTERNAL_TIMEOUT_MS = 15000; // 15 seconds for external sources
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -88,6 +93,10 @@ const SearchPageContent = () => {
     hasMilitaryService: false,
   });
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // AbortController ref for cleanup
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Combined external obituaries (Jewish RSS + Scraped)
   const [externalObits, setExternalObits] = useState<(JewishObit | ScrapedObituary)[]>([]);
@@ -98,6 +107,7 @@ const SearchPageContent = () => {
   const [externalSourceFilter, setExternalSourceFilter] = useState('All');
   const [externalSortBy, setExternalSortBy] = useState('Most recent');
   const [externalLoading, setExternalLoading] = useState(true);
+  const [externalError, setExternalError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -196,8 +206,34 @@ const SearchPageContent = () => {
   }, [externalObits]);
 
   useEffect(() => {
-    fetchObituaries();
-    fetchExternalObituaries();
+    // Create new AbortController for this effect
+    abortControllerRef.current = new AbortController();
+
+    // Load both data sources with timeout protection
+    const loadAllData = async () => {
+      try {
+        // Run both fetches in parallel with individual timeout protection
+        await Promise.all([
+          fetchObituaries(),
+          fetchExternalObituaries(),
+        ]);
+      } catch (error) {
+        // If aborted, don't update state
+        if (error instanceof Error && error.name === 'AbortError') {
+          return;
+        }
+        console.error('Error loading obituaries:', error);
+      }
+    };
+
+    loadAllData();
+
+    // Cleanup: abort any in-progress requests
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -332,63 +368,123 @@ const SearchPageContent = () => {
     applyFilters();
   }, [filters, obituaries, externalObits]);
 
-  const fetchObituaries = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('obituaries')
-        .select('*')
-        .eq('published', true)
-        .eq('visibility', 'public')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching obituaries:', error);
-      } else {
-        setObituaries(data || []);
-        setFilteredObituaries(data || []);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
+  const fetchObituaries = useCallback(async () => {
+    // Check if request was aborted
+    if (abortControllerRef.current?.signal.aborted) {
+      return;
     }
-  };
 
-  const fetchExternalObituaries = async () => {
     try {
-      // Fetch both Jewish RSS and scraped obituaries in parallel
-      const [jewishResult, scrapedResult] = await Promise.all([
-        supabase
-          .from('obits')
-          .select('*')
-          .order('published_at', { ascending: false, nullsFirst: false }),
-        supabase
-          .from('scraped_obituaries')
-          .select('*')
-          .order('published_at', { ascending: false, nullsFirst: false })
-      ]);
+      setLoadError(null);
 
-      if (jewishResult.error) {
-        console.error('Error fetching Jewish obituaries:', jewishResult.error);
-      }
-      if (scrapedResult.error) {
-        console.error('Error fetching scraped obituaries:', scrapedResult.error);
+      // Wrap the Supabase query with timeout protection
+      const fetchWithTimeout = async () => {
+        const { data, error } = await supabase
+          .from('obituaries')
+          .select('*')
+          .eq('published', true)
+          .eq('visibility', 'public')
+          .order('created_at', { ascending: false })
+          .limit(500); // Add limit to prevent loading too many records
+
+        if (error) throw error;
+        return data || [];
+      };
+
+      const data = await withTimeout(
+        fetchWithTimeout(),
+        DB_TIMEOUT_MS,
+        [] // Return empty array on timeout
+      );
+
+      // Check again if aborted before updating state
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
       }
 
-      // Combine both sources
-      const combined = [
-        ...(jewishResult.data || []),
-        ...(scrapedResult.data || [])
-      ];
+      setObituaries(data);
+      setFilteredObituaries(data);
+    } catch (error) {
+      // Don't update state if aborted
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+
+      console.error('Error fetching obituaries:', error);
+      setLoadError('Failed to load obituaries. Please try refreshing the page.');
+    } finally {
+      if (!abortControllerRef.current?.signal.aborted) {
+        setLoading(false);
+      }
+    }
+  }, []);
+
+  const fetchExternalObituaries = useCallback(async () => {
+    // Check if request was aborted
+    if (abortControllerRef.current?.signal.aborted) {
+      return;
+    }
+
+    try {
+      setExternalError(null);
+
+      // Wrap the external fetches with timeout protection
+      const fetchWithTimeout = async () => {
+        // Fetch both Jewish RSS and scraped obituaries in parallel
+        const [jewishResult, scrapedResult] = await Promise.all([
+          supabase
+            .from('obits')
+            .select('*')
+            .order('published_at', { ascending: false, nullsFirst: false })
+            .limit(1000), // Add limit to prevent loading too many records
+          supabase
+            .from('scraped_obituaries')
+            .select('*')
+            .order('published_at', { ascending: false, nullsFirst: false })
+            .limit(1000) // Add limit to prevent loading too many records
+        ]);
+
+        if (jewishResult.error) {
+          console.error('Error fetching Jewish obituaries:', jewishResult.error);
+        }
+        if (scrapedResult.error) {
+          console.error('Error fetching scraped obituaries:', scrapedResult.error);
+        }
+
+        // Combine both sources
+        return [
+          ...(jewishResult.data || []),
+          ...(scrapedResult.data || [])
+        ];
+      };
+
+      const combined = await withTimeout(
+        fetchWithTimeout(),
+        EXTERNAL_TIMEOUT_MS,
+        [] // Return empty array on timeout
+      );
+
+      // Check again if aborted before updating state
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
 
       setExternalObits(combined);
       setFilteredExternalObits(combined);
     } catch (error) {
+      // Don't update state if aborted
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+
       console.error('Error fetching external obituaries:', error);
+      setExternalError('Failed to load external obituaries. Please try syncing.');
     } finally {
-      setExternalLoading(false);
+      if (!abortControllerRef.current?.signal.aborted) {
+        setExternalLoading(false);
+      }
     }
-  };
+  }, []);
 
   const syncAllExternal = async () => {
     setSyncing(true);
@@ -708,8 +804,36 @@ const SearchPageContent = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <Navbar />
-        <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[50vh]">
-          <div className="animate-pulse text-muted-foreground">Loading obituaries...</div>
+        <div className="container mx-auto px-4 py-12">
+          <div className="text-center mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Find Obituaries</h1>
+            <p className="text-muted-foreground text-lg">
+              Loading obituaries...
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <ObituaryCardSkeleton key={i} index={i} />
+            ))}
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show error state if there was a loading error
+  if (loadError && obituaries.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <Navbar />
+        <div className="container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[50vh]">
+          <AlertCircle className="h-16 w-16 text-destructive mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Unable to Load Obituaries</h2>
+          <p className="text-muted-foreground mb-6 text-center max-w-md">{loadError}</p>
+          <Button onClick={() => window.location.reload()} variant="outline">
+            Try Again
+          </Button>
         </div>
         <Footer />
       </div>

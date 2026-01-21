@@ -19,7 +19,8 @@ interface HistoricalFigure {
   imageUrl: string;
 }
 
-// Sample historical figures - in production, this would come from a database
+// Historical figures with real, properly-licensed photos
+// All images are stored locally in /public/notable-figures/
 const historicalFigures: HistoricalFigure[] = [
   {
     id: 'elie-wiesel',
@@ -29,7 +30,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2016,
     category: 'Holocaust Survivor & Nobel Laureate',
     description: 'Author of "Night" and tireless advocate for human rights and remembrance.',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'
+    imageUrl: '/notable-figures/elie-wiesel.jpg'
   },
   {
     id: 'rbg',
@@ -39,37 +40,47 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2020,
     category: 'Supreme Court Justice',
     description: 'Champion of gender equality and women\'s rights, cultural icon.',
-    imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=400&fit=crop'
+    imageUrl: '/notable-figures/ruth-bader-ginsburg.jpg'
   },
   {
-    id: 'leonard-cohen',
-    name: 'Leonard Cohen',
-    hebrewName: 'אליעזר בן ניסן הכהן',
-    date: 'November 7',
+    id: 'leonard-nimoy',
+    name: 'Leonard Nimoy',
+    hebrewName: 'לאונרד נימוי',
+    date: 'February 27',
+    year: 2015,
+    category: 'Actor & Cultural Icon',
+    description: 'Beloved as Mr. Spock on Star Trek, accomplished director and photographer.',
+    imageUrl: '/notable-figures/leonard-nimoy.jpg'
+  },
+  {
+    id: 'carl-reiner',
+    name: 'Carl Reiner',
+    hebrewName: 'קארל ריינר',
+    date: 'June 29',
+    year: 2020,
+    category: 'Comedy Legend & Director',
+    description: 'Emmy-winning comedy legend, creator of The Dick Van Dyke Show.',
+    imageUrl: '/notable-figures/carl-reiner.jpg'
+  },
+  {
+    id: 'gene-wilder',
+    name: 'Gene Wilder',
+    hebrewName: 'ג\'רום סילברמן',
+    date: 'August 29',
     year: 2016,
-    category: 'Poet & Singer-Songwriter',
-    description: 'Legendary artist whose profound lyrics touched millions worldwide.',
-    imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop'
+    category: 'Actor & Comedian',
+    description: 'Iconic actor known for Willy Wonka and Young Frankenstein.',
+    imageUrl: '/notable-figures/gene-wilder.jpg'
   },
   {
-    id: 'albert-einstein',
-    name: 'Albert Einstein',
-    hebrewName: 'אברהם אלברט איינשטיין',
-    date: 'April 18',
-    year: 1955,
-    category: 'Physicist & Nobel Laureate',
-    description: 'Developed the theory of relativity, one of history\'s most influential scientists.',
-    imageUrl: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=400&h=400&fit=crop'
-  },
-  {
-    id: 'golda-meir',
-    name: 'Golda Meir',
-    hebrewName: 'גּוֹלְדָּה מֵאִיר',
-    date: 'December 8',
-    year: 1978,
-    category: 'Israeli Prime Minister',
-    description: 'Israel\'s first female Prime Minister and founding leader of the nation.',
-    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'
+    id: 'joan-rivers',
+    name: 'Joan Rivers',
+    hebrewName: 'יוענה מולינסקי',
+    date: 'September 4',
+    year: 2014,
+    category: 'Comedian & Entertainment Pioneer',
+    description: 'Groundbreaking comedian who broke barriers in entertainment.',
+    imageUrl: '/notable-figures/joan-rivers.jpg'
   }
 ];
 
