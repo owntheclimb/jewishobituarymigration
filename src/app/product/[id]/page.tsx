@@ -30,13 +30,16 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-// Import images
-import peacefulWhiteLilies from '@/assets/peaceful-white-lilies.jpg';
-import gardenOfGraceSpray from '@/assets/garden-of-grace-spray.jpg';
-import comfortPlanter from '@/assets/comfort-planter.jpg';
-import sympathyGiftBasket from '@/assets/sympathy-gift-basket.jpg';
-import memorialWindChimes from '@/assets/memorial-wind-chimes.jpg';
-import remembranceRoseBouquet from '@/assets/remembrance-rose-bouquet.jpg';
+// Stable image URLs from /public folder - these won't change across deployments
+// which prevents cart image breakage when users have old cart data in localStorage
+const PRODUCT_IMAGES = {
+  peacefulWhiteLilies: '/images/peaceful-white-lilies.jpg',
+  gardenOfGraceSpray: '/images/garden-of-grace-spray.jpg',
+  comfortPlanter: '/images/comfort-planter.jpg',
+  sympathyGiftBasket: '/images/sympathy-gift-basket.jpg',
+  memorialWindChimes: '/images/memorial-wind-chimes.jpg',
+  remembranceRoseBouquet: '/images/remembrance-rose-bouquet.jpg',
+};
 
 interface Product {
   id: number;
@@ -74,8 +77,8 @@ const ProductDetail = () => {
       category: 'bouquets',
       rating: 4.8,
       reviewCount: 127,
-      image: peacefulWhiteLilies.src,
-      images: [peacefulWhiteLilies.src, peacefulWhiteLilies.src, peacefulWhiteLilies.src],
+      image: PRODUCT_IMAGES.peacefulWhiteLilies,
+      images: [PRODUCT_IMAGES.peacefulWhiteLilies, PRODUCT_IMAGES.peacefulWhiteLilies, PRODUCT_IMAGES.peacefulWhiteLilies],
       description: 'Elegant white lilies and roses arranged with care',
       fullDescription: 'Our Peaceful White Lilies arrangement embodies serenity and grace during difficult times. Hand-selected white Oriental lilies are perfectly complemented by premium white roses, delicate baby\'s breath, and lush greenery. Each stem is carefully arranged by our expert florists to create a stunning tribute that conveys your deepest sympathies with elegance and respect.',
       features: [
@@ -96,8 +99,8 @@ const ProductDetail = () => {
       category: 'sprays',
       rating: 4.9,
       reviewCount: 89,
-      image: gardenOfGraceSpray.src,
-      images: [gardenOfGraceSpray.src, gardenOfGraceSpray.src, gardenOfGraceSpray.src],
+      image: PRODUCT_IMAGES.gardenOfGraceSpray,
+      images: [PRODUCT_IMAGES.gardenOfGraceSpray, PRODUCT_IMAGES.gardenOfGraceSpray, PRODUCT_IMAGES.gardenOfGraceSpray],
       description: 'Professional funeral standing arrangement',
       fullDescription: 'The Garden of Grace Standing Spray is a magnificent tribute featuring an abundant selection of premium flowers in soft, comforting tones. This professional arrangement is designed to stand beside a casket or at the service entrance, creating a beautiful focal point that honors the memory of your loved one with dignity and grace.',
       features: [
@@ -118,8 +121,8 @@ const ProductDetail = () => {
       category: 'plants',
       rating: 4.7,
       reviewCount: 156,
-      image: comfortPlanter.src,
-      images: [comfortPlanter.src, comfortPlanter.src, comfortPlanter.src],
+      image: PRODUCT_IMAGES.comfortPlanter,
+      images: [PRODUCT_IMAGES.comfortPlanter, PRODUCT_IMAGES.comfortPlanter, PRODUCT_IMAGES.comfortPlanter],
       description: 'Living peace lily in decorative planter',
       fullDescription: 'The Comfort Planter offers a lasting living memorial with its elegant peace lily plant. Known for its air-purifying qualities and graceful white blooms, this peace lily arrives in a beautiful ceramic planter, providing comfort that endures long after the service. A thoughtful gift that continues to grow and flourish as a living tribute.',
       features: [
@@ -140,8 +143,8 @@ const ProductDetail = () => {
       category: 'baskets',
       rating: 4.6,
       reviewCount: 203,
-      image: sympathyGiftBasket.src,
-      images: [sympathyGiftBasket.src, sympathyGiftBasket.src, sympathyGiftBasket.src],
+      image: PRODUCT_IMAGES.sympathyGiftBasket,
+      images: [PRODUCT_IMAGES.sympathyGiftBasket, PRODUCT_IMAGES.sympathyGiftBasket, PRODUCT_IMAGES.sympathyGiftBasket],
       description: 'Thoughtful collection of gourmet treats',
       fullDescription: 'Our Sympathy Fruit & Gourmet Basket provides nourishment and comfort during difficult times. Carefully curated with fresh seasonal fruits, premium nuts, gourmet crackers, artisanal cheeses, and sweet treats, this generous basket offers something for everyone. Perfect for shiva visits or to provide sustenance for grieving families.',
       features: [
@@ -162,8 +165,8 @@ const ProductDetail = () => {
       category: 'keepsakes',
       rating: 4.8,
       reviewCount: 342,
-      image: memorialWindChimes.src,
-      images: [memorialWindChimes.src, memorialWindChimes.src, memorialWindChimes.src],
+      image: PRODUCT_IMAGES.memorialWindChimes,
+      images: [PRODUCT_IMAGES.memorialWindChimes, PRODUCT_IMAGES.memorialWindChimes, PRODUCT_IMAGES.memorialWindChimes],
       description: 'Beautiful keepsake with gentle sounds',
       fullDescription: 'These Memorial Wind Chimes create a peaceful, lasting tribute with their gentle melodies. Crafted from premium materials with a weather-resistant finish, they feature carefully tuned chimes that produce harmonious tones when touched by the breeze. The personalized charm can be engraved with a name, date, or meaningful phrase, creating a cherished keepsake that brings comfort for years to come.',
       features: [
@@ -184,8 +187,8 @@ const ProductDetail = () => {
       category: 'bouquets',
       rating: 4.9,
       reviewCount: 178,
-      image: remembranceRoseBouquet.src,
-      images: [remembranceRoseBouquet.src, remembranceRoseBouquet.src, remembranceRoseBouquet.src],
+      image: PRODUCT_IMAGES.remembranceRoseBouquet,
+      images: [PRODUCT_IMAGES.remembranceRoseBouquet, PRODUCT_IMAGES.remembranceRoseBouquet, PRODUCT_IMAGES.remembranceRoseBouquet],
       description: 'Stunning roses in remembrance colors',
       fullDescription: 'The Remembrance Rose Bouquet features exquisite premium roses in soft, comforting hues. Each rose is hand-selected at its peak freshness and expertly arranged with complementary greenery and delicate accents. This classic arrangement expresses your sympathy with timeless elegance and shows your support during a difficult time.',
       features: [

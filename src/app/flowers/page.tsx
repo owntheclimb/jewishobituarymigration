@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-// Image imports
+// Image imports for categories (these are ok as they don't go to cart)
 import categoryBouquets from "@/assets/category-bouquets.jpg";
 import categorySprays from "@/assets/category-sprays.jpg";
 import categoryPlants from "@/assets/category-plants.jpg";
@@ -36,12 +36,6 @@ import categoryBaskets from "@/assets/category-baskets.jpg";
 import categoryKeepsakes from "@/assets/category-keepsakes.jpg";
 import categoryTrees from "@/assets/category-trees.jpg";
 import flowersHeroBg from "@/assets/flowers-hero-bg.jpg";
-import peacefulWhiteLilies from "@/assets/peaceful-white-lilies.jpg";
-import gardenOfGraceSpray from "@/assets/garden-of-grace-spray.jpg";
-import comfortPlanter from "@/assets/comfort-planter.jpg";
-import sympathyGiftBasket from "@/assets/sympathy-gift-basket.jpg";
-import memorialWindChimes from "@/assets/memorial-wind-chimes.jpg";
-import remembranceRoseBouquet from "@/assets/remembrance-rose-bouquet.jpg";
 
 interface Product {
   id: string;
@@ -148,6 +142,7 @@ const Flowers = () => {
   ];
 
   // Fallback products if database is empty
+  // Using stable /public URLs to prevent cart image breakage across deployments
   const fallbackProducts = [
     {
       id: "1",
@@ -155,7 +150,7 @@ const Flowers = () => {
       price: 89.99,
       category: "bouquets",
       rating: 4.8,
-      image: peacefulWhiteLilies.src,
+      image: "/images/peaceful-white-lilies.jpg",
       description: "Elegant white lilies and roses arranged with care"
     },
     {
@@ -164,7 +159,7 @@ const Flowers = () => {
       price: 149.99,
       category: "sprays",
       rating: 4.9,
-      image: gardenOfGraceSpray.src,
+      image: "/images/garden-of-grace-spray.jpg",
       description: "Professional funeral standing arrangement"
     },
     {
@@ -173,7 +168,7 @@ const Flowers = () => {
       price: 64.99,
       category: "plants",
       rating: 4.7,
-      image: comfortPlanter.src,
+      image: "/images/comfort-planter.jpg",
       description: "Living peace lily in decorative planter"
     },
     {
@@ -182,7 +177,7 @@ const Flowers = () => {
       price: 79.99,
       category: "baskets",
       rating: 4.6,
-      image: sympathyGiftBasket.src,
+      image: "/images/sympathy-gift-basket.jpg",
       description: "Thoughtful collection of gourmet treats"
     },
     {
@@ -191,7 +186,7 @@ const Flowers = () => {
       price: 34.99,
       category: "keepsakes",
       rating: 4.8,
-      image: memorialWindChimes.src,
+      image: "/images/memorial-wind-chimes.jpg",
       description: "Beautiful keepsake with gentle sounds"
     },
     {
@@ -200,7 +195,7 @@ const Flowers = () => {
       price: 69.99,
       category: "bouquets",
       rating: 4.9,
-      image: remembranceRoseBouquet.src,
+      image: "/images/remembrance-rose-bouquet.jpg",
       description: "Stunning roses in remembrance colors"
     }
   ];
@@ -213,7 +208,7 @@ const Flowers = () => {
         price: p.price,
         category: getCategorySlug(p.category_id),
         rating: 4.8,
-        image: p.image_url || peacefulWhiteLilies.src,
+        image: p.image_url || '/images/peaceful-white-lilies.jpg',
         description: p.short_description || p.description || ''
       }))
     : fallbackProducts;
