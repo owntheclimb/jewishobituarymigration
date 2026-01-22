@@ -17,7 +17,7 @@ const AdminLoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { user, isAdmin, signIn, loading: authLoading } = useAuth();
+  const { user, isAdmin, signIn, loading: authLoading, profile } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -26,15 +26,16 @@ const AdminLoginPage = () => {
     if (!authLoading && user && isAdmin) {
       router.replace('/admin');
     }
-    // If user is logged in but not admin, show error
-    if (!authLoading && user && !isAdmin) {
+    // If user is logged in, profile is loaded, but not admin, show error
+    // Only show error when we're certain profile has been fetched (profile !== null)
+    if (!authLoading && user && profile && !isAdmin) {
       toast({
         title: 'Access Denied',
         description: 'You do not have admin privileges.',
         variant: 'destructive',
       });
     }
-  }, [user, isAdmin, authLoading, router, toast]);
+  }, [user, isAdmin, authLoading, router, toast, profile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
