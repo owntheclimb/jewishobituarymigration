@@ -176,3 +176,138 @@ function getSessionId(): string {
 
   return sessionId;
 }
+
+/**
+ * Funnel steps for conversion tracking
+ */
+export const FUNNEL_STEPS = {
+  // Main Conversion Funnel
+  VISIT: 'funnel_visit',
+  SEARCH: 'funnel_search',
+  OBITUARY_VIEW: 'funnel_obituary_view',
+  ENGAGEMENT: 'funnel_engagement', // guestbook, memory, candle
+  CONTACT: 'funnel_contact',
+
+  // Obituary Creation Funnel
+  CREATE_START: 'funnel_create_start',
+  CREATE_INFO: 'funnel_create_info',
+  CREATE_BIO: 'funnel_create_bio',
+  CREATE_PREVIEW: 'funnel_create_preview',
+  CREATE_COMPLETE: 'funnel_create_complete',
+
+  // Vendor Funnel
+  VENDOR_VIEW: 'funnel_vendor_view',
+  VENDOR_CONTACT: 'funnel_vendor_contact',
+  VENDOR_CLAIM: 'funnel_vendor_claim',
+} as const;
+
+export type FunnelStep = (typeof FUNNEL_STEPS)[keyof typeof FUNNEL_STEPS];
+
+/**
+ * Track a funnel step
+ */
+export function trackFunnelStep(
+  step: FunnelStep,
+  properties?: Record<string, unknown>
+) {
+  trackEvent(step, {
+    funnel_step: step,
+    ...properties,
+  });
+}
+
+/**
+ * Track scroll depth
+ * Call this with a cleanup function in useEffect
+ */
+export function trackScrollDepth(thresholds: number[] = [25, 50, 75, 100]) {
+  if (typeof window === 'undefined') return () => {};
+
+  const tracked = new Set<number>();
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+
+    thresholds.forEach((threshold) => {
+      if (scrollPercent >= threshold && !tracked.has(threshold)) {
+        tracked.add(threshold);
+        trackEvent(ANALYTICS_EVENTS.SCROLL_DEPTH, {
+          scroll_depth: threshold,
+          page_url: window.location.pathname,
+        });
+      }
+    });
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}
+
+/**
+ * Track time on page
+ * Call this with a cleanup function in useEffect
+ */
+export function trackTimeOnPage(intervals: number[] = [30, 60, 120, 300]) {
+  if (typeof window === 'undefined') return () => {};
+
+  const startTime = Date.now();
+  const tracked = new Set<number>();
+  const timers: NodeJS.Timeout[] = [];
+
+  intervals.forEach((seconds) => {
+    const timer = setTimeout(() => {
+      if (!tracked.has(seconds)) {
+        tracked.add(seconds);
+        trackEvent(ANALYTICS_EVENTS.TIME_ON_PAGE, {
+          time_seconds: seconds,
+          page_url: window.location.pathname,
+        });
+      }
+    }, seconds * 1000);
+    timers.push(timer);
+  });
+
+  // Track final time on page when leaving
+  const handleBeforeUnload = () => {
+    const totalTime = Math.round((Date.now() - startTime) / 1000);
+    trackEvent(ANALYTICS_EVENTS.TIME_ON_PAGE, {
+      time_seconds: totalTime,
+      is_final: true,
+      page_url: window.location.pathname,
+    });
+  };
+
+  window.addEventListener('beforeunload', handleBeforeUnload);
+
+  return () => {
+    timers.forEach(clearTimeout);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  };
+}
+
+/**
+ * Hook-friendly analytics tracker
+ * Use in components to track engagement
+ */
+export function createEngagementTracker(pageName: string) {
+  return {
+    trackView: () => trackFunnelStep(FUNNEL_STEPS.VISIT, { page_name: pageName }),
+    trackSearch: (query: string, results: number) => {
+      trackFunnelStep(FUNNEL_STEPS.SEARCH, { query, results_count: results });
+    },
+    trackObituaryView: (obituaryId: string, name?: string) => {
+      trackFunnelStep(FUNNEL_STEPS.OBITUARY_VIEW, { obituary_id: obituaryId, name });
+    },
+    trackEngagement: (type: 'guestbook' | 'memory' | 'candle') => {
+      trackFunnelStep(FUNNEL_STEPS.ENGAGEMENT, { engagement_type: type });
+    },
+    trackContact: (method: 'form' | 'email' | 'phone') => {
+      trackFunnelStep(FUNNEL_STEPS.CONTACT, { contact_method: method });
+    },
+  };
+}

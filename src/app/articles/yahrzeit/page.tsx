@@ -3,7 +3,7 @@
 import Script from 'next/script';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Calendar, Flame, Heart, Book, Clock, Share2, Bookmark, ChevronRight } from 'lucide-react';
+import { Calendar, Flame, Heart, Book, Clock, Share2, Bookmark, ChevronRight, CalendarDays, Users, Scroll } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { AuthorBox } from '@/components/AuthorBox';
 import { getAuthor } from '@/data/authors';
 import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from '@/lib/schema';
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from '@/components/geo';
 
 const articleSchema = generateArticleSchema({
   title: 'Yahrzeit: Complete Guide to the Jewish Death Anniversary',
@@ -180,6 +181,41 @@ export default function ArticleYahrzeitPage() {
               </p>
             </div>
 
+            {/* Key Statistics */}
+            <div className="my-8 not-prose">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="11 months"
+                  label="Kaddish recitation period for parents (standard tradition)"
+                  source="Shulchan Aruch"
+                  icon={CalendarDays}
+                />
+                <StatisticHighlight
+                  value="24 hours"
+                  label="Duration of the yahrzeit memorial candle"
+                  source="Jewish Law"
+                  icon={Flame}
+                />
+                <StatisticHighlight
+                  value="3 services"
+                  label="Daily prayer services where Kaddish is recited (Shacharit, Mincha, Maariv)"
+                  source="Talmud"
+                  icon={Scroll}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="The yahrzeit is the anniversary of a death, observed according to the Hebrew calendar. On this day, a candle is kindled, Kaddish is recited, and the soul of the departed rises to a higher level in the World to Come."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+                variant="prominent"
+              />
+            </div>
+
             <section id="understanding" className="scroll-mt-20">
               <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                 <Calendar className="h-7 w-7 text-primary" />
@@ -193,6 +229,16 @@ export default function ArticleYahrzeitPage() {
               </p>
             </section>
 
+            {/* Talmudic Source */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="On the yahrzeit of a righteous person, all their good deeds that they performed in this world stand before the Holy One, Blessed be He."
+                expertName="Zohar, Terumah 163b"
+                credentials="Kabbalistic Source"
+                source="Zohar"
+              />
+            </div>
+
             <section id="candle" className="scroll-mt-20">
               <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                 <Flame className="h-7 w-7 text-primary" />
@@ -201,6 +247,16 @@ export default function ArticleYahrzeitPage() {
               <p>
                 The most universal yahrzeit custom is lighting a special memorial candle that burns for 24 hours. This candle is lit at sunset on the evening before the yahrzeit date, as Jewish days begin at sundown.
               </p>
+
+              {/* Biblical Source */}
+              <div className="my-6 not-prose">
+                <ExpertQuote
+                  quote="Ner Hashem nishmat adam — The soul of man is the lamp of God."
+                  expertName="Proverbs 20:27"
+                  credentials="Biblical Source"
+                  source="Tanakh"
+                />
+              </div>
 
               <Card className="p-6 my-6 bg-primary/5 border-primary/20 shadow-md">
                 <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
@@ -375,6 +431,55 @@ export default function ArticleYahrzeitPage() {
               </ul>
             </Card>
 
+            {/* Key Hebrew Terms */}
+            <div className="my-8 not-prose">
+              <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms</h3>
+              <DefinitionGrid>
+                <DefinitionBox
+                  term="יָארְצַייט"
+                  transliteration="Yahrzeit"
+                  meaning="Year's time"
+                  definition="The anniversary of a death according to the Hebrew calendar, observed annually."
+                  pronunciation="YAHR-tzite"
+                />
+                <DefinitionBox
+                  term="נֵר נְשָׁמָה"
+                  transliteration="Ner Neshama"
+                  meaning="Soul candle"
+                  definition="The memorial candle lit on yahrzeit and Yizkor, symbolizing the eternal soul."
+                  pronunciation="nehr neh-shah-MAH"
+                />
+                <DefinitionBox
+                  term="עֲלִיָּה"
+                  transliteration="Aliyah"
+                  meaning="Ascending"
+                  definition="Being called up to the Torah; mourners receive an aliyah on the Shabbat before yahrzeit."
+                  pronunciation="ah-lee-YAH"
+                />
+                <DefinitionBox
+                  term="יִזְכּוֹר"
+                  transliteration="Yizkor"
+                  meaning="May He remember"
+                  definition="Memorial prayer service held on major holidays, when yahrzeit is also commemorated."
+                  pronunciation="yiz-KOHR"
+                />
+                <DefinitionBox
+                  term="הַשְׁכָּבָה"
+                  transliteration="Hashkava"
+                  meaning="Laying to rest"
+                  definition="Sephardic memorial prayer recited on yahrzeit and other occasions."
+                  pronunciation="hahsh-kah-VAH"
+                />
+                <DefinitionBox
+                  term="צְדָקָה"
+                  transliteration="Tzedakah"
+                  meaning="Righteousness/Charity"
+                  definition="Charitable giving in memory of the deceased, a key yahrzeit observance."
+                  pronunciation="tzeh-dah-KAH"
+                />
+              </DefinitionGrid>
+            </div>
+
             <section>
               <h2 className="text-3xl font-bold text-foreground mb-6">
                 Conclusion
@@ -387,6 +492,18 @@ export default function ArticleYahrzeitPage() {
               </p>
             </section>
           </div>
+
+          {/* Sources Section */}
+          <SourcesCitation
+            sources={[
+              { title: 'Proverbs 20:27', type: 'talmud', section: '"The soul of man is the lamp of God" - basis for memorial candle' },
+              { title: 'Zohar, Terumah 163b', type: 'talmud', section: 'Kabbalistic source on yahrzeit observance' },
+              { title: 'Shulchan Aruch, Yoreh De\'ah 376', type: 'halacha', author: 'Rabbi Yosef Karo', section: 'Laws of mourning and yahrzeit' },
+              { title: 'Magen Avraham, Orach Chaim 568:20', type: 'halacha', section: 'Customs of yahrzeit observance' },
+              { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+              { title: 'Mourning & Remembrance', type: 'website', author: 'Chabad.org', url: 'https://www.chabad.org/library/article_cdo/aid/281573/jewish/Yahrtzeit.htm' },
+            ]}
+          />
 
           {/* Related Articles */}
           <Card className="mt-12 p-6 bg-muted/30">

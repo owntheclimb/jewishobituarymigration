@@ -1,16 +1,43 @@
 'use client';
 
+import Script from "next/script";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ClipboardList, DollarSign, Users, Phone } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { generateArticleSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
 
+const articleSchema = generateArticleSchema({
+  title: 'Planning a Jewish Funeral Service: Complete Step-by-Step Guide',
+  description: 'Comprehensive guide to planning a Jewish funeral. Covers choosing funeral homes, working with Chevra Kadisha, selecting caskets, cemetery options, service planning, and costs.',
+  url: 'https://jewishobituary.com/articles/planning-funeral',
+  datePublished: '2024-01-15',
+  dateModified: '2026-01-22',
+  authorName: 'Rabbi Jonathan Feldman',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Articles', url: 'https://jewishobituary.com/articles' },
+  { name: 'Planning a Jewish Funeral', url: 'https://jewishobituary.com/articles/planning-funeral' },
+]);
 
 export default function ArticlePlanningFuneralPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">

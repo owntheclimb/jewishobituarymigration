@@ -463,8 +463,8 @@ const FuneralHomes = () => {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <Button variant="outline" size="sm" asChild>
-                            <Link href={`/communities/funeral-home/${home.id}`}>
-                              View {home.recentObituaries} Obituaries
+                            <Link href={`/funeral-homes/${home.id}`}>
+                              View Profile
                             </Link>
                           </Button>
                           <Button
@@ -496,11 +496,16 @@ const FuneralHomes = () => {
             <h2 className="text-3xl font-bold mb-4">Funeral Home Owners</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
               Join our directory and connect with families in need of your compassionate services.
-              Learn about our partnership program for funeral homes.
+              Claim your listing today and get verified.
             </p>
-            <Button size="lg" asChild>
-              <Link href="/contact">Partner With Us</Link>
-            </Button>
+            <div className="flex gap-4 justify-center">
+              <Button size="lg" asChild>
+                <Link href="/vendors/claim">Claim Your Listing</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/contact">Contact Us</Link>
+              </Button>
+            </div>
           </div>
         </section>
       </main>

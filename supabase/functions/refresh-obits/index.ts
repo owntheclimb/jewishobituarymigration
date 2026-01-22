@@ -267,7 +267,7 @@ const handler = async (req: Request): Promise<Response> => {
             let imageUrl = null;
             // Skip complex image extraction for now, can be enhanced later
 
-            // Upsert obituary record
+            // Upsert obituary record (including state from source)
             const { error: upsertError } = await supabase
               .from('obits')
               .upsert({
@@ -277,7 +277,8 @@ const handler = async (req: Request): Promise<Response> => {
                 source_name: source.label,
                 source_url: link,
                 image_url: imageUrl,
-                published_at: publishedAt
+                published_at: publishedAt,
+                state: source.state || null
               }, {
                 onConflict: 'id'
               });

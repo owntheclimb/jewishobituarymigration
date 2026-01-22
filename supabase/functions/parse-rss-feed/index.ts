@@ -113,27 +113,29 @@ function parseRSSFeed(xmlContent: string): RSSFeed {
     const itemTitleMatch = itemContent.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/i) ||
                           itemContent.match(/<title>(.*?)<\/title>/i);
     
-    // More flexible link matching
-    const itemLinkMatch = itemContent.match(/<link>(.*?)<\/link>/i);
+    // More flexible link matching - use [\s\S]*? to handle multiline links
+    const itemLinkMatch = itemContent.match(/<link>([\s\S]*?)<\/link>/i);
     
-    // More flexible description matching
-    const itemDescMatch = itemContent.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/i) ||
-                         itemContent.match(/<description>(.*?)<\/description>/i) ||
-                         itemContent.match(/<content:encoded><!\[CDATA\[(.*?)\]\]><\/content:encoded>/i);
+    // More flexible description matching - use [\s\S]*? for multiline content
+    const itemDescMatch = itemContent.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i) ||
+                         itemContent.match(/<description>([\s\S]*?)<\/description>/i) ||
+                         itemContent.match(/<content:encoded><!\[CDATA\[([\s\S]*?)\]\]><\/content:encoded>/i);
     
     // More flexible date matching
     const itemPubDateMatch = itemContent.match(/<pubDate>(.*?)<\/pubDate>/i);
     
-    // More flexible GUID matching
-    const itemGuidMatch = itemContent.match(/<guid[^>]*>(.*?)<\/guid>/i);
+    // More flexible GUID matching - use [\s\S]*? for multiline content
+    const itemGuidMatch = itemContent.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i);
     
     if (itemTitleMatch && itemLinkMatch) {
+      // Normalize link - remove newlines and extra whitespace
+      const normalizedLink = itemLinkMatch[1].replace(/\s+/g, '').trim();
       const item = {
         title: decodeHTMLEntities(itemTitleMatch[1].trim()),
-        link: itemLinkMatch[1].trim(),
+        link: normalizedLink,
         description: itemDescMatch ? decodeHTMLEntities(itemDescMatch[1].trim()) : '',
         pubDate: itemPubDateMatch ? itemPubDateMatch[1].trim() : '',
-        guid: itemGuidMatch ? itemGuidMatch[1].trim() : itemLinkMatch[1].trim()
+        guid: itemGuidMatch ? itemGuidMatch[1].replace(/\s+/g, '').trim() : normalizedLink
       };
       
       console.log('Parsed item:', item.title);
@@ -152,25 +154,52 @@ function parseRSSFeed(xmlContent: string): RSSFeed {
 
 // Map of RSS source keys to their state codes
 const SOURCE_STATE_MAP: Record<string, string> = {
+  // New York
   'boropark24': 'NY',
   'yeshiva_world': 'NY',
   'matzav': 'NY',
   'jewish_world_ny': 'NY',
+  // New Jersey
   'lakewood_scoop': 'NJ',
+  // Maryland
   'baltimore_jewish_life': 'MD',
   'baltimore_jewish_times': 'MD',
+  // Pennsylvania
   'philadelphia_exponent': 'PA',
+  // Colorado
   'intermountain_jewish_news': 'CO',
   'boulder_jewish_news': 'CO',
+  // Connecticut
   'ct_jewish_ledger': 'CT',
+  // Arizona
   'arizona_jewish_post': 'AZ',
+  // Massachusetts
   'jewish_journal_ma': 'MA',
+  // Georgia
   'atlanta_jewish_times': 'GA',
+  // Virginia / DC
   'washington_jewish_week': 'VA',
+  // Minnesota
   'tc_jewfolk': 'MN',
+  // Wisconsin
   'wisconsin_jewish_chronicle': 'WI',
+  // Missouri
   'st_louis_jewish_light': 'MO',
+  // California (NEW)
   'jewish_journal': 'CA',
+  'jewish_journal_la': 'CA',
+  'san_diego_jewish_world': 'CA',
+  // Ohio (NEW)
+  'cleveland_jewish_news': 'OH',
+  'columbus_jewish_news': 'OH',
+  // Michigan (NEW)
+  'detroit_jewish_news': 'MI',
+  // Florida (NEW)
+  'heritage_fl': 'FL',
+  'jewish_press_pinellas': 'FL',
+  'jewish_press_tampa': 'FL',
+  // National publications
+  'jta_obituaries': 'National',
   'jewish_living_learning': 'National'
 };
 
@@ -238,6 +267,9 @@ Deno.serve(async (req) => {
     let totalProcessed = 0;
     let totalInserted = 0;
 
+    // Helper to add delay between requests
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
     // Process each feed source
     for (const source of sources || []) {
       if (!source.feed_url) {
@@ -245,11 +277,19 @@ Deno.serve(async (req) => {
         continue;
       }
 
+      // Small delay between sources to avoid rate limiting
+      await delay(500);
+
       try {
         console.log(`Fetching RSS feed from: ${source.feed_url}`);
         
-        // Fetch the RSS feed
-        const response = await fetch(source.feed_url);
+        // Fetch the RSS feed with proper headers
+        const response = await fetch(source.feed_url, {
+          headers: {
+            'User-Agent': 'JewishObituaryBot/1.0 (+https://jewishobituary.com; contact@jewishobituary.com)',
+            'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+          }
+        });
         if (!response.ok) {
           console.error(`Failed to fetch feed ${source.feed_url}: ${response.status}`);
           continue;
@@ -294,9 +334,9 @@ Deno.serve(async (req) => {
 
           // Extract location information from content
           const location = extractLocation(item.title, item.description);
-          
-          // Get state from source mapping or extracted location
-          const sourceState = SOURCE_STATE_MAP[source.key] || location.state;
+
+          // Get state from: database source.state > hardcoded map > extracted from content
+          const sourceState = source.state || SOURCE_STATE_MAP[source.key] || location.state;
 
           // Insert into obits table (avoiding duplicates based on id)
           const { error: insertError } = await supabaseClient

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -78,18 +79,19 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
 
       {/* Image Section - Always 480px height */}
       <div className={`relative overflow-hidden ${isPlaceholder ? 'bg-gradient-to-br from-muted/30 to-muted/10' : ''}`} style={{ height: '480px' }}>
-        <img
+        <Image
           src={imageUrl}
           alt={`Memorial photo of ${obituary.name}${obituary.city ? ` from ${obituary.city}` : ''}${obituary.state ? `, ${obituary.state}` : ''}`}
-          loading="lazy"
           width={520}
           height={480}
           onError={() => setImageError(true)}
           className={`w-full h-full object-cover transition-all duration-500 ${
-            isPlaceholder 
-              ? 'opacity-90' 
+            isPlaceholder
+              ? 'opacity-90'
               : 'group-hover:scale-105'
           }`}
+          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         
         {/* Overlay for placeholder images with text */}

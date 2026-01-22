@@ -17,6 +17,10 @@ import {
   Package,
   Building2,
   Newspaper,
+  Briefcase,
+  ClipboardCheck,
+  Database,
+  Filter,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -26,12 +30,16 @@ import { useAuth } from '@/hooks/useAuth';
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin/funnels', label: 'Funnels', icon: Filter },
   { href: '/admin/clicks', label: 'Click Tracking', icon: MousePointerClick },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/content', label: 'Content', icon: FileText },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/vendors', label: 'Vendors', icon: Building2 },
-  { href: '/admin/pages', label: 'Pages', icon: Newspaper },
+  { href: '/admin/claims', label: 'Vendor Claims', icon: ClipboardCheck },
+  { href: '/admin/industries', label: 'Industry Pages', icon: Briefcase },
+  { href: '/admin/scraping', label: 'Scraping', icon: Database },
+  { href: '/admin/pages', label: 'Notable Figures', icon: Newspaper },
   { href: '/admin/admins', label: 'Manage Admins', icon: UserPlus },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];

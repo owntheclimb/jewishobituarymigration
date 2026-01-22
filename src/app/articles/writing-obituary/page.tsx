@@ -3,7 +3,7 @@
 import Script from "next/script";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { PenTool, Heart, Users, Star, Clock } from 'lucide-react';
+import { PenTool, Heart, Users, Star, Clock, FileText, Quote, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { AuthorBox } from '@/components/AuthorBox';
 import { getAuthor } from '@/data/authors';
 import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, schemaToString } from '@/lib/schema';
+import { ExpertQuote, StatisticHighlight, StatisticGrid, DefinitionBox, DefinitionGrid, SourcesCitation } from '@/components/geo';
 
 const articleSchema = generateArticleSchema({
   title: 'How to Write a Meaningful Jewish Obituary: Complete Guide',
@@ -120,6 +121,41 @@ export default function ArticleWritingObituaryPage() {
             <p className="text-xl text-muted-foreground leading-relaxed">
               Writing an obituary is an act of love and remembrance—what Jewish tradition calls a final act of <em>chesed shel emet</em>, true kindness that can never be repaid. A well-crafted obituary honors the deceased's life, provides essential information, and offers comfort to those who mourn. This guide will help you create a meaningful tribute that blends traditional Jewish elements with personal touches.
             </p>
+
+            {/* Key Statistics */}
+            <div className="my-8 not-prose">
+              <StatisticGrid columns={3}>
+                <StatisticHighlight
+                  value="250-500"
+                  label="Words in a standard Jewish obituary with good biographical detail"
+                  source="Industry Standard"
+                  icon={FileText}
+                />
+                <StatisticHighlight
+                  value="9 elements"
+                  label="Key components of a complete Jewish obituary"
+                  source="Traditional Format"
+                  icon={PenTool}
+                />
+                <StatisticHighlight
+                  value="24-48 hrs"
+                  label="Typical timeframe for Jewish burial, affecting obituary urgency"
+                  source="Halacha"
+                  icon={Clock}
+                />
+              </StatisticGrid>
+            </div>
+
+            {/* Expert Quote */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="The hesped (eulogy) is more than a recitation of facts. It is an opportunity to capture the essence of a soul, to paint a portrait that will endure long after the mourners have returned home."
+                expertName="Rabbi Maurice Lamm"
+                credentials="Rabbi, Author of 'The Jewish Way in Death and Mourning'"
+                source="The Jewish Way in Death and Mourning"
+                variant="prominent"
+              />
+            </div>
 
             <section id="essential-elements">
               <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -476,6 +512,65 @@ export default function ArticleWritingObituaryPage() {
               </div>
             </section>
 
+            {/* Key Hebrew Terms */}
+            <div className="my-8 not-prose">
+              <h3 className="text-xl font-semibold mb-4">Key Hebrew Terms for Obituaries</h3>
+              <DefinitionGrid>
+                <DefinitionBox
+                  term="ז״ל"
+                  transliteration="Z&quot;l (Zichrono/a Livracha)"
+                  meaning="May their memory be for a blessing"
+                  definition="Honorific added after the name of the deceased in Jewish obituaries and memorials."
+                  pronunciation="zee-KHRON-oh lee-vrah-KHAH"
+                />
+                <DefinitionBox
+                  term="חֶסֶד שֶׁל אֱמֶת"
+                  transliteration="Chesed Shel Emet"
+                  meaning="True kindness"
+                  definition="Kindness shown to the dead that cannot be repaid, including writing their obituary."
+                  pronunciation="KHEH-sed shel eh-MET"
+                />
+                <DefinitionBox
+                  term="הֶסְפֵּד"
+                  transliteration="Hesped"
+                  meaning="Eulogy"
+                  definition="The formal eulogy delivered at a funeral, capturing the essence of the deceased's life."
+                  pronunciation="hes-PED"
+                />
+                <DefinitionBox
+                  term="נִפְטָר / נִפְטֶרֶת"
+                  transliteration="Niftar/Nifteret"
+                  meaning="The deceased (m/f)"
+                  definition="Respectful term for the person who has passed away."
+                  pronunciation="nif-TAHR / nif-TEH-ret"
+                />
+                <DefinitionBox
+                  term="בֵּית עוֹלָם"
+                  transliteration="Beit Olam"
+                  meaning="House of eternity"
+                  definition="Hebrew term for cemetery, reflecting belief in the soul's eternal nature."
+                  pronunciation="bait oh-LAHM"
+                />
+                <DefinitionBox
+                  term="תְּנַצְבָ״ה"
+                  transliteration="T'N'TZ'B'H"
+                  meaning="May their soul be bound in the bond of life"
+                  definition="Traditional closing phrase on Jewish headstones and memorial notices."
+                  pronunciation="teh-nah-tzeh-VAH"
+                />
+              </DefinitionGrid>
+            </div>
+
+            {/* Expert Quote on Structure */}
+            <div className="my-8 not-prose">
+              <ExpertQuote
+                quote="The ideal eulogy captures both the public accomplishments and the private virtues of the deceased—the acts of kindness known only to family, the quiet generosity that defined their character."
+                expertName="Anita Diamant"
+                credentials="Author of 'Saying Kaddish'"
+                source="Saying Kaddish: How to Comfort the Dying, Bury the Dead, and Mourn as a Jew"
+              />
+            </div>
+
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 Conclusion
@@ -491,6 +586,18 @@ export default function ArticleWritingObituaryPage() {
               </p>
             </section>
           </div>
+
+          {/* Sources Section */}
+          <SourcesCitation
+            sources={[
+              { title: 'The Jewish Way in Death and Mourning', type: 'book', author: 'Rabbi Maurice Lamm', section: 'Jonathan David Publishers' },
+              { title: 'Saying Kaddish', type: 'book', author: 'Anita Diamant', section: 'Schocken Books' },
+              { title: 'Shulchan Aruch, Yoreh De\'ah 344', type: 'halacha', author: 'Rabbi Yosef Karo', section: 'Laws of Eulogy (Hesped)' },
+              { title: 'Moed Katan 25a-b', type: 'talmud', section: 'Talmudic discussion on eulogies' },
+              { title: 'Writing a Jewish Obituary', type: 'website', author: 'Jewish Funeral Directors of America', url: 'https://www.jfda.org' },
+              { title: 'Death & Bereavement', type: 'website', author: 'My Jewish Learning', url: 'https://www.myjewishlearning.com/article/writing-an-obituary/' },
+            ]}
+          />
         </article>
       </main>
 

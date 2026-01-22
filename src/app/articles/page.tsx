@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Script from "next/script";
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -10,6 +11,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Clock, Search, TrendingUp, Filter } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Articles', url: 'https://jewishobituary.com/articles' },
+]);
 
 const articles = [
   {
@@ -93,6 +100,11 @@ const ArticlesIndex = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       {/* Hero Section */}

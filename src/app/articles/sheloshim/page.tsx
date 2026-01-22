@@ -1,14 +1,41 @@
 'use client';
 
+import Script from "next/script";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Calendar, Users, Heart, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { generateArticleSchema, generateBreadcrumbSchema, schemaToString } from '@/lib/schema';
 
+const articleSchema = generateArticleSchema({
+  title: 'Sheloshim: The 30-Day Mourning Period in Jewish Tradition',
+  description: 'Complete guide to sheloshim, the 30-day mourning period in Judaism. Learn about customs, restrictions, timeline, and how to support someone observing sheloshim.',
+  url: 'https://jewishobituary.com/articles/sheloshim',
+  datePublished: '2024-01-15',
+  dateModified: '2026-01-22',
+  authorName: 'Jewish Obituary Editorial Team',
+  image: 'https://jewishobituary.com/og-image.jpg',
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://jewishobituary.com' },
+  { name: 'Articles', url: 'https://jewishobituary.com/articles' },
+  { name: 'Sheloshim', url: 'https://jewishobituary.com/articles/sheloshim' },
+]);
 
 export default function ArticleSheloshimPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: schemaToString(breadcrumbSchema) }}
+      />
       <Navbar />
 
       <main className="flex-1">
