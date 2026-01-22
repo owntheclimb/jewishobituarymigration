@@ -55,7 +55,7 @@ interface IndustryPage {
   intro_content: string | null;
   educational_content: string | null;
   vendor_type_id: string | null;
-  faq_items: { question: string; answer: string }[] | null;
+  faq_content: { question: string; answer: string }[] | null;
   related_industries: string[] | null;
   is_published: boolean;
   sort_order: number;
@@ -78,7 +78,7 @@ const emptyPage = {
   intro_content: '',
   educational_content: '',
   vendor_type_id: null as string | null,
-  faq_items: [] as { question: string; answer: string }[],
+  faq_content: [] as { question: string; answer: string }[],
   related_industries: [] as string[],
   is_published: false,
   sort_order: 0,
@@ -156,7 +156,7 @@ export default function IndustryPagesAdmin() {
       intro_content: page.intro_content || '',
       educational_content: page.educational_content || '',
       vendor_type_id: page.vendor_type_id,
-      faq_items: page.faq_items || [],
+      faq_content: page.faq_content || [],
       related_industries: page.related_industries || [],
       is_published: page.is_published,
       sort_order: page.sort_order,
@@ -182,7 +182,7 @@ export default function IndustryPagesAdmin() {
     }
     setFormData({
       ...formData,
-      faq_items: [...formData.faq_items, { question: newFaqQuestion, answer: newFaqAnswer }],
+      faq_content: [...formData.faq_content, { question: newFaqQuestion, answer: newFaqAnswer }],
     });
     setNewFaqQuestion('');
     setNewFaqAnswer('');
@@ -191,7 +191,7 @@ export default function IndustryPagesAdmin() {
   function removeFaqItem(index: number) {
     setFormData({
       ...formData,
-      faq_items: formData.faq_items.filter((_, i) => i !== index),
+      faq_content: formData.faq_content.filter((_, i) => i !== index),
     });
   }
 
@@ -217,7 +217,7 @@ export default function IndustryPagesAdmin() {
         intro_content: formData.intro_content || null,
         educational_content: formData.educational_content || null,
         vendor_type_id: formData.vendor_type_id || null,
-        faq_items: formData.faq_items.length > 0 ? formData.faq_items : null,
+        faq_content: formData.faq_content.length > 0 ? formData.faq_content : null,
         related_industries: formData.related_industries.length > 0 ? formData.related_industries : null,
         is_published: formData.is_published,
         sort_order: formData.sort_order,
@@ -393,7 +393,7 @@ export default function IndustryPagesAdmin() {
               <HelpCircle className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-2xl font-bold">
-                  {pages.reduce((acc, p) => acc + (p.faq_items?.length || 0), 0)}
+                  {pages.reduce((acc, p) => acc + (p.faq_content?.length || 0), 0)}
                 </p>
                 <p className="text-sm text-muted-foreground">FAQ Items</p>
               </div>
@@ -441,7 +441,7 @@ export default function IndustryPagesAdmin() {
                         <div className="flex items-center gap-3 text-sm">
                           <span className="flex items-center gap-1" title="FAQ Items">
                             <HelpCircle className="h-4 w-4 text-blue-500" />
-                            {page.faq_items?.length || 0}
+                            {page.faq_content?.length || 0}
                           </span>
                           <span className="flex items-center gap-1" title="Has Educational Content">
                             <FileText className="h-4 w-4 text-green-500" />
@@ -638,9 +638,9 @@ export default function IndustryPagesAdmin() {
             {/* FAQ Items */}
             <div className="border-t pt-4">
               <h3 className="font-medium mb-3">FAQ Items</h3>
-              {formData.faq_items.length > 0 && (
+              {formData.faq_content.length > 0 && (
                 <div className="space-y-2 mb-4">
-                  {formData.faq_items.map((faq, index) => (
+                  {formData.faq_content.map((faq, index) => (
                     <div key={index} className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
                       <div className="flex-1">
                         <p className="font-medium text-sm">{faq.question}</p>
