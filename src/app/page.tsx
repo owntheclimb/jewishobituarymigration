@@ -9,7 +9,7 @@ import { Search, Heart, BookOpen } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { TrackedButton } from "@/components/TrackedButton";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
-import heroImage from "@/assets/hero-image.jpg";
+// Stable hero image URL from /public folder
 
 // New consolidated homepage components
 import ValuePromise from "@/components/home/ValuePromise";
@@ -31,7 +31,7 @@ const Index = () => {
         {/* Background Image */}
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroImage.src})` }}
+          style={{ backgroundImage: `url(/images/hero-cemetery.jpg)` }}
         />
 
         {/* Warm gradient overlay for dignified feel */}
