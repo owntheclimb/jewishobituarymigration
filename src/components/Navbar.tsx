@@ -82,9 +82,7 @@ const Navbar = () => {
               )}
             </Button>
             
-            {loading ? (
-              <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
-            ) : user ? (
+            {user ? (
               <>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
