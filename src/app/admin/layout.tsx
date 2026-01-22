@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -76,8 +76,27 @@ export default function AdminLayout({
     }
   }, [user, isAdmin, loading, router, isLoginPage, profile]);
 
-  // Show loading state while checking auth or loading profile
-  if (!isLoginPage && (loading || (user && !profile))) {
+  // Track profile loading timeout
+  const [profileTimeout, setProfileTimeout] = React.useState(false);
+
+  React.useEffect(() => {
+    // If user exists but profile is still null after 5 seconds, stop waiting
+    if (user && !profile && !loading) {
+      const timeout = setTimeout(() => {
+        setProfileTimeout(true);
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [user, profile, loading]);
+
+  // Define handleSignOut early so it can be used in error states
+  const handleSignOut = async () => {
+    await signOut();
+    router.replace('/admin/login');
+  };
+
+  // Show loading state while checking auth or loading profile (with timeout)
+  if (!isLoginPage && (loading || (user && !profile && !profileTimeout))) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center">
@@ -85,6 +104,31 @@ export default function AdminLayout({
           <p className="text-muted-foreground">
             {loading ? 'Loading...' : 'Loading profile...'}
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle case where profile couldn't be loaded (timeout or error)
+  if (!isLoginPage && user && !profile && profileTimeout) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="text-center max-w-md px-4">
+          <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">!</span>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Profile Not Found</h2>
+          <p className="text-muted-foreground mb-6">
+            Unable to load your admin profile. This may happen if your account doesn&apos;t have admin privileges or there&apos;s a connection issue.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+            <Button variant="destructive" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -106,11 +150,6 @@ export default function AdminLayout({
       </div>
     );
   }
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.replace('/admin/login');
-  };
 
   return (
     <div className="min-h-screen bg-muted/30">

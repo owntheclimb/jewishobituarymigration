@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabasePublic } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -94,6 +94,7 @@ const SearchPageContent = () => {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [dataTimedOut, setDataTimedOut] = useState(false); // Track if timeout occurred
 
   // AbortController ref for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -339,7 +340,7 @@ const SearchPageContent = () => {
         if (filters.militaryFilter) communityQueries.push({ type: 'military', slug: filters.militaryFilter });
 
         for (const query of communityQueries) {
-          const { data: community } = await supabase
+          const { data: community } = await supabasePublic
             .from('communities')
             .select('id')
             .eq('type', query.type)
@@ -347,7 +348,7 @@ const SearchPageContent = () => {
             .single();
 
           if (community) {
-            const { data: links } = await supabase
+            const { data: links } = await supabasePublic
               .from('community_links')
               .select('obituary_id')
               .eq('community_id', community.id);
@@ -377,9 +378,13 @@ const SearchPageContent = () => {
     try {
       setLoadError(null);
 
+      // Create a flag to track if timeout occurred
+      let didTimeout = false;
+
       // Wrap the Supabase query with timeout protection
+      // Use supabasePublic for faster queries without auth session waiting
       const fetchWithTimeout = async () => {
-        const { data, error } = await supabase
+        const { data, error } = await supabasePublic
           .from('obituaries')
           .select('*')
           .eq('published', true)
@@ -391,11 +396,26 @@ const SearchPageContent = () => {
         return data || [];
       };
 
-      const data = await withTimeout(
-        fetchWithTimeout(),
-        DB_TIMEOUT_MS,
-        [] // Return empty array on timeout
-      );
+      // Race between fetch and timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          didTimeout = true;
+          reject(new Error('TIMEOUT'));
+        }, DB_TIMEOUT_MS);
+      });
+
+      let data: Obituary[] = [];
+      try {
+        data = await Promise.race([fetchWithTimeout(), timeoutPromise]);
+      } catch (e) {
+        if (didTimeout) {
+          console.warn('Obituaries fetch timed out after ' + DB_TIMEOUT_MS + 'ms');
+          setDataTimedOut(true);
+          data = [];
+        } else {
+          throw e;
+        }
+      }
 
       // Check again if aborted before updating state
       if (abortControllerRef.current?.signal.aborted) {
@@ -428,16 +448,20 @@ const SearchPageContent = () => {
     try {
       setExternalError(null);
 
+      // Create a flag to track if timeout occurred
+      let didTimeout = false;
+
       // Wrap the external fetches with timeout protection
+      // Use supabasePublic for faster queries without auth session waiting
       const fetchWithTimeout = async () => {
         // Fetch both Jewish RSS and scraped obituaries in parallel
         const [jewishResult, scrapedResult] = await Promise.all([
-          supabase
+          supabasePublic
             .from('obits')
             .select('*')
             .order('published_at', { ascending: false, nullsFirst: false })
             .limit(1000), // Add limit to prevent loading too many records
-          supabase
+          supabasePublic
             .from('scraped_obituaries')
             .select('*')
             .order('published_at', { ascending: false, nullsFirst: false })
@@ -458,11 +482,26 @@ const SearchPageContent = () => {
         ];
       };
 
-      const combined = await withTimeout(
-        fetchWithTimeout(),
-        EXTERNAL_TIMEOUT_MS,
-        [] // Return empty array on timeout
-      );
+      // Race between fetch and timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          didTimeout = true;
+          reject(new Error('TIMEOUT'));
+        }, EXTERNAL_TIMEOUT_MS);
+      });
+
+      let combined: (JewishObit | ScrapedObituary)[] = [];
+      try {
+        combined = await Promise.race([fetchWithTimeout(), timeoutPromise]);
+      } catch (e) {
+        if (didTimeout) {
+          console.warn('External obituaries fetch timed out after ' + EXTERNAL_TIMEOUT_MS + 'ms');
+          setDataTimedOut(true);
+          combined = [];
+        } else {
+          throw e;
+        }
+      }
 
       // Check again if aborted before updating state
       if (abortControllerRef.current?.signal.aborted) {
@@ -886,16 +925,45 @@ const SearchPageContent = () => {
           <SearchFilters filters={filters} onChange={setFilters} />
         </div>
 
+        {/* Timeout Warning Banner */}
+        {dataTimedOut && (filteredObituaries.length === 0 || externalObits.length === 0) && (
+          <div className="max-w-4xl mx-auto mb-6 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium text-amber-800 dark:text-amber-200">Connection Issue</h4>
+                <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                  Some obituaries may not be showing due to a slow connection. Try refreshing the page or check back later.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-3 border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900"
+                  onClick={() => window.location.reload()}
+                >
+                  Refresh Page
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {filteredObituaries.length === 0 ? (
           <div className="text-center py-12 animate-fade-in">
             <Heart className="mx-auto h-16 w-16 text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              {filters.searchTerm ? 'No obituaries found' : 'No obituaries yet'}
+              {dataTimedOut
+                ? 'Unable to Load Obituaries'
+                : filters.searchTerm
+                  ? 'No obituaries found'
+                  : 'No obituaries yet'}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {filters.searchTerm
-                ? 'Try adjusting your search filters'
-                : 'Be the first to create a meaningful tribute'
+              {dataTimedOut
+                ? 'There was a problem loading the obituaries. Please try refreshing the page.'
+                : filters.searchTerm
+                  ? 'Try adjusting your search filters'
+                  : 'Be the first to create a meaningful tribute'
               }
             </p>
             <Link href="/create-obituary">
@@ -928,7 +996,10 @@ const SearchPageContent = () => {
         {filteredObituaries.length > 0 && (
           <div className="text-center mt-12 animate-fade-in">
             <p className="text-muted-foreground">
-              Showing {filteredObituaries.length} of {(obituaries?.length || 0) + (externalObits?.length || 0)} obituaries
+              {filters.searchTerm || filters.dateFrom || filters.dateTo || filters.cityFilter
+                ? `Found ${filteredObituaries.length} matching obituaries`
+                : `Showing ${filteredObituaries.length} obituaries`
+              }
             </p>
           </div>
         )}
