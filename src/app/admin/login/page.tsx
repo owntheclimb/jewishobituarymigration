@@ -25,15 +25,24 @@ const AdminLoginPage = () => {
     // If user is logged in and is admin, redirect to admin dashboard
     if (!authLoading && user && isAdmin) {
       router.replace('/admin');
+      return;
     }
     // If user is logged in, profile is loaded, but not admin, show error
     // Only show error when we're certain profile has been fetched (profile !== null)
     if (!authLoading && user && profile && !isAdmin) {
+      setLoading(false); // Reset loading state
       toast({
         title: 'Access Denied',
         description: 'You do not have admin privileges.',
         variant: 'destructive',
       });
+    }
+    // Safety: if auth loaded and user exists but no profile after a delay, reset loading
+    if (!authLoading && user && !profile) {
+      const timeout = setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+      return () => clearTimeout(timeout);
     }
   }, [user, isAdmin, authLoading, router, toast, profile]);
 

@@ -33,22 +33,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = React.useState<Profile | null>(null);
   const [loading, setLoading] = React.useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+  const fetchProfile = async (userId: string, retries = 3): Promise<Profile | null> => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return null;
-    }
+      if (error) {
+        // If RLS/auth error, wait and retry (token might not be ready)
+        if (attempt < retries - 1) {
+          await new Promise(resolve => setTimeout(resolve, 200 * (attempt + 1)));
+          continue;
+        }
+        console.error('Error fetching profile:', error);
+        return null;
+      }
 
-    if (data) {
-      setProfile(data as Profile);
+      if (data) {
+        setProfile(data as Profile);
+        return data as Profile;
+      }
     }
-    return data;
+    return null;
   };
 
   const refreshProfile = async () => {
