@@ -55,12 +55,22 @@ const CartDrawer = () => {
                     key={item.id}
                     className="flex gap-4 p-4 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/40 transition-colors"
                   >
-                    <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-background">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Hide broken image, show fallback
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                      ) : null}
+                      <div className={`absolute inset-0 flex items-center justify-center ${item.image ? 'hidden' : ''}`}>
+                        <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+                      </div>
                     </div>
 
                     <div className="flex-1 min-w-0">

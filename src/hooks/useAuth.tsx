@@ -62,13 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let hasCompletedInitialLoad = false;
 
     // Set a timeout to prevent infinite loading if auth hangs
-    // Increased to 30 seconds to give more time for Supabase connection
+    // Reduced to 5 seconds for better UX
     const loadingTimeout = setTimeout(() => {
-      if (isMounted && loading && !hasCompletedInitialLoad) {
+      if (isMounted && !hasCompletedInitialLoad) {
         console.warn('Auth loading timeout - forcing completion');
         setLoading(false);
       }
-    }, 30000); // 30 second timeout
+    }, 5000); // 5 second timeout
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
