@@ -3,9 +3,41 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const revalidate = 3600; // Cache for 1 hour
 
+// Fallback response for quick serving
+const FALLBACK_STATS = {
+  totalMemorials: 0,
+  userObituaries: 0,
+  scrapedObituaries: 0,
+  funeralHomeSources: 0,
+  notableFigures: 6,
+  synagogues: 0,
+  schools: 0,
+  organizations: 0,
+  lastUpdated: new Date().toISOString(),
+  cached: true,
+};
+
+// Safe query wrapper that returns fallback on error/timeout
+async function safeQuery<T>(
+  queryFn: () => PromiseLike<{ data: T | null; count?: number | null; error: unknown }>,
+  fallback: { data: T | null; count?: number | null; error: null }
+): Promise<{ data: T | null; count?: number | null; error: unknown }> {
+  try {
+    const result = await Promise.race([
+      queryFn(),
+      new Promise<{ data: T | null; count?: number | null; error: null }>((resolve) =>
+        setTimeout(() => resolve(fallback), 5000)
+      ),
+    ]);
+    return result;
+  } catch {
+    return fallback;
+  }
+}
+
 export async function GET() {
   try {
-    // Fetch real counts from database
+    // Fetch real counts from database with individual timeouts
     const [
       obituaryResult,
       scrapedObituaryResult,
@@ -13,28 +45,40 @@ export async function GET() {
       communitiesResult,
     ] = await Promise.all([
       // User-created obituaries (published and public)
-      supabase
-        .from('obituaries')
-        .select('*', { count: 'exact', head: true })
-        .eq('published', true)
-        .eq('visibility', 'public'),
+      safeQuery(
+        () => supabase
+          .from('obituaries')
+          .select('*', { count: 'exact', head: true })
+          .eq('published', true)
+          .eq('visibility', 'public'),
+        { count: 0, data: null, error: null }
+      ),
 
       // Scraped obituaries
-      supabase
-        .from('scraped_obituaries')
-        .select('*', { count: 'exact', head: true }),
+      safeQuery(
+        () => supabase
+          .from('scraped_obituaries')
+          .select('*', { count: 'exact', head: true }),
+        { count: 0, data: null, error: null }
+      ),
 
       // Active funeral home sources
-      supabase
-        .from('scraped_sources')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_active', true),
+      safeQuery(
+        () => supabase
+          .from('scraped_sources')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_active', true),
+        { count: 0, data: null, error: null }
+      ),
 
       // Communities by type
-      supabase
-        .from('communities')
-        .select('type', { count: 'exact' })
-        .eq('status', 'active'),
+      safeQuery(
+        () => supabase
+          .from('communities')
+          .select('type', { count: 'exact' })
+          .eq('status', 'active'),
+        { data: [], error: null }
+      ),
     ]);
 
     // Calculate totals with fallbacks to 0
@@ -64,17 +108,6 @@ export async function GET() {
     console.error('Error fetching homepage stats:', error);
 
     // Return minimal fallback data on error
-    return NextResponse.json({
-      totalMemorials: 0,
-      userObituaries: 0,
-      scrapedObituaries: 0,
-      funeralHomeSources: 0,
-      notableFigures: 6,
-      synagogues: 0,
-      schools: 0,
-      organizations: 0,
-      lastUpdated: new Date().toISOString(),
-      error: 'Failed to fetch complete statistics',
-    }, { status: 500 });
+    return NextResponse.json(FALLBACK_STATS, { status: 200 });
   }
 }

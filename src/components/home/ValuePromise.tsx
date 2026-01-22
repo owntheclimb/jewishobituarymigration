@@ -71,47 +71,57 @@ const ValuePromise = () => {
             </TrackedLink>
           </div>
 
-          {/* Right Column - 40% - Memorial Preview Card */}
+          {/* Right Column - 40% - Elegant Memorial Preview Card */}
           <div className="lg:col-span-2">
-            <Card className="overflow-hidden shadow-elegant border-0">
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-4">
-                  <div className="w-3 h-3 rounded-full bg-red-400/80" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
-                  <div className="w-3 h-3 rounded-full bg-green-400/80" />
-                </div>
-                <div className="bg-white rounded-lg p-5 shadow-lg">
+            {/* Floating elegant card with subtle glow - NO browser chrome */}
+            <div className="relative">
+              {/* Subtle glow effect behind the card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent blur-2xl rounded-3xl transform scale-105" />
+
+              <Card className="relative overflow-hidden shadow-elegant border border-primary/10 bg-white">
+                {/* Elegant header with gradient accent */}
+                <div className="h-2 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
+
+                <div className="p-6">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-20 rounded bg-gradient-to-br from-slate-200 to-slate-300 flex-shrink-0" />
+                    {/* Photo placeholder with warm gradient */}
+                    <div className="w-20 h-24 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-slate-200">
+                      <svg className="w-10 h-10 text-slate-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                    </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-lg text-foreground">Sarah Goldman</h4>
-                      <p className="text-sm text-muted-foreground">שרה גאָלדמאַן ז״ל</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <h4 className="font-bold text-xl text-foreground font-cormorant">Sarah Goldman</h4>
+                      <p className="text-sm text-primary/70 mb-1">שרה גאָלדמאַן ז״ל</p>
+                      <p className="text-sm text-muted-foreground">
                         March 15, 1942 - January 8, 2025
                       </p>
                     </div>
                   </div>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p className="leading-relaxed">
+
+                  <div className="space-y-3">
+                    <p className="text-muted-foreground leading-relaxed">
                       Beloved mother, grandmother, and community leader who touched countless lives through her dedication to education and tzedakah...
                     </p>
-                    <div className="flex gap-2 pt-2">
-                      <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
                         Shiva Information
                       </span>
-                      <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                      <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
                         Light a Candle
                       </span>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="bg-muted/30 px-6 py-4 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Your memorial will be beautifully preserved forever
-                </p>
-              </div>
-            </Card>
+
+                {/* Footer */}
+                <div className="bg-muted/20 px-6 py-4 border-t border-muted/30">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Your memorial will be beautifully preserved forever
+                  </p>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
