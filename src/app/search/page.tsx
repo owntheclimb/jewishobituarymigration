@@ -928,7 +928,7 @@ const SearchPageContent = () => {
         {filteredObituaries.length > 0 && (
           <div className="text-center mt-12 animate-fade-in">
             <p className="text-muted-foreground">
-              Showing {filteredObituaries.length} of {obituaries.length} obituaries
+              Showing {filteredObituaries.length} of {(obituaries?.length || 0) + (externalObits?.length || 0)} obituaries
             </p>
           </div>
         )}

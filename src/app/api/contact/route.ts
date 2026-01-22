@@ -1,6 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { z } from 'zod';
 
 // Lazy initialize Supabase client for server-side operations
@@ -8,8 +7,11 @@ let supabase: SupabaseClient | null = null;
 
 function getSupabase() {
   if (!supabase) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pinwpummsftjsqvszchs.supabase.co';
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url) {
+      throw new Error('NEXT_PUBLIC_SUPABASE_URL is required');
+    }
     if (!key) {
       throw new Error('SUPABASE_SERVICE_ROLE_KEY is required');
     }
@@ -42,13 +44,6 @@ export async function POST(request: Request) {
 
     const { name, email, subject, message } = validation.data;
 
-    // Get request headers for additional context
-    const headersList = await headers();
-    const userAgent = headersList.get('user-agent') || '';
-    const ip = headersList.get('x-forwarded-for')?.split(',')[0] ||
-               headersList.get('x-real-ip') ||
-               'unknown';
-
     // Insert the contact submission
     const { data, error } = await getSupabase()
       .from('contact_submissions')
@@ -57,8 +52,6 @@ export async function POST(request: Request) {
         email,
         subject,
         message,
-        ip_address: ip,
-        user_agent: userAgent,
         status: 'new'
       })
       .select('id')

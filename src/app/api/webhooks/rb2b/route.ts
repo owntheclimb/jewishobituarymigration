@@ -1,19 +1,60 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import crypto from 'crypto';
 
 // Lazy initialize Supabase client for server-side webhook handling
 let supabase: SupabaseClient | null = null;
 
 function getSupabase() {
   if (!supabase) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pinwpummsftjsqvszchs.supabase.co';
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url) {
+      throw new Error('NEXT_PUBLIC_SUPABASE_URL is required');
+    }
     if (!key) {
       throw new Error('SUPABASE_SERVICE_ROLE_KEY is required');
     }
     supabase = createClient(url, key);
   }
   return supabase;
+}
+
+/**
+ * Verify webhook signature using HMAC-SHA256
+ * Supports multiple signature header formats for compatibility
+ */
+function verifyWebhookSignature(payload: string, signature: string | null, secret: string): boolean {
+  if (!signature) return false;
+
+  // Handle different signature formats
+  // Format 1: sha256=<signature>
+  // Format 2: <signature>
+  const signatureValue = signature.startsWith('sha256=')
+    ? signature.slice(7)
+    : signature;
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload, 'utf8')
+    .digest('hex');
+
+  // Use timing-safe comparison to prevent timing attacks
+  try {
+    const signatureBuffer = Buffer.from(signatureValue, 'hex');
+    const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+
+    // timingSafeEqual requires equal length buffers
+    if (signatureBuffer.length !== expectedBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
+  } catch (error) {
+    console.error('Webhook signature verification error:', error);
+    return false;
+  }
 }
 
 /**
@@ -44,7 +85,31 @@ function getSupabase() {
  */
 export async function POST(request: Request) {
   try {
-    const payload = await request.json();
+    // Get the raw body for signature verification
+    const rawBody = await request.text();
+    const payload = JSON.parse(rawBody);
+
+    // Verify webhook signature if secret is configured
+    const webhookSecret = process.env.RB2B_WEBHOOK_SECRET;
+    if (webhookSecret) {
+      const headersList = await headers();
+      // Check common signature header names
+      const signature =
+        headersList.get('x-rb2b-signature') ||
+        headersList.get('x-webhook-signature') ||
+        headersList.get('x-signature');
+
+      if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
+        console.error('RB2B webhook signature verification failed');
+        return NextResponse.json(
+          { error: 'Invalid webhook signature' },
+          { status: 401 }
+        );
+      }
+    } else {
+      // Log warning if no secret configured (for development awareness)
+      console.warn('RB2B_WEBHOOK_SECRET not configured - webhook signature verification disabled');
+    }
 
     // Validate required fields
     if (!payload.id && !payload.email) {
