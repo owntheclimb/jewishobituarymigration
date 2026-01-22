@@ -12,9 +12,23 @@ import {
   ArrowDownRight,
   Activity,
   Clock,
+  FileText,
+  UserPlus,
+  Globe,
+  Target,
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 
 interface MetricCardProps {
   title: string;
@@ -67,6 +81,71 @@ function MetricCard({ title, value, change, changeType = 'neutral', icon, href }
   return content;
 }
 
+interface HeroMetricCardProps {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+  change?: string;
+  changeType?: 'positive' | 'negative' | 'neutral';
+  icon: React.ReactNode;
+  iconBgColor: string;
+  iconColor: string;
+}
+
+function HeroMetricCard({
+  title,
+  value,
+  subtitle,
+  change,
+  changeType = 'neutral',
+  icon,
+  iconBgColor,
+  iconColor,
+}: HeroMetricCardProps) {
+  return (
+    <Card className="border-2 hover:shadow-lg transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-4xl font-bold mt-2">{value}</p>
+            {subtitle && (
+              <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+            )}
+            {change && (
+              <p
+                className={`text-sm mt-2 flex items-center gap-1 font-medium ${
+                  changeType === 'positive'
+                    ? 'text-green-600'
+                    : changeType === 'negative'
+                    ? 'text-red-600'
+                    : 'text-muted-foreground'
+                }`}
+              >
+                {changeType === 'positive' ? (
+                  <ArrowUpRight className="h-4 w-4" />
+                ) : changeType === 'negative' ? (
+                  <ArrowDownRight className="h-4 w-4" />
+                ) : null}
+                {change}
+              </p>
+            )}
+          </div>
+          <div className={`h-14 w-14 ${iconBgColor} rounded-xl flex items-center justify-center`}>
+            <div className={iconColor}>{icon}</div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+interface GrowthDataPoint {
+  month: string;
+  obituaries: number;
+  users: number;
+}
+
 interface RecentLead {
   id: string;
   full_name: string | null;
@@ -81,6 +160,33 @@ interface TopEvent {
   count: number;
 }
 
+interface BusinessMetrics {
+  totalObituaries: number;
+  obituariesThisMonth: number;
+  obituariesLastMonth: number;
+  totalUsers: number;
+  usersThisMonth: number;
+  usersLastMonth: number;
+  visitorsThisMonth: number;
+  visitorsLastMonth: number;
+  conversionRate: number;
+}
+
+// Helper function to calculate percentage change
+function calculatePercentChange(current: number, previous: number): { value: string; type: 'positive' | 'negative' | 'neutral' } {
+  if (previous === 0) {
+    return current > 0
+      ? { value: 'New this month', type: 'positive' }
+      : { value: 'No change', type: 'neutral' };
+  }
+  const change = ((current - previous) / previous) * 100;
+  if (change === 0) return { value: 'No change', type: 'neutral' };
+  return {
+    value: `${change > 0 ? '+' : ''}${change.toFixed(0)}% vs last month`,
+    type: change > 0 ? 'positive' : 'negative',
+  };
+}
+
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState({
     totalEvents: 0,
@@ -89,50 +195,164 @@ export default function AdminDashboard() {
     topEvents: [] as TopEvent[],
     recentLeads: [] as RecentLead[],
   });
+  const [businessMetrics, setBusinessMetrics] = useState<BusinessMetrics>({
+    totalObituaries: 0,
+    obituariesThisMonth: 0,
+    obituariesLastMonth: 0,
+    totalUsers: 0,
+    usersThisMonth: 0,
+    usersLastMonth: 0,
+    visitorsThisMonth: 0,
+    visitorsLastMonth: 0,
+    conversionRate: 0,
+  });
+  const [growthData, setGrowthData] = useState<GrowthDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        // Get total events (last 24 hours)
+        // Date helpers
+        const now = new Date();
+        const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const firstOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-
-        const { count: eventCount } = await supabase
-          .from('analytics_events')
-          .select('*', { count: 'exact', head: true })
-          .gte('created_at', yesterday.toISOString());
-
-        // Get total leads
-        const { count: leadCount } = await supabase
-          .from('rb2b_leads')
-          .select('*', { count: 'exact', head: true });
-
-        // Get new leads today
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const { count: newLeadsCount } = await supabase
-          .from('rb2b_leads')
-          .select('*', { count: 'exact', head: true })
-          .gte('created_at', today.toISOString());
+        // Fetch all data in parallel
+        const [
+          // Business metrics
+          totalObituariesRes,
+          obituariesThisMonthRes,
+          obituariesLastMonthRes,
+          totalUsersRes,
+          usersThisMonthRes,
+          usersLastMonthRes,
+          visitorsThisMonthRes,
+          visitorsLastMonthRes,
+          // Growth data (last 6 months)
+          obituariesGrowthRes,
+          usersGrowthRes,
+          // Existing metrics
+          eventCountRes,
+          leadCountRes,
+          newLeadsCountRes,
+          recentLeadsRes,
+          eventsRes,
+        ] = await Promise.all([
+          // Obituaries
+          supabase.from('obituaries').select('*', { count: 'exact', head: true }),
+          supabase.from('obituaries').select('*', { count: 'exact', head: true })
+            .gte('created_at', firstOfMonth.toISOString()),
+          supabase.from('obituaries').select('*', { count: 'exact', head: true })
+            .gte('created_at', firstOfLastMonth.toISOString())
+            .lt('created_at', firstOfMonth.toISOString()),
+          // Users
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('profiles').select('*', { count: 'exact', head: true })
+            .gte('created_at', firstOfMonth.toISOString()),
+          supabase.from('profiles').select('*', { count: 'exact', head: true })
+            .gte('created_at', firstOfLastMonth.toISOString())
+            .lt('created_at', firstOfMonth.toISOString()),
+          // Visitors (unique sessions)
+          supabase.from('analytics_events').select('session_id')
+            .gte('created_at', firstOfMonth.toISOString()),
+          supabase.from('analytics_events').select('session_id')
+            .gte('created_at', firstOfLastMonth.toISOString())
+            .lt('created_at', firstOfMonth.toISOString()),
+          // Growth data
+          supabase.from('obituaries').select('created_at')
+            .gte('created_at', sixMonthsAgo.toISOString()),
+          supabase.from('profiles').select('created_at')
+            .gte('created_at', sixMonthsAgo.toISOString()),
+          // Existing metrics
+          supabase.from('analytics_events').select('*', { count: 'exact', head: true })
+            .gte('created_at', yesterday.toISOString()),
+          supabase.from('rb2b_leads').select('*', { count: 'exact', head: true }),
+          supabase.from('rb2b_leads').select('*', { count: 'exact', head: true })
+            .gte('created_at', today.toISOString()),
+          supabase.from('rb2b_leads')
+            .select('id, full_name, email, company_name, page_url, created_at')
+            .order('created_at', { ascending: false })
+            .limit(5),
+          supabase.from('analytics_events').select('event_name')
+            .gte('created_at', yesterday.toISOString()),
+        ]);
 
-        // Get recent leads
-        const { data: recentLeads } = await supabase
-          .from('rb2b_leads')
-          .select('id, full_name, email, company_name, page_url, created_at')
-          .order('created_at', { ascending: false })
-          .limit(5);
+        // Calculate unique visitors
+        const visitorsThisMonth = new Set(
+          visitorsThisMonthRes.data?.map((e) => e.session_id).filter(Boolean)
+        ).size;
+        const visitorsLastMonth = new Set(
+          visitorsLastMonthRes.data?.map((e) => e.session_id).filter(Boolean)
+        ).size;
 
-        // Get top events
-        const { data: events } = await supabase
-          .from('analytics_events')
-          .select('event_name')
-          .gte('created_at', yesterday.toISOString());
+        // Calculate conversion rate (users who created obituaries)
+        const totalUsers = totalUsersRes.count || 0;
+        const totalObituaries = totalObituariesRes.count || 0;
+        const conversionRate = totalUsers > 0 ? (totalObituaries / totalUsers) * 100 : 0;
 
-        // Count events by name
+        // Process growth data by month
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const growthByMonth: Record<string, { obituaries: number; users: number }> = {};
+
+        // Initialize last 6 months
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const key = `${monthNames[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
+          growthByMonth[key] = { obituaries: 0, users: 0 };
+        }
+
+        // Count obituaries by month
+        obituariesGrowthRes.data?.forEach((item) => {
+          if (item.created_at) {
+            const d = new Date(item.created_at);
+            const key = `${monthNames[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
+            if (growthByMonth[key]) {
+              growthByMonth[key].obituaries++;
+            }
+          }
+        });
+
+        // Count users by month
+        usersGrowthRes.data?.forEach((item) => {
+          if (item.created_at) {
+            const d = new Date(item.created_at);
+            const key = `${monthNames[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
+            if (growthByMonth[key]) {
+              growthByMonth[key].users++;
+            }
+          }
+        });
+
+        const growthDataArray: GrowthDataPoint[] = Object.entries(growthByMonth).map(
+          ([month, data]) => ({
+            month,
+            obituaries: data.obituaries,
+            users: data.users,
+          })
+        );
+
+        setGrowthData(growthDataArray);
+
+        setBusinessMetrics({
+          totalObituaries,
+          obituariesThisMonth: obituariesThisMonthRes.count || 0,
+          obituariesLastMonth: obituariesLastMonthRes.count || 0,
+          totalUsers,
+          usersThisMonth: usersThisMonthRes.count || 0,
+          usersLastMonth: usersLastMonthRes.count || 0,
+          visitorsThisMonth,
+          visitorsLastMonth,
+          conversionRate,
+        });
+
+        // Count events by name (existing logic)
         const eventCounts: Record<string, number> = {};
-        events?.forEach((e) => {
+        eventsRes.data?.forEach((e) => {
           eventCounts[e.event_name] = (eventCounts[e.event_name] || 0) + 1;
         });
 
@@ -142,11 +362,11 @@ export default function AdminDashboard() {
           .slice(0, 5);
 
         setMetrics({
-          totalEvents: eventCount || 0,
-          totalLeads: leadCount || 0,
-          newLeadsToday: newLeadsCount || 0,
+          totalEvents: eventCountRes.count || 0,
+          totalLeads: leadCountRes.count || 0,
+          newLeadsToday: newLeadsCountRes.count || 0,
           topEvents,
-          recentLeads: recentLeads || [],
+          recentLeads: recentLeadsRes.data || [],
         });
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -169,6 +389,20 @@ export default function AdminDashboard() {
     );
   }
 
+  // Calculate changes for display
+  const obituaryChange = calculatePercentChange(
+    businessMetrics.obituariesThisMonth,
+    businessMetrics.obituariesLastMonth
+  );
+  const userChange = calculatePercentChange(
+    businessMetrics.usersThisMonth,
+    businessMetrics.usersLastMonth
+  );
+  const visitorChange = calculatePercentChange(
+    businessMetrics.visitorsThisMonth,
+    businessMetrics.visitorsLastMonth
+  );
+
   return (
     <div>
       <div className="mb-8">
@@ -178,7 +412,207 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Key Metrics */}
+      {/* Business Overview - Hero KPIs */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <TrendingUp className="h-5 w-5" />
+          Business Overview
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <HeroMetricCard
+            title="Total Obituaries"
+            value={businessMetrics.totalObituaries.toLocaleString()}
+            subtitle={`${businessMetrics.obituariesThisMonth} this month`}
+            change={obituaryChange.value}
+            changeType={obituaryChange.type}
+            icon={<FileText className="h-7 w-7" />}
+            iconBgColor="bg-violet-100"
+            iconColor="text-violet-600"
+          />
+          <HeroMetricCard
+            title="Total Users"
+            value={businessMetrics.totalUsers.toLocaleString()}
+            subtitle={`${businessMetrics.usersThisMonth} this month`}
+            change={userChange.value}
+            changeType={userChange.type}
+            icon={<UserPlus className="h-7 w-7" />}
+            iconBgColor="bg-blue-100"
+            iconColor="text-blue-600"
+          />
+          <HeroMetricCard
+            title="Visitors This Month"
+            value={businessMetrics.visitorsThisMonth.toLocaleString()}
+            subtitle="Unique sessions"
+            change={visitorChange.value}
+            changeType={visitorChange.type}
+            icon={<Globe className="h-7 w-7" />}
+            iconBgColor="bg-green-100"
+            iconColor="text-green-600"
+          />
+          <HeroMetricCard
+            title="Conversion Rate"
+            value={`${businessMetrics.conversionRate.toFixed(1)}%`}
+            subtitle="Users → Obituaries"
+            change={businessMetrics.conversionRate > 0 ? 'Active creators' : 'No conversions yet'}
+            changeType={businessMetrics.conversionRate > 0 ? 'positive' : 'neutral'}
+            icon={<Target className="h-7 w-7" />}
+            iconBgColor="bg-orange-100"
+            iconColor="text-orange-600"
+          />
+        </div>
+      </div>
+
+      {/* Growth Chart & Conversion Funnel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Growth Over Time Chart */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Growth Over Time
+            </CardTitle>
+            <CardDescription>New users and obituaries per month (last 6 months)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {growthData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={280}>
+                <AreaChart data={growthData}>
+                  <defs>
+                    <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorObituaries" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip />
+                  <Legend />
+                  <Area
+                    type="monotone"
+                    dataKey="users"
+                    name="New Users"
+                    stroke="#3b82f6"
+                    fillOpacity={1}
+                    fill="url(#colorUsers)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="obituaries"
+                    name="New Obituaries"
+                    stroke="#8b5cf6"
+                    fillOpacity={1}
+                    fill="url(#colorObituaries)"
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[280px] flex items-center justify-center text-muted-foreground">
+                No growth data available yet
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Conversion Funnel */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Conversion Funnel
+            </CardTitle>
+            <CardDescription>User journey from visit to creation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Visitors */}
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium">Visitors (This Month)</span>
+                  <span className="font-bold">{businessMetrics.visitorsThisMonth.toLocaleString()}</span>
+                </div>
+                <div className="h-4 bg-green-500 rounded-full w-full" />
+              </div>
+
+              {/* Arrow */}
+              <div className="flex items-center justify-center text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <ArrowDownRight className="h-4 w-4" />
+                  <span className="text-sm">
+                    {businessMetrics.visitorsThisMonth > 0
+                      ? `${((businessMetrics.totalUsers / businessMetrics.visitorsThisMonth) * 100).toFixed(1)}% registered`
+                      : '—'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Users */}
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium">Registered Users</span>
+                  <span className="font-bold">{businessMetrics.totalUsers.toLocaleString()}</span>
+                </div>
+                <div className="h-4 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 rounded-full"
+                    style={{
+                      width: `${
+                        businessMetrics.visitorsThisMonth > 0
+                          ? Math.min((businessMetrics.totalUsers / businessMetrics.visitorsThisMonth) * 100, 100)
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex items-center justify-center text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <ArrowDownRight className="h-4 w-4" />
+                  <span className="text-sm">
+                    {businessMetrics.conversionRate > 0
+                      ? `${businessMetrics.conversionRate.toFixed(1)}% created obituary`
+                      : '—'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Obituaries */}
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium">Obituaries Created</span>
+                  <span className="font-bold">{businessMetrics.totalObituaries.toLocaleString()}</span>
+                </div>
+                <div className="h-4 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-violet-500 rounded-full"
+                    style={{
+                      width: `${
+                        businessMetrics.totalUsers > 0
+                          ? Math.min((businessMetrics.totalObituaries / businessMetrics.totalUsers) * 100, 100)
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Activity Metrics */}
+      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        <Activity className="h-5 w-5" />
+        Activity Metrics
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title="Events (24h)"

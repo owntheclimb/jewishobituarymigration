@@ -18,6 +18,11 @@ import {
   Globe,
   RefreshCw,
   ExternalLink,
+  MessageSquare,
+  Heart,
+  Flame,
+  ArrowUpRight,
+  ArrowDownRight,
 } from 'lucide-react';
 import {
   BarChart,
@@ -42,13 +47,47 @@ interface DailyData {
   events: number;
 }
 
+interface EngagementMetrics {
+  guestbookEntries: number;
+  guestbookPrevious: number;
+  memories: number;
+  memoriesPrevious: number;
+  candlesLit: number;
+  candlesPrevious: number;
+}
+
+// Helper function to calculate percentage change
+function calculateChange(current: number, previous: number): { value: string; type: 'positive' | 'negative' | 'neutral' } {
+  if (previous === 0) {
+    return current > 0
+      ? { value: `+${current} new`, type: 'positive' }
+      : { value: 'No change', type: 'neutral' };
+  }
+  const change = ((current - previous) / previous) * 100;
+  if (change === 0) return { value: 'No change', type: 'neutral' };
+  return {
+    value: `${change > 0 ? '+' : ''}${change.toFixed(0)}% vs previous`,
+    type: change > 0 ? 'positive' : 'negative',
+  };
+}
+
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState('7d');
   const [loading, setLoading] = useState(true);
   const [pageViews, setPageViews] = useState<PageViewData[]>([]);
   const [dailyEvents, setDailyEvents] = useState<DailyData[]>([]);
   const [totalEvents, setTotalEvents] = useState(0);
+  const [previousEvents, setPreviousEvents] = useState(0);
   const [uniqueSessions, setUniqueSessions] = useState(0);
+  const [previousSessions, setPreviousSessions] = useState(0);
+  const [engagement, setEngagement] = useState<EngagementMetrics>({
+    guestbookEntries: 0,
+    guestbookPrevious: 0,
+    memories: 0,
+    memoriesPrevious: 0,
+    candlesLit: 0,
+    candlesPrevious: 0,
+  });
 
   useEffect(() => {
     fetchAnalytics();
@@ -63,21 +102,89 @@ export default function AnalyticsPage() {
       const startDate = new Date(now);
       startDate.setDate(startDate.getDate() - daysAgo);
 
-      // Fetch all events in range
-      const { data: events, error } = await supabase
-        .from('analytics_events')
-        .select('event_name, page_url, session_id, created_at')
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: true });
+      // Previous period for comparison
+      const previousStartDate = new Date(startDate);
+      previousStartDate.setDate(previousStartDate.getDate() - daysAgo);
 
-      if (error) throw error;
+      // Fetch all data in parallel
+      const [
+        eventsRes,
+        previousEventsRes,
+        guestbookRes,
+        guestbookPrevRes,
+        memoriesRes,
+        memoriesPrevRes,
+        candlesRes,
+        candlesPrevRes,
+      ] = await Promise.all([
+        // Current period events
+        supabase
+          .from('analytics_events')
+          .select('event_name, page_url, session_id, created_at')
+          .gte('created_at', startDate.toISOString())
+          .order('created_at', { ascending: true }),
+        // Previous period events
+        supabase
+          .from('analytics_events')
+          .select('session_id')
+          .gte('created_at', previousStartDate.toISOString())
+          .lt('created_at', startDate.toISOString()),
+        // Engagement metrics - current period
+        supabase
+          .from('guestbook_entries')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate.toISOString()),
+        supabase
+          .from('guestbook_entries')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', previousStartDate.toISOString())
+          .lt('created_at', startDate.toISOString()),
+        supabase
+          .from('memories')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate.toISOString()),
+        supabase
+          .from('memories')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', previousStartDate.toISOString())
+          .lt('created_at', startDate.toISOString()),
+        supabase
+          .from('analytics_events')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_name', 'candle_lit')
+          .gte('created_at', startDate.toISOString()),
+        supabase
+          .from('analytics_events')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_name', 'candle_lit')
+          .gte('created_at', previousStartDate.toISOString())
+          .lt('created_at', startDate.toISOString()),
+      ]);
+
+      const events = eventsRes.data;
+      if (eventsRes.error) throw eventsRes.error;
 
       // Calculate total events
       setTotalEvents(events?.length || 0);
+      setPreviousEvents(previousEventsRes.data?.length || 0);
 
       // Calculate unique sessions
       const sessions = new Set(events?.map((e) => e.session_id).filter(Boolean));
       setUniqueSessions(sessions.size);
+      const previousSessionsSet = new Set(
+        previousEventsRes.data?.map((e) => e.session_id).filter(Boolean)
+      );
+      setPreviousSessions(previousSessionsSet.size);
+
+      // Set engagement metrics
+      setEngagement({
+        guestbookEntries: guestbookRes.count || 0,
+        guestbookPrevious: guestbookPrevRes.count || 0,
+        memories: memoriesRes.count || 0,
+        memoriesPrevious: memoriesPrevRes.count || 0,
+        candlesLit: candlesRes.count || 0,
+        candlesPrevious: candlesPrevRes.count || 0,
+      });
 
       // Calculate page views
       const pageViewCounts: Record<string, number> = {};
@@ -156,6 +263,19 @@ export default function AnalyticsPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Total Events</p>
                 <p className="text-2xl font-bold">{totalEvents.toLocaleString()}</p>
+                {(() => {
+                  const change = calculateChange(totalEvents, previousEvents);
+                  return (
+                    <p className={`text-xs mt-1 flex items-center gap-1 ${
+                      change.type === 'positive' ? 'text-green-600' :
+                      change.type === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {change.type === 'positive' && <ArrowUpRight className="h-3 w-3" />}
+                      {change.type === 'negative' && <ArrowDownRight className="h-3 w-3" />}
+                      {change.value}
+                    </p>
+                  );
+                })()}
               </div>
             </div>
           </CardContent>
@@ -170,6 +290,19 @@ export default function AnalyticsPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Unique Sessions</p>
                 <p className="text-2xl font-bold">{uniqueSessions.toLocaleString()}</p>
+                {(() => {
+                  const change = calculateChange(uniqueSessions, previousSessions);
+                  return (
+                    <p className={`text-xs mt-1 flex items-center gap-1 ${
+                      change.type === 'positive' ? 'text-green-600' :
+                      change.type === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {change.type === 'positive' && <ArrowUpRight className="h-3 w-3" />}
+                      {change.type === 'negative' && <ArrowDownRight className="h-3 w-3" />}
+                      {change.value}
+                    </p>
+                  );
+                })()}
               </div>
             </div>
           </CardContent>
@@ -207,6 +340,94 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Engagement Metrics */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Heart className="h-5 w-5" />
+            Engagement Metrics
+          </CardTitle>
+          <CardDescription>
+            User interactions with obituaries for the selected period
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Guestbook Entries */}
+            <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+              <div className="h-12 w-12 bg-pink-100 rounded-full flex items-center justify-center">
+                <MessageSquare className="h-6 w-6 text-pink-600" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Guestbook Entries</p>
+                <p className="text-2xl font-bold">{engagement.guestbookEntries.toLocaleString()}</p>
+                {(() => {
+                  const change = calculateChange(engagement.guestbookEntries, engagement.guestbookPrevious);
+                  return (
+                    <p className={`text-xs mt-1 flex items-center gap-1 ${
+                      change.type === 'positive' ? 'text-green-600' :
+                      change.type === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {change.type === 'positive' && <ArrowUpRight className="h-3 w-3" />}
+                      {change.type === 'negative' && <ArrowDownRight className="h-3 w-3" />}
+                      {change.value}
+                    </p>
+                  );
+                })()}
+              </div>
+            </div>
+
+            {/* Memories Shared */}
+            <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+              <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <Heart className="h-6 w-6 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Memories Shared</p>
+                <p className="text-2xl font-bold">{engagement.memories.toLocaleString()}</p>
+                {(() => {
+                  const change = calculateChange(engagement.memories, engagement.memoriesPrevious);
+                  return (
+                    <p className={`text-xs mt-1 flex items-center gap-1 ${
+                      change.type === 'positive' ? 'text-green-600' :
+                      change.type === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {change.type === 'positive' && <ArrowUpRight className="h-3 w-3" />}
+                      {change.type === 'negative' && <ArrowDownRight className="h-3 w-3" />}
+                      {change.value}
+                    </p>
+                  );
+                })()}
+              </div>
+            </div>
+
+            {/* Candles Lit */}
+            <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+              <div className="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center">
+                <Flame className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Candles Lit</p>
+                <p className="text-2xl font-bold">{engagement.candlesLit.toLocaleString()}</p>
+                {(() => {
+                  const change = calculateChange(engagement.candlesLit, engagement.candlesPrevious);
+                  return (
+                    <p className={`text-xs mt-1 flex items-center gap-1 ${
+                      change.type === 'positive' ? 'text-green-600' :
+                      change.type === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {change.type === 'positive' && <ArrowUpRight className="h-3 w-3" />}
+                      {change.type === 'negative' && <ArrowDownRight className="h-3 w-3" />}
+                      {change.value}
+                    </p>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
