@@ -26,6 +26,38 @@ CREATE TABLE IF NOT EXISTS public.admin_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'key') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN key TEXT UNIQUE NOT NULL DEFAULT '';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'category') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN category TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'label') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN label TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'description') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN description TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'value') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN value JSONB DEFAULT '{}'::jsonb;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'default_value') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN default_value JSONB DEFAULT '{}'::jsonb;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'value_type') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN value_type TEXT DEFAULT 'string';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'sort_order') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN sort_order INTEGER DEFAULT 0;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'is_secret') THEN
+        ALTER TABLE public.admin_settings ADD COLUMN is_secret BOOLEAN DEFAULT false;
+    END IF;
+END $$;
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_admin_settings_key ON public.admin_settings(key);
 CREATE INDEX IF NOT EXISTS idx_admin_settings_category ON public.admin_settings(category);
@@ -35,6 +67,7 @@ ALTER TABLE public.admin_settings ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Only admins can view and manage settings
+DROP POLICY IF EXISTS "Admins can manage settings" ON public.admin_settings;
 CREATE POLICY "Admins can manage settings"
     ON public.admin_settings
     FOR ALL

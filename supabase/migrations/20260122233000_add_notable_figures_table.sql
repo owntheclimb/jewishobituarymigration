@@ -61,6 +61,7 @@ ALTER TABLE public.notable_figures ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can view published figures
+DROP POLICY IF EXISTS "Anyone can view published notable figures" ON public.notable_figures;
 CREATE POLICY "Anyone can view published notable figures"
     ON public.notable_figures
     FOR SELECT
@@ -68,6 +69,7 @@ CREATE POLICY "Anyone can view published notable figures"
     USING (status = 'published');
 
 -- Admins can manage all figures
+DROP POLICY IF EXISTS "Admins can manage notable figures" ON public.notable_figures;
 CREATE POLICY "Admins can manage notable figures"
     ON public.notable_figures
     FOR ALL

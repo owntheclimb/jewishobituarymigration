@@ -52,15 +52,15 @@ CREATE INDEX IF NOT EXISTS idx_vendors_featured ON public.vendors(featured) WHER
 -- Enable RLS
 ALTER TABLE public.vendors ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
--- Anyone can view active vendors
+-- RLS Policies (drop and recreate to handle existing)
+DROP POLICY IF EXISTS "Anyone can view active vendors" ON public.vendors;
 CREATE POLICY "Anyone can view active vendors"
     ON public.vendors
     FOR SELECT
     TO anon, authenticated
     USING (status = 'active');
 
--- Admins can manage all vendors
+DROP POLICY IF EXISTS "Admins can manage vendors" ON public.vendors;
 CREATE POLICY "Admins can manage vendors"
     ON public.vendors
     FOR ALL

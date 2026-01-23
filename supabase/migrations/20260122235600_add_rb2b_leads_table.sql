@@ -44,6 +44,74 @@ CREATE TABLE IF NOT EXISTS public.rb2b_leads (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'rb2b_id') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN rb2b_id TEXT UNIQUE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'email') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN email TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'first_name') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN first_name TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'last_name') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN last_name TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'full_name') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN full_name TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'job_title') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN job_title TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'linkedin_url') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN linkedin_url TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'company_name') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN company_name TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'company_domain') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN company_domain TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'company_industry') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN company_industry TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'company_size') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN company_size TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'city') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN city TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'state') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN state TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'country') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN country TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'page_url') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN page_url TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'referrer') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN referrer TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'visit_count') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN visit_count INTEGER DEFAULT 1;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'first_seen_at') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN first_seen_at TIMESTAMP WITH TIME ZONE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'last_seen_at') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN last_seen_at TIMESTAMP WITH TIME ZONE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'status') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN status TEXT DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'qualified', 'converted', 'archived'));
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rb2b_leads' AND column_name = 'notes') THEN
+        ALTER TABLE public.rb2b_leads ADD COLUMN notes TEXT;
+    END IF;
+END $$;
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_rb2b_leads_rb2b_id ON public.rb2b_leads(rb2b_id);
 CREATE INDEX IF NOT EXISTS idx_rb2b_leads_email ON public.rb2b_leads(email);
@@ -56,6 +124,7 @@ ALTER TABLE public.rb2b_leads ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Only admins can view and manage leads
+DROP POLICY IF EXISTS "Admins can manage rb2b leads" ON public.rb2b_leads;
 CREATE POLICY "Admins can manage rb2b leads"
     ON public.rb2b_leads
     FOR ALL
@@ -76,6 +145,7 @@ CREATE POLICY "Admins can manage rb2b leads"
     );
 
 -- Allow webhook to insert leads (using service role)
+DROP POLICY IF EXISTS "Service role can insert leads" ON public.rb2b_leads;
 CREATE POLICY "Service role can insert leads"
     ON public.rb2b_leads
     FOR INSERT

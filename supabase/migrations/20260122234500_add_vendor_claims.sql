@@ -51,6 +51,7 @@ ALTER TABLE public.vendor_claims ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can submit a claim
+DROP POLICY IF EXISTS "Anyone can submit vendor claims" ON public.vendor_claims;
 CREATE POLICY "Anyone can submit vendor claims"
     ON public.vendor_claims
     FOR INSERT
@@ -58,6 +59,7 @@ CREATE POLICY "Anyone can submit vendor claims"
     WITH CHECK (true);
 
 -- Only admins can view and manage claims
+DROP POLICY IF EXISTS "Admins can manage vendor claims" ON public.vendor_claims;
 CREATE POLICY "Admins can manage vendor claims"
     ON public.vendor_claims
     FOR ALL

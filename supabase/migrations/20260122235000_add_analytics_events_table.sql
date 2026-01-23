@@ -62,6 +62,7 @@ ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can insert analytics events
+DROP POLICY IF EXISTS "Anyone can insert analytics events" ON public.analytics_events;
 CREATE POLICY "Anyone can insert analytics events"
     ON public.analytics_events
     FOR INSERT
@@ -69,6 +70,7 @@ CREATE POLICY "Anyone can insert analytics events"
     WITH CHECK (true);
 
 -- Only admins can view analytics
+DROP POLICY IF EXISTS "Admins can view analytics" ON public.analytics_events;
 CREATE POLICY "Admins can view analytics"
     ON public.analytics_events
     FOR SELECT

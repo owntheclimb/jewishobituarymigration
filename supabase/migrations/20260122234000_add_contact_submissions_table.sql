@@ -41,6 +41,59 @@ CREATE TABLE IF NOT EXISTS public.contact_submissions (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'name') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN name TEXT NOT NULL DEFAULT '';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'email') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN email TEXT NOT NULL DEFAULT '';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'phone') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN phone TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'subject') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN subject TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'message') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN message TEXT NOT NULL DEFAULT '';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'source') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN source TEXT DEFAULT 'contact-form';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'page_url') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN page_url TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'vendor_id') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN vendor_id UUID REFERENCES public.vendors(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'obituary_id') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN obituary_id UUID REFERENCES public.obituaries(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'status') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN status TEXT DEFAULT 'new' CHECK (status IN ('new', 'read', 'replied', 'archived'));
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'assigned_to') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN assigned_to UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'replied_by') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN replied_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'replied_at') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN replied_at TIMESTAMP WITH TIME ZONE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'admin_notes') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN admin_notes TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'ip_address') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN ip_address INET;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'contact_submissions' AND column_name = 'user_agent') THEN
+        ALTER TABLE public.contact_submissions ADD COLUMN user_agent TEXT;
+    END IF;
+END $$;
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_status ON public.contact_submissions(status);
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_created_at ON public.contact_submissions(created_at);
@@ -52,6 +105,7 @@ ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can submit a contact form
+DROP POLICY IF EXISTS "Anyone can submit contact form" ON public.contact_submissions;
 CREATE POLICY "Anyone can submit contact form"
     ON public.contact_submissions
     FOR INSERT
@@ -59,6 +113,7 @@ CREATE POLICY "Anyone can submit contact form"
     WITH CHECK (true);
 
 -- Only admins can view and manage submissions
+DROP POLICY IF EXISTS "Admins can manage contact submissions" ON public.contact_submissions;
 CREATE POLICY "Admins can manage contact submissions"
     ON public.contact_submissions
     FOR ALL

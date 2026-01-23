@@ -57,6 +57,7 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can view active products
+DROP POLICY IF EXISTS "Anyone can view active products" ON public.products;
 CREATE POLICY "Anyone can view active products"
     ON public.products
     FOR SELECT
@@ -64,6 +65,7 @@ CREATE POLICY "Anyone can view active products"
     USING (status = 'active');
 
 -- Admins can manage all products
+DROP POLICY IF EXISTS "Admins can manage products" ON public.products;
 CREATE POLICY "Admins can manage products"
     ON public.products
     FOR ALL

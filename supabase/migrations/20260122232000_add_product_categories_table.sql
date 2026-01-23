@@ -22,6 +22,23 @@ CREATE TABLE IF NOT EXISTS public.product_categories (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'parent_id') THEN
+        ALTER TABLE public.product_categories ADD COLUMN parent_id UUID REFERENCES public.product_categories(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'image_url') THEN
+        ALTER TABLE public.product_categories ADD COLUMN image_url TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'sort_order') THEN
+        ALTER TABLE public.product_categories ADD COLUMN sort_order INTEGER DEFAULT 0;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'active') THEN
+        ALTER TABLE public.product_categories ADD COLUMN active BOOLEAN DEFAULT true;
+    END IF;
+END $$;
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_product_categories_slug ON public.product_categories(slug);
 CREATE INDEX IF NOT EXISTS idx_product_categories_parent_id ON public.product_categories(parent_id);
@@ -32,6 +49,7 @@ ALTER TABLE public.product_categories ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can view active categories
+DROP POLICY IF EXISTS "Anyone can view product categories" ON public.product_categories;
 CREATE POLICY "Anyone can view product categories"
     ON public.product_categories
     FOR SELECT
@@ -39,6 +57,7 @@ CREATE POLICY "Anyone can view product categories"
     USING (active = true);
 
 -- Admins can manage categories
+DROP POLICY IF EXISTS "Admins can manage product categories" ON public.product_categories;
 CREATE POLICY "Admins can manage product categories"
     ON public.product_categories
     FOR ALL

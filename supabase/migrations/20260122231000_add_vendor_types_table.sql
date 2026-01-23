@@ -19,6 +19,20 @@ CREATE TABLE IF NOT EXISTS public.vendor_types (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'vendor_types' AND column_name = 'active') THEN
+        ALTER TABLE public.vendor_types ADD COLUMN active BOOLEAN DEFAULT true;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'vendor_types' AND column_name = 'sort_order') THEN
+        ALTER TABLE public.vendor_types ADD COLUMN sort_order INTEGER DEFAULT 0;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'vendor_types' AND column_name = 'icon') THEN
+        ALTER TABLE public.vendor_types ADD COLUMN icon TEXT;
+    END IF;
+END $$;
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_vendor_types_slug ON public.vendor_types(slug);
 CREATE INDEX IF NOT EXISTS idx_vendor_types_sort_order ON public.vendor_types(sort_order);
@@ -26,15 +40,15 @@ CREATE INDEX IF NOT EXISTS idx_vendor_types_sort_order ON public.vendor_types(so
 -- Enable RLS
 ALTER TABLE public.vendor_types ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
--- Anyone can view active vendor types
+-- RLS Policies (drop and recreate to handle changes)
+DROP POLICY IF EXISTS "Anyone can view vendor types" ON public.vendor_types;
 CREATE POLICY "Anyone can view vendor types"
     ON public.vendor_types
     FOR SELECT
     TO anon, authenticated
     USING (active = true);
 
--- Admins can manage vendor types
+DROP POLICY IF EXISTS "Admins can manage vendor types" ON public.vendor_types;
 CREATE POLICY "Admins can manage vendor types"
     ON public.vendor_types
     FOR ALL

@@ -35,7 +35,51 @@ CREATE TABLE IF NOT EXISTS public.virtual_candles (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create indexes
+-- Add missing columns if table already exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'obituary_id') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN obituary_id UUID REFERENCES public.obituaries(id) ON DELETE CASCADE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'notable_figure_id') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN notable_figure_id UUID REFERENCES public.notable_figures(id) ON DELETE CASCADE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'user_id') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'name') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN name TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'email') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN email TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'message') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN message TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'candle_type') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN candle_type TEXT DEFAULT 'standard';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'duration_days') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN duration_days INTEGER DEFAULT 1;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'is_lit') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN is_lit BOOLEAN DEFAULT true;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'lit_at') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN lit_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'expires_at') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN expires_at TIMESTAMP WITH TIME ZONE;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'city') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN city TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'virtual_candles' AND column_name = 'country') THEN
+        ALTER TABLE public.virtual_candles ADD COLUMN country TEXT;
+    END IF;
+END $$;
+
+-- Create indexes (only if column exists)
 CREATE INDEX IF NOT EXISTS idx_virtual_candles_obituary_id ON public.virtual_candles(obituary_id);
 CREATE INDEX IF NOT EXISTS idx_virtual_candles_notable_figure_id ON public.virtual_candles(notable_figure_id);
 CREATE INDEX IF NOT EXISTS idx_virtual_candles_user_id ON public.virtual_candles(user_id);
@@ -47,6 +91,7 @@ ALTER TABLE public.virtual_candles ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 -- Anyone can view lit candles
+DROP POLICY IF EXISTS "Anyone can view lit candles" ON public.virtual_candles;
 CREATE POLICY "Anyone can view lit candles"
     ON public.virtual_candles
     FOR SELECT
@@ -54,6 +99,7 @@ CREATE POLICY "Anyone can view lit candles"
     USING (is_lit = true);
 
 -- Anyone can light a candle
+DROP POLICY IF EXISTS "Anyone can light a candle" ON public.virtual_candles;
 CREATE POLICY "Anyone can light a candle"
     ON public.virtual_candles
     FOR INSERT
@@ -61,6 +107,7 @@ CREATE POLICY "Anyone can light a candle"
     WITH CHECK (true);
 
 -- Users can update their own candles
+DROP POLICY IF EXISTS "Users can update own candles" ON public.virtual_candles;
 CREATE POLICY "Users can update own candles"
     ON public.virtual_candles
     FOR UPDATE
@@ -69,6 +116,7 @@ CREATE POLICY "Users can update own candles"
     WITH CHECK (user_id = auth.uid());
 
 -- Admins can manage all candles
+DROP POLICY IF EXISTS "Admins can manage candles" ON public.virtual_candles;
 CREATE POLICY "Admins can manage candles"
     ON public.virtual_candles
     FOR ALL
