@@ -253,26 +253,58 @@ const Resources = () => {
             </div>
 
             <div className="space-y-6">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="p-6 hover:shadow-elegant transition-all duration-300">
-                  <div className="flex gap-4">
-                    <div className="w-32 h-24 bg-muted rounded-lg flex-shrink-0"></div>
-                    <div className="flex-1">
-                      <Badge variant="outline" className="mb-2">Jewish Customs</Badge>
-                      <h3 className="text-lg font-bold mb-2">Article Title Goes Here</h3>
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                        Brief description of the article content that provides helpful information about the topic.
-                      </p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          6 min read
-                        </span>
-                        <span>2 days ago</span>
+              {[
+                {
+                  id: 'kaddish-mourners-prayer',
+                  title: "Kaddish: The Mourner's Prayer Explained",
+                  category: 'Jewish Customs',
+                  excerpt: "Understanding one of Judaism's most sacred prayers and its role in the mourning process.",
+                  readTime: '10 min read',
+                  date: 'Jan 20, 2024',
+                  image: 'https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=200&h=150&fit=crop'
+                },
+                {
+                  id: 'jewish-funeral-traditions',
+                  title: 'Understanding Jewish Funeral Traditions',
+                  category: 'Jewish Customs',
+                  excerpt: 'A comprehensive guide to Jewish funeral customs, from preparation to burial.',
+                  readTime: '12 min read',
+                  date: 'Jan 10, 2024',
+                  image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=200&h=150&fit=crop'
+                },
+                {
+                  id: 'sheloshim',
+                  title: 'Sheloshim: The 30-Day Mourning Period',
+                  category: 'Jewish Customs',
+                  excerpt: 'Learn about the significance of the 30-day mourning period following a Jewish burial.',
+                  readTime: '8 min read',
+                  date: 'Jan 5, 2024',
+                  image: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=200&h=150&fit=crop'
+                }
+              ].map((article) => (
+                <Link key={article.id} href={`/articles/${article.id === 'kaddish-mourners-prayer' ? 'kaddish' : article.id === 'jewish-funeral-traditions' ? 'jewish-funeral' : article.id}`}>
+                  <Card className="p-6 hover:shadow-elegant transition-all duration-300 cursor-pointer group">
+                    <div className="flex gap-4">
+                      <div className="w-32 h-24 bg-muted rounded-lg flex-shrink-0 overflow-hidden">
+                        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      </div>
+                      <div className="flex-1">
+                        <Badge variant="outline" className="mb-2">{article.category}</Badge>
+                        <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{article.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                          {article.excerpt}
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {article.readTime}
+                          </span>
+                          <span>{article.date}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>
