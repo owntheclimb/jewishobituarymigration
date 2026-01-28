@@ -1,5 +1,7 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -7,10 +9,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, User, Calendar, Share2, BookOpen, Heart, ArrowLeft } from 'lucide-react';
-import DOMPurify from 'dompurify';
+import ReactMarkdown from 'react-markdown';
 
-// This is a template component - in production, you'd fetch article data based on route params
+// All known articles have dedicated page files in /resources/[article-name]/page.tsx
+// This dynamic catch-all route returns 404 for any unknown slugs
 export default function ArticleDetailPage() {
+  // All articles now have dedicated pages, so any slug hitting this route is unknown
+  notFound();
+
+  // The code below is kept for reference but will never execute
   const article = {
     title: 'Understanding the Practice of Sitting Shiva',
     subtitle: 'A comprehensive guide for families and friends during the Jewish mourning period',
@@ -252,15 +259,11 @@ Whether you're sitting shiva yourself or supporting someone who is, remember tha
                   </p>
                 </div>
 
-                <div
-                  className="article-content"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(
-                      article.content.replace(/\n/g, '<br />'),
-                      { ALLOWED_TAGS: ['br', 'p', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'h2', 'h3', 'h4'], ALLOWED_ATTR: ['href', 'target', 'rel'] }
-                    )
-                  }}
-                />
+                <div className="article-content prose prose-lg max-w-none">
+                  <ReactMarkdown>
+                    {article.content}
+                  </ReactMarkdown>
+                </div>
               </div>
 
               {/* Was This Helpful? */}

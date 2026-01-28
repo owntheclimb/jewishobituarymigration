@@ -132,7 +132,7 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Redirects for SEO
+  // Redirects for SEO and user-friendly URLs
   async redirects() {
     return [
       // Redirect www to non-www
@@ -145,6 +145,32 @@ const nextConfig: NextConfig = {
           },
         ],
         destination: 'https://jewishobituary.com/:path*',
+        permanent: true,
+      },
+      // Common URL aliases
+      {
+        source: '/create',
+        destination: '/create-obituary',
+        permanent: true,
+      },
+      {
+        source: '/signin',
+        destination: '/login',
+        permanent: true,
+      },
+      {
+        source: '/signup',
+        destination: '/login',
+        permanent: true,
+      },
+      {
+        source: '/dashboard',
+        destination: '/account',
+        permanent: true,
+      },
+      {
+        source: '/notable-figures',
+        destination: '/notable',
         permanent: true,
       },
     ];
