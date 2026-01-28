@@ -20,7 +20,7 @@ const breadcrumbSchema = generateBreadcrumbSchema([
 
 const articles = [
   {
-    id: 'understanding-shiva',
+    id: 'shiva',
     title: 'Understanding the Jewish Practice of Sitting Shiva',
     category: 'Jewish Customs',
     readTime: '8 min',
@@ -30,7 +30,7 @@ const articles = [
     image: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=800&h=400&fit=crop',
   },
   {
-    id: 'kaddish-mourners-prayer',
+    id: 'kaddish',
     title: 'Kaddish: The Mourner\'s Prayer Explained',
     category: 'Jewish Customs',
     readTime: '10 min',
@@ -40,7 +40,7 @@ const articles = [
     image: 'https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=800&h=400&fit=crop',
   },
   {
-    id: 'jewish-funeral-traditions',
+    id: 'jewish-funeral',
     title: 'Understanding Jewish Funeral Traditions',
     category: 'Jewish Customs',
     readTime: '12 min',
@@ -50,7 +50,7 @@ const articles = [
     image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=800&h=400&fit=crop',
   },
   {
-    id: 'yahrzeit-explained',
+    id: 'yahrzeit',
     title: 'Yahrzeit: Honoring the Anniversary of a Death',
     category: 'Jewish Customs',
     readTime: '6 min',
@@ -60,7 +60,7 @@ const articles = [
     image: 'https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=800&h=400&fit=crop',
   },
   {
-    id: 'writing-meaningful-obituary',
+    id: 'writing-obituary',
     title: 'How to Write a Meaningful Jewish Obituary',
     category: 'Writing Guide',
     readTime: '10 min',
@@ -193,7 +193,7 @@ const ArticlesIndex = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArticles.map((article) => (
-              <Link key={article.id} href={`/resources/${article.id}`}>
+              <Link key={article.id} href={`/articles/${article.id}`}>
                 <Card className="overflow-hidden h-full hover:shadow-elegant transition-all duration-300 group">
                   <div className="aspect-video bg-muted overflow-hidden">
                     <img
