@@ -252,12 +252,21 @@ const CreateObituary = () => {
       });
       router.push('/search');
     } catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Error creating obituary:', error);
+      console.error('Error creating obituary:', error);
+
+      // Provide helpful error message based on error type
+      let errorMessage = "Something went wrong. Please try again.";
+      if (error?.message?.includes('permission') || error?.message?.includes('policy')) {
+        errorMessage = "Permission error. Please ensure you're logged in and try again.";
+      } else if (error?.message?.includes('duplicate')) {
+        errorMessage = "This obituary may already exist.";
+      } else if (error?.message) {
+        errorMessage = error.message;
       }
+
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "Error Creating Obituary",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

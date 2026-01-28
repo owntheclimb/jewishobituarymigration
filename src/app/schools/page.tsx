@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -9,83 +9,85 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, GraduationCap, Bell } from 'lucide-react';
+import { Search, MapPin, GraduationCap, Bell, Loader2, CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-const mockSchools = [
-  {
-    id: '1',
-    name: 'Ramaz School',
-    city: 'New York',
-    state: 'NY',
-    type: 'Day School',
-    level: 'K-12',
-    recentObituaries: 15,
-    description: 'Premier Modern Orthodox Jewish day school in Manhattan, educating students since 1937.'
-  },
-  {
-    id: '2',
-    name: 'Hebrew Academy of San Francisco',
-    city: 'San Francisco',
-    state: 'CA',
-    type: 'Day School',
-    level: 'K-8',
-    recentObituaries: 8,
-    description: 'Progressive Jewish day school providing excellence in both general and Judaic studies.'
-  },
-  {
-    id: '3',
-    name: 'Akiba Academy',
-    city: 'Dallas',
-    state: 'TX',
-    type: 'Day School',
-    level: 'K-12',
-    recentObituaries: 12,
-    description: 'Community Jewish day school serving the Dallas area with academic excellence.'
-  },
-  {
-    id: '4',
-    name: 'Solomon Schechter School',
-    city: 'Boston',
-    state: 'MA',
-    type: 'Day School',
-    level: 'K-8',
-    recentObituaries: 10,
-    description: 'Conservative Jewish day school fostering love of learning and Jewish values.'
-  },
-  {
-    id: '5',
-    name: 'Maimonides School',
-    city: 'Brookline',
-    state: 'MA',
-    type: 'Day School',
-    level: 'K-12',
-    recentObituaries: 14,
-    description: 'Co-educational Modern Orthodox day school with rigorous academics and Torah studies.'
-  },
-  {
-    id: '6',
-    name: 'Donna Klein Jewish Academy',
-    city: 'Boca Raton',
-    state: 'FL',
-    type: 'Day School',
-    level: 'K-12',
-    recentObituaries: 11,
-    description: 'Pluralistic Jewish day school in South Florida, welcoming all streams of Judaism.'
-  }
-];
+interface School {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  city_name: string | null;
+  state_code: string | null;
+  type: string;
+  verified: boolean;
+  stats_recent_count: number;
+}
 
 const Schools = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedState, setSelectedState] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
+  const [schools, setSchools] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [following, setFollowing] = useState<Set<string>>(new Set());
 
-  const filteredSchools = mockSchools.filter(school => {
+  useEffect(() => {
+    async function fetchSchools() {
+      try {
+        // Fetch schools - both highschool and college types
+        const { data, error } = await supabase
+          .from('communities')
+          .select('*')
+          .in('type', ['highschool', 'college'])
+          .order('name');
+
+        if (error) {
+          console.error('Error fetching schools:', error);
+        } else if (data) {
+          setSchools(data as unknown as School[]);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSchools();
+  }, []);
+
+  // Get unique states for filter
+  const states = [...new Set(schools.map(s => s.state_code).filter(Boolean))].sort();
+
+  // Map type to display label
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'highschool': return 'Day School';
+      case 'college': return 'College/University';
+      default: return type;
+    }
+  };
+
+  const filteredSchools = schools.filter(school => {
     const matchesSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         school.city.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesState = selectedState === 'all' || school.state === selectedState;
+                         (school.city_name?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+    const matchesState = selectedState === 'all' || school.state_code === selectedState;
     const matchesType = selectedType === 'all' || school.type === selectedType;
     return matchesSearch && matchesState && matchesType;
   });
+
+  const handleFollow = (id: string) => {
+    setFollowing(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -127,11 +129,9 @@ const Schools = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All States</SelectItem>
-                    <SelectItem value="NY">New York</SelectItem>
-                    <SelectItem value="FL">Florida</SelectItem>
-                    <SelectItem value="CA">California</SelectItem>
-                    <SelectItem value="MA">Massachusetts</SelectItem>
-                    <SelectItem value="TX">Texas</SelectItem>
+                    {states.map(state => (
+                      <SelectItem key={state} value={state!}>{state}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
 
@@ -141,9 +141,8 @@ const Schools = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="Day School">Day School</SelectItem>
-                    <SelectItem value="Hebrew School">Hebrew School</SelectItem>
-                    <SelectItem value="Yeshiva">Yeshiva</SelectItem>
+                    <SelectItem value="highschool">Day School</SelectItem>
+                    <SelectItem value="college">College/University</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -155,56 +154,83 @@ const Schools = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="mb-6">
-                <p className="text-muted-foreground">
-                  Showing {filteredSchools.length} school{filteredSchools.length !== 1 ? 's' : ''}
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : filteredSchools.length === 0 ? (
+                <div className="text-center py-20">
+                  <GraduationCap className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No schools found</h3>
+                  <p className="text-muted-foreground mb-6">
+                    {searchTerm || selectedState !== 'all' || selectedType !== 'all'
+                      ? 'Try adjusting your search or filters'
+                      : 'We are actively adding Jewish schools to our directory'}
+                  </p>
+                  <Button variant="outline" onClick={() => {
+                    setSearchTerm('');
+                    setSelectedState('all');
+                    setSelectedType('all');
+                  }}>
+                    Clear Filters
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-6">
+                    <p className="text-muted-foreground">
+                      Showing {filteredSchools.length} school{filteredSchools.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
 
-              <div className="grid gap-6">
-                {filteredSchools.map((school) => (
-                  <Card key={school.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-2xl mb-2">
-                            <Link href={`/communities/school/${school.id}`} className="hover:text-primary">
-                              {school.name}
-                            </Link>
-                          </CardTitle>
-                          <CardDescription className="flex items-center gap-2 text-base mb-2">
-                            <MapPin className="h-4 w-4" />
-                            {school.city}, {school.state}
-                          </CardDescription>
-                          <div className="flex gap-2">
-                            <Badge variant="secondary">{school.type}</Badge>
-                            <Badge variant="outline">{school.level}</Badge>
+                  <div className="grid gap-6">
+                    {filteredSchools.map((school) => (
+                      <Card key={school.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                                {school.name}
+                                {school.verified && (
+                                  <CheckCircle className="h-5 w-5 text-primary" />
+                                )}
+                              </CardTitle>
+                              <CardDescription className="flex items-center gap-2 text-base mb-2">
+                                <MapPin className="h-4 w-4" />
+                                {school.city_name}, {school.state_code}
+                              </CardDescription>
+                              <div className="flex gap-2">
+                                <Badge variant="secondary">{getTypeLabel(school.type)}</Badge>
+                              </div>
+                            </div>
+                            <Button
+                              variant={following.has(school.id) ? "default" : "outline"}
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => handleFollow(school.id)}
+                            >
+                              <Bell className="h-4 w-4" />
+                              {following.has(school.id) ? 'Following' : 'Follow'}
+                            </Button>
                           </div>
-                        </div>
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <Bell className="h-4 w-4" />
-                          Follow
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground mb-4">{school.description}</p>
+                        </CardHeader>
+                        <CardContent>
+                          {school.description && (
+                            <p className="text-muted-foreground mb-4">{school.description}</p>
+                          )}
 
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <GraduationCap className="h-4 w-4" />
-                          <span>{school.recentObituaries} alumni obituaries</span>
-                        </div>
-                        <Button size="sm" asChild>
-                          <Link href={`/communities/school/${school.id}`}>
-                            View Alumni Memorial Page
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <GraduationCap className="h-4 w-4" />
+                              <span>{school.stats_recent_count || 0} alumni memorials</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -8,84 +8,65 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Users, Bell, Heart } from 'lucide-react';
+import { Search, Users, Bell, Heart, Loader2, CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-const mockOrganizations = [
-  {
-    id: '1',
-    name: 'Hadassah',
-    category: 'Women\'s Organization',
-    recentObituaries: 42,
-    description: 'The Women\'s Zionist Organization of America, empowering Jewish women and supporting healthcare and education in Israel.',
-    founded: 1912
-  },
-  {
-    id: '2',
-    name: 'B\'nai B\'rith',
-    category: 'Service Organization',
-    recentObituaries: 35,
-    description: 'The oldest Jewish service organization in the world, committed to community service and supporting Israel.',
-    founded: 1843
-  },
-  {
-    id: '3',
-    name: 'Jewish War Veterans of the USA',
-    category: 'Veterans',
-    recentObituaries: 28,
-    description: 'Honoring Jewish men and women who have served in the United States Armed Forces.',
-    founded: 1896
-  },
-  {
-    id: '4',
-    name: 'American Jewish Committee',
-    category: 'Advocacy',
-    recentObituaries: 19,
-    description: 'Leading global advocacy organization for the Jewish people and Israel, promoting human rights and democratic values.',
-    founded: 1906
-  },
-  {
-    id: '5',
-    name: 'Jewish Community Center Association',
-    category: 'Community',
-    recentObituaries: 31,
-    description: 'Network of JCCs providing programs, services, and facilities for Jewish communities across North America.',
-    founded: 1917
-  },
-  {
-    id: '6',
-    name: 'National Council of Jewish Women',
-    category: 'Women\'s Organization',
-    recentObituaries: 24,
-    description: 'Grassroots organization of volunteers and advocates working to improve the lives of women, children, and families.',
-    founded: 1893
-  },
-  {
-    id: '7',
-    name: 'Jewish Federations of North America',
-    category: 'Community',
-    recentObituaries: 38,
-    description: 'Umbrella organization for Jewish federations and communities across North America.',
-    founded: 1932
-  },
-  {
-    id: '8',
-    name: 'ORT America',
-    category: 'Education',
-    recentObituaries: 16,
-    description: 'Supporting Jewish education and vocational training worldwide through ORT\'s global network.',
-    founded: 1880
-  }
-];
+interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  verified: boolean;
+  stats_recent_count: number;
+}
 
 const Organizations = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [following, setFollowing] = useState<Set<string>>(new Set());
 
-  const filteredOrganizations = mockOrganizations.filter(org => {
+  useEffect(() => {
+    async function fetchOrganizations() {
+      try {
+        const { data, error } = await supabase
+          .from('communities')
+          .select('*')
+          .eq('type', 'organization')
+          .order('name');
+
+        if (error) {
+          console.error('Error fetching organizations:', error);
+        } else if (data) {
+          setOrganizations(data as unknown as Organization[]);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchOrganizations();
+  }, []);
+
+  const filteredOrganizations = organizations.filter(org => {
     const matchesSearch = org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         org.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         org.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         (org.description?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  const handleFollow = (id: string) => {
+    setFollowing(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -127,52 +108,74 @@ const Organizations = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="mb-6">
-                <p className="text-muted-foreground">
-                  Showing {filteredOrganizations.length} organization{filteredOrganizations.length !== 1 ? 's' : ''}
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : filteredOrganizations.length === 0 ? (
+                <div className="text-center py-20">
+                  <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No organizations found</h3>
+                  <p className="text-muted-foreground mb-6">
+                    {searchTerm
+                      ? 'Try adjusting your search'
+                      : 'We are actively adding Jewish organizations to our directory'}
+                  </p>
+                  {searchTerm && (
+                    <Button variant="outline" onClick={() => setSearchTerm('')}>
+                      Clear Search
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="mb-6">
+                    <p className="text-muted-foreground">
+                      Showing {filteredOrganizations.length} organization{filteredOrganizations.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
 
-              <div className="grid gap-6">
-                {filteredOrganizations.map((org) => (
-                  <Card key={org.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-2xl mb-2">
-                            <Link href={`/communities/organization/${org.id}`} className="hover:text-primary">
-                              {org.name}
-                            </Link>
-                          </CardTitle>
-                          <CardDescription className="text-base mb-2">
-                            Founded {org.founded}
-                          </CardDescription>
-                          <Badge variant="secondary">{org.category}</Badge>
-                        </div>
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <Bell className="h-4 w-4" />
-                          Follow
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground mb-4">{org.description}</p>
+                  <div className="grid gap-6">
+                    {filteredOrganizations.map((org) => (
+                      <Card key={org.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                                {org.name}
+                                {org.verified && (
+                                  <CheckCircle className="h-5 w-5 text-primary" />
+                                )}
+                              </CardTitle>
+                            </div>
+                            <Button
+                              variant={following.has(org.id) ? "default" : "outline"}
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => handleFollow(org.id)}
+                            >
+                              <Bell className="h-4 w-4" />
+                              {following.has(org.id) ? 'Following' : 'Follow'}
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {org.description && (
+                            <p className="text-muted-foreground mb-4">{org.description}</p>
+                          )}
 
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Heart className="h-4 w-4" />
-                          <span>{org.recentObituaries} member obituaries</span>
-                        </div>
-                        <Button size="sm" asChild>
-                          <Link href={`/communities/organization/${org.id}`}>
-                            View Memorial Page
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Heart className="h-4 w-4" />
+                              <span>{org.stats_recent_count || 0} member memorials</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>

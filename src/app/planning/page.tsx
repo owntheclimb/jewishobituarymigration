@@ -157,7 +157,7 @@ const Planning = () => {
               <Link href="/contact">Schedule Consultation</Link>
             </Button>
             <Button variant="outline" className="border-border/50 hover:bg-muted/50" asChild>
-              <a href="tel:+15551234567">Call (555) 123-4567</a>
+              <a href="tel:+19547443432">Call (954) 744-3432</a>
             </Button>
           </div>
         </Card>

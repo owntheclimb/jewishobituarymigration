@@ -276,7 +276,7 @@ const Flowers = () => {
             <Phone className="h-5 w-5 text-primary" />
             <p className="text-foreground">
               <span className="font-semibold">Need help ordering?</span> We're here for you.
-              <span className="ml-2 font-semibold text-primary">Call (555) 123-FLOWERS</span>
+              <span className="ml-2 font-semibold text-primary">Call (954) 744-3432</span>
             </p>
           </div>
         </div>

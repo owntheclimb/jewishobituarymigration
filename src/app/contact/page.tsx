@@ -91,26 +91,20 @@ const Contact = () => {
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Phone",
-      details: ["(555) 123-4567", "Toll-free: (800) 123-4567"],
+      details: ["(954) 744-3432"],
       description: "Available 24/7 for urgent matters"
     },
     {
       icon: <Mail className="h-6 w-6" />,
       title: "Email",
-      details: ["support@jewishobits.com", "info@jewishobits.com"],
+      details: ["info@neshamajfs.com"],
       description: "We respond within 24 hours"
-    },
-    {
-      icon: <MapPin className="h-6 w-6" />,
-      title: "Office",
-      details: ["123 Memorial Avenue", "Suite 200, City, State 12345"],
-      description: "By appointment only"
     },
     {
       icon: <Clock className="h-6 w-6" />,
       title: "Hours",
-      details: ["Monday - Friday: 8:00 AM - 6:00 PM", "Weekend: 9:00 AM - 4:00 PM"],
-      description: "Emergency support available 24/7"
+      details: ["Monday - Sunday: 24/7"],
+      description: "We're always here when you need us"
     }
   ];
 

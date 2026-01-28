@@ -210,7 +210,7 @@ const FAQ = () => {
               <p className="text-sm text-muted-foreground mb-3">
                 Speak with our team directly
               </p>
-              <p className="font-medium">(555) 123-4567</p>
+              <p className="font-medium">(954) 744-3432</p>
             </Card>
 
             <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300">
@@ -219,7 +219,7 @@ const FAQ = () => {
               <p className="text-sm text-muted-foreground mb-3">
                 Get detailed assistance
               </p>
-              <p className="font-medium">support@jewishobits.com</p>
+              <p className="font-medium">info@neshamajfs.com</p>
             </Card>
 
             <Card className="p-6 text-center hover:shadow-elegant transition-all duration-300">

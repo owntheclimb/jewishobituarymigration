@@ -91,17 +91,18 @@ const ValuePromise = () => {
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-xl text-foreground font-cormorant">Sarah Goldman</h4>
-                      <p className="text-sm text-primary/70 mb-1">שרה גאָלדמאַן ז״ל</p>
+                      <p className="text-xs text-primary/60 uppercase tracking-wide mb-1">Memorial Preview</p>
+                      <h4 className="font-bold text-xl text-foreground font-cormorant">Your Loved One</h4>
+                      <p className="text-sm text-primary/70 mb-1">Hebrew name ז״ל</p>
                       <p className="text-sm text-muted-foreground">
-                        March 15, 1942 - January 8, 2025
+                        Date of birth - Date of passing
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <p className="text-muted-foreground leading-relaxed">
-                      Beloved mother, grandmother, and community leader who touched countless lives through her dedication to education and tzedakah...
+                      Share their story, their values, and the impact they had on everyone they met. Create a lasting tribute that honors their memory...
                     </p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
