@@ -77,23 +77,24 @@ const jewishResources = [
 
 const professionalResources = [
   {
-    name: 'Jewish Family Services',
-    description: 'Professional counseling and bereavement support',
-    phone: '1-800-567-JEWISH',
-    website: 'www.jfs.org',
+    name: 'Jewish Family Services Network',
+    description: 'Network of local agencies providing professional counseling and bereavement support. Find your local JFS office for services in your area.',
+    phone: null,
+    website: 'www.jewishfamilyservice.org',
     services: ['Individual Counseling', 'Group Therapy', 'Family Support']
   },
   {
-    name: 'National Alliance for Grieving Children',
-    description: 'Resources for children and families dealing with loss',
-    phone: '1-866-432-1542',
-    website: 'www.nationalallianceforgrievingchildren.org',
+    name: 'National Alliance for Children\'s Grief',
+    description: 'Resources and support for children, teens, and families dealing with loss. Contact via email for assistance.',
+    phone: null,
+    email: 'info@childrengrieve.org',
+    website: 'www.nacg.org',
     services: ['Youth Programs', 'Parent Guidance', 'School Resources']
   },
   {
     name: 'Our House Grief Support Center',
-    description: 'Free grief support services for children and adults',
-    phone: '1-888-417-1444',
+    description: 'Free grief support services for children and adults in Los Angeles',
+    phone: '(310) 473-1511',
     website: 'www.ourhouse-grief.org',
     services: ['Support Groups', 'Workshops', 'Online Resources']
   }
@@ -266,12 +267,22 @@ const GriefSupport = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3 mb-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <a href={`tel:${resource.phone.replace(/\D/g, '')}`} className="text-muted-foreground hover:text-primary">
-                          {resource.phone}
-                        </a>
-                      </div>
+                      {resource.phone && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <a href={`tel:${resource.phone.replace(/\D/g, '')}`} className="text-muted-foreground hover:text-primary">
+                            {resource.phone}
+                          </a>
+                        </div>
+                      )}
+                      {'email' in resource && resource.email && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <a href={`mailto:${resource.email}`} className="text-muted-foreground hover:text-primary">
+                            {resource.email}
+                          </a>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-sm">
                         <ExternalLink className="h-4 w-4 text-primary" />
                         <a href={`https://${resource.website}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">

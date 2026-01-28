@@ -19,48 +19,42 @@ const jewishCharities = [
     name: 'American Jewish Joint Distribution Committee (JDC)',
     category: 'International Aid',
     description: 'JDC works in over 70 countries to alleviate hunger and hardship, rescue Jews in danger, create lasting connections to Jewish life, and provide immediate relief and long-term development support.',
-    website: 'https://www.jdc.org',
-    donations: '$12.5M'
+    website: 'https://www.jdc.org'
   },
   {
     id: '2',
     name: 'Jewish National Fund (JNF)',
     category: 'Israel',
     description: 'Plant trees in Israel and support environmental and community development projects throughout the Land of Israel.',
-    website: 'https://www.jnf.org',
-    donations: '$8.2M'
+    website: 'https://www.jnf.org'
   },
   {
     id: '3',
     name: 'Hadassah Medical Organization',
     category: 'Healthcare',
     description: 'Supporting world-class hospitals in Jerusalem providing care to all people regardless of religion, ethnicity, or nationality.',
-    website: 'https://www.hadassah.org',
-    donations: '$15.7M'
+    website: 'https://www.hadassah.org'
   },
   {
     id: '4',
     name: 'United Jewish Appeal (UJA)',
     category: 'Community',
     description: 'Caring for Jews in need, strengthening Jewish identity, and supporting Israel and world Jewry.',
-    website: 'https://www.ujafedny.org',
-    donations: '$9.3M'
+    website: 'https://www.ujafedny.org'
   },
   {
     id: '5',
     name: 'Yad Vashem',
     category: 'Holocaust Remembrance',
     description: 'The World Holocaust Remembrance Center, dedicated to Holocaust education, documentation, research and commemoration.',
-    website: 'https://www.yadvashem.org',
-    donations: '$6.8M'
+    website: 'https://www.yadvashem.org'
   },
   {
     id: '6',
     name: 'Magen David Adom',
     category: 'Healthcare',
     description: 'Israel\'s national emergency medical, disaster, ambulance, and blood bank service.',
-    website: 'https://www.afmda.org',
-    donations: '$11.2M'
+    website: 'https://www.afmda.org'
   }
 ];
 
@@ -70,40 +64,35 @@ const generalCharities = [
     name: 'American Cancer Society',
     category: 'Healthcare',
     description: 'Leading the fight for a world without cancer through research, patient support, and advocacy.',
-    website: 'https://www.cancer.org',
-    donations: '$18.5M'
+    website: 'https://www.cancer.org'
   },
   {
     id: '8',
     name: 'American Heart Association',
     category: 'Healthcare',
     description: 'Fighting heart disease and stroke with research, education, and community programs.',
-    website: 'https://www.heart.org',
-    donations: '$14.2M'
+    website: 'https://www.heart.org'
   },
   {
     id: '9',
     name: 'Alzheimer\'s Association',
     category: 'Healthcare',
     description: 'Leading voluntary health organization in Alzheimer\'s care, support and research.',
-    website: 'https://www.alz.org',
-    donations: '$10.7M'
+    website: 'https://www.alz.org'
   },
   {
     id: '10',
     name: 'St. Jude Children\'s Research Hospital',
     category: 'Healthcare',
     description: 'Treating and defeating pediatric catastrophic diseases through research and treatment.',
-    website: 'https://www.stjude.org',
-    donations: '$22.4M'
+    website: 'https://www.stjude.org'
   },
   {
     id: '11',
     name: 'American Red Cross',
     category: 'Humanitarian',
     description: 'Preventing and alleviating human suffering in the face of emergencies.',
-    website: 'https://www.redcross.org',
-    donations: '$16.9M'
+    website: 'https://www.redcross.org'
   }
 ];
 
@@ -245,10 +234,6 @@ const Charities = () => {
                               <Badge variant="secondary" className="mb-2">{charity.category}</Badge>
                             </CardDescription>
                           </div>
-                          <div className="text-right">
-                            <div className="text-sm text-muted-foreground">Total Memorial Donations</div>
-                            <div className="text-2xl font-bold text-primary">{charity.donations}</div>
-                          </div>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -290,10 +275,6 @@ const Charities = () => {
                             <CardDescription className="text-base">
                               <Badge variant="secondary" className="mb-2">{charity.category}</Badge>
                             </CardDescription>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm text-muted-foreground">Total Memorial Donations</div>
-                            <div className="text-2xl font-bold text-primary">{charity.donations}</div>
                           </div>
                         </div>
                       </CardHeader>

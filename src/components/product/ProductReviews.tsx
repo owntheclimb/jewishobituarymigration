@@ -33,39 +33,8 @@ const ProductReviews = ({ productId, averageRating, totalReviews }: ProductRevie
   const [reviewContent, setReviewContent] = useState('');
   const [reviewerName, setReviewerName] = useState('');
 
-  // Mock reviews data - in production, this would come from your backend
-  const [reviews, setReviews] = useState<Review[]>([
-    {
-      id: 1,
-      author: 'Sarah M.',
-      rating: 5,
-      date: '2024-10-15',
-      title: 'Absolutely beautiful arrangement',
-      content: 'The flowers were even more stunning than the photo. They arrived fresh and perfectly arranged. The funeral home staff were so impressed. Thank you for helping us honor our loved one with such beauty.',
-      verified: true,
-      helpful: 12
-    },
-    {
-      id: 2,
-      author: 'David K.',
-      rating: 5,
-      date: '2024-10-10',
-      title: 'Perfect for a difficult time',
-      content: 'Ordering was easy and the delivery was right on time. The quality exceeded expectations. Highly recommend for anyone needing sympathy flowers.',
-      verified: true,
-      helpful: 8
-    },
-    {
-      id: 3,
-      author: 'Rachel L.',
-      rating: 4,
-      date: '2024-10-05',
-      title: 'Beautiful and respectful',
-      content: 'The arrangement was lovely and appropriate. Only minor issue was the delivery was about an hour late, but the funeral home was understanding. Overall very satisfied.',
-      verified: true,
-      helpful: 5
-    }
-  ]);
+  // Reviews would come from backend in production
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
