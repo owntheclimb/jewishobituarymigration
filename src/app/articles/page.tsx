@@ -37,7 +37,7 @@ const articles = [
     views: '10.2K',
     date: '2024-01-20',
     excerpt: 'Understanding one of Judaism\'s most sacred prayers and its role in the mourning process.',
-    image: 'https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=800&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=800&h=400&fit=crop',
   },
   {
     id: 'jewish-funeral',
@@ -57,7 +57,7 @@ const articles = [
     views: '6.7K',
     date: '2024-02-01',
     excerpt: 'The annual remembrance of a loved one\'s passing, Yahrzeit is a meaningful tradition that keeps their memory alive year after year.',
-    image: 'https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=800&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1497561813398-8fcc7a37b567?w=800&h=400&fit=crop',
   },
   {
     id: 'writing-obituary',

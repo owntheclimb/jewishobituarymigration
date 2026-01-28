@@ -121,7 +121,7 @@ export default function ArticleYahrzeitPage() {
             {/* Featured Image */}
             <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-8 shadow-lg">
               <img
-                src="https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=1200&h=600&fit=crop"
+                src="https://images.unsplash.com/photo-1497561813398-8fcc7a37b567?w=1200&h=600&fit=crop"
                 alt="Yahrzeit memorial candle burning with prayer book"
                 className="w-full h-full object-cover"
               />

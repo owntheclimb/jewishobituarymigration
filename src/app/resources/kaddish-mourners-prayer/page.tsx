@@ -144,7 +144,7 @@ export default function ArticleKaddishPage() {
           {/* Featured Image */}
           <div className="aspect-video bg-muted rounded-lg overflow-hidden shadow-lg mb-8">
             <img
-              src="https://images.unsplash.com/photo-1518414922567-18f2ab3e2f6f?w=1200&h=600&fit=crop"
+              src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=1200&h=600&fit=crop"
               alt="Jewish prayer book opened to Kaddish with tallit"
               className="w-full h-full object-cover"
             />
