@@ -28,6 +28,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'ui-avatars.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.wikipedia.org',
+      },
     ],
 
     // Device sizes for responsive images
