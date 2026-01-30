@@ -1,3 +1,4 @@
+Initialising login role...
 export type Json =
   | string
   | number
@@ -12,29 +13,75 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       admin_settings: {
         Row: {
+          category: string | null
+          default_value: Json | null
+          description: string | null
           id: string
+          is_secret: boolean | null
           key: string
+          label: string | null
+          sort_order: number | null
           updated_at: string | null
           updated_by: string | null
           value: Json
+          value_type: string | null
         }
         Insert: {
+          category?: string | null
+          default_value?: Json | null
+          description?: string | null
           id?: string
+          is_secret?: boolean | null
           key: string
+          label?: string | null
+          sort_order?: number | null
           updated_at?: string | null
           updated_by?: string | null
           value: Json
+          value_type?: string | null
         }
         Update: {
+          category?: string | null
+          default_value?: Json | null
+          description?: string | null
           id?: string
+          is_secret?: boolean | null
           key?: string
+          label?: string | null
+          sort_order?: number | null
           updated_at?: string | null
           updated_by?: string | null
           value?: Json
+          value_type?: string | null
         }
         Relationships: []
       }
@@ -142,40 +189,73 @@ export type Database = {
       }
       communities: {
         Row: {
+          address: string | null
+          city_name: string | null
           created_at: string | null
+          denomination: string | null
           description: string | null
+          email: string | null
+          founded_year: number | null
           id: string
           name: string
+          phone: string | null
+          rabbi_name: string | null
           slug: string
+          state_code: string | null
           stats_recent_count: number | null
           status: string | null
           submitted_by: string | null
           type: string
           updated_at: string | null
+          verified: boolean | null
+          website: string | null
+          zip: string | null
         }
         Insert: {
+          address?: string | null
+          city_name?: string | null
           created_at?: string | null
+          denomination?: string | null
           description?: string | null
+          email?: string | null
+          founded_year?: number | null
           id?: string
           name: string
+          phone?: string | null
+          rabbi_name?: string | null
           slug: string
+          state_code?: string | null
           stats_recent_count?: number | null
           status?: string | null
           submitted_by?: string | null
           type: string
           updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+          zip?: string | null
         }
         Update: {
+          address?: string | null
+          city_name?: string | null
           created_at?: string | null
+          denomination?: string | null
           description?: string | null
+          email?: string | null
+          founded_year?: number | null
           id?: string
           name?: string
+          phone?: string | null
+          rabbi_name?: string | null
           slug?: string
+          state_code?: string | null
           stats_recent_count?: number | null
           status?: string | null
           submitted_by?: string | null
           type?: string
           updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+          zip?: string | null
         }
         Relationships: []
       }
@@ -211,6 +291,110 @@ export type Database = {
             columns: ["obituary_id"]
             isOneToOne: false
             referencedRelation: "obituaries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_submissions: {
+        Row: {
+          admin_notes: string | null
+          assigned_to: string | null
+          category: string | null
+          created_at: string | null
+          email: string
+          id: string
+          ip_address: unknown
+          message: string
+          name: string
+          notes: string | null
+          obituary_id: string | null
+          page_url: string | null
+          phone: string | null
+          replied_at: string | null
+          replied_by: string | null
+          source: string | null
+          status: string | null
+          subject: string | null
+          updated_at: string | null
+          user_agent: string | null
+          user_id: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          ip_address?: unknown
+          message: string
+          name: string
+          notes?: string | null
+          obituary_id?: string | null
+          page_url?: string | null
+          phone?: string | null
+          replied_at?: string | null
+          replied_by?: string | null
+          source?: string | null
+          status?: string | null
+          subject?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          ip_address?: unknown
+          message?: string
+          name?: string
+          notes?: string | null
+          obituary_id?: string | null
+          page_url?: string | null
+          phone?: string | null
+          replied_at?: string | null
+          replied_by?: string | null
+          source?: string | null
+          status?: string | null
+          subject?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_submissions_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_submissions_obituary_id_fkey"
+            columns: ["obituary_id"]
+            isOneToOne: false
+            referencedRelation: "obituaries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_submissions_replied_by_fkey"
+            columns: ["replied_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_submissions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]
@@ -252,6 +436,68 @@ export type Database = {
             columns: ["obituary_id"]
             isOneToOne: false
             referencedRelation: "obituaries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      industry_pages: {
+        Row: {
+          created_at: string | null
+          educational_content: string | null
+          faq_content: Json | null
+          hero_heading: string | null
+          hero_subheading: string | null
+          id: string
+          intro_content: string | null
+          is_published: boolean | null
+          meta_description: string | null
+          related_industries: string[] | null
+          slug: string
+          sort_order: number | null
+          title: string
+          updated_at: string | null
+          vendor_type_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          educational_content?: string | null
+          faq_content?: Json | null
+          hero_heading?: string | null
+          hero_subheading?: string | null
+          id?: string
+          intro_content?: string | null
+          is_published?: boolean | null
+          meta_description?: string | null
+          related_industries?: string[] | null
+          slug: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string | null
+          vendor_type_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          educational_content?: string | null
+          faq_content?: Json | null
+          hero_heading?: string | null
+          hero_subheading?: string | null
+          id?: string
+          intro_content?: string | null
+          is_published?: boolean | null
+          meta_description?: string | null
+          related_industries?: string[] | null
+          slug?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string | null
+          vendor_type_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "industry_pages_vendor_type_id_fkey"
+            columns: ["vendor_type_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_types"
             referencedColumns: ["id"]
           },
         ]
@@ -359,33 +605,165 @@ export type Database = {
           },
         ]
       }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          name: string | null
+          source: string | null
+          status: string | null
+          subscribed_at: string | null
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          name?: string | null
+          source?: string | null
+          status?: string | null
+          subscribed_at?: string | null
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          name?: string | null
+          source?: string | null
+          status?: string | null
+          subscribed_at?: string | null
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+      notable_figures: {
+        Row: {
+          bio: string | null
+          birth_date: string | null
+          birth_year: number | null
+          candle_count: number | null
+          category: string | null
+          created_at: string | null
+          death_date: string | null
+          death_year: number | null
+          external_links: Json | null
+          featured: boolean | null
+          hebrew_name: string | null
+          id: string
+          image_url: string | null
+          memory_count: number | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          notable_for: string | null
+          short_bio: string | null
+          slug: string
+          sort_order: number | null
+          status: string | null
+          subcategory: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          birth_date?: string | null
+          birth_year?: number | null
+          candle_count?: number | null
+          category?: string | null
+          created_at?: string | null
+          death_date?: string | null
+          death_year?: number | null
+          external_links?: Json | null
+          featured?: boolean | null
+          hebrew_name?: string | null
+          id?: string
+          image_url?: string | null
+          memory_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          notable_for?: string | null
+          short_bio?: string | null
+          slug: string
+          sort_order?: number | null
+          status?: string | null
+          subcategory?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          birth_date?: string | null
+          birth_year?: number | null
+          candle_count?: number | null
+          category?: string | null
+          created_at?: string | null
+          death_date?: string | null
+          death_year?: number | null
+          external_links?: Json | null
+          featured?: boolean | null
+          hebrew_name?: string | null
+          id?: string
+          image_url?: string | null
+          memory_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          notable_for?: string | null
+          short_bio?: string | null
+          slug?: string
+          sort_order?: number | null
+          status?: string | null
+          subcategory?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       obit_sources: {
         Row: {
           active: boolean | null
+          city: string | null
           created_at: string | null
           feed_url: string | null
+          id: string | null
+          is_active: boolean | null
           key: string
           label: string
+          last_fetched: string | null
+          name: string | null
+          region: string | null
+          state: string | null
           type: string
           updated_at: string | null
           url: string
         }
         Insert: {
           active?: boolean | null
+          city?: string | null
           created_at?: string | null
           feed_url?: string | null
+          id?: string | null
+          is_active?: boolean | null
           key: string
           label: string
+          last_fetched?: string | null
+          name?: string | null
+          region?: string | null
+          state?: string | null
           type: string
           updated_at?: string | null
           url: string
         }
         Update: {
           active?: boolean | null
+          city?: string | null
           created_at?: string | null
           feed_url?: string | null
+          id?: string | null
+          is_active?: boolean | null
           key?: string
           label?: string
+          last_fetched?: string | null
+          name?: string | null
+          region?: string | null
+          state?: string | null
           type?: string
           updated_at?: string | null
           url?: string
@@ -522,15 +900,7 @@ export type Database = {
           require_moderation_for_uploads?: boolean | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "obituary_settings_obituary_id_fkey"
-            columns: ["obituary_id"]
-            isOneToOne: true
-            referencedRelation: "obituaries"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       obituary_themes: {
         Row: {
@@ -564,6 +934,127 @@ export type Database = {
           },
         ]
       }
+      product_categories: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          parent_id: string | null
+          slug: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          parent_id?: string | null
+          slug: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category_id: string | null
+          compare_at_price: number | null
+          created_at: string | null
+          description: string | null
+          featured: boolean | null
+          id: string
+          image_url: string | null
+          images: Json | null
+          inventory_count: number | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          price: number
+          short_description: string | null
+          sku: string | null
+          slug: string
+          sort_order: number | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          compare_at_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          images?: Json | null
+          inventory_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          price: number
+          short_description?: string | null
+          sku?: string | null
+          slug: string
+          sort_order?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          compare_at_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          images?: Json | null
+          inventory_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          price?: number
+          short_description?: string | null
+          sku?: string | null
+          slug?: string
+          sort_order?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -572,6 +1063,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          is_admin: boolean | null
           notification_preferences: Json | null
           phone: string | null
           role: string | null
@@ -585,6 +1077,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_admin?: boolean | null
           notification_preferences?: Json | null
           phone?: string | null
           role?: string | null
@@ -598,6 +1091,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_admin?: boolean | null
           notification_preferences?: Json | null
           phone?: string | null
           role?: string | null
@@ -735,30 +1229,90 @@ export type Database = {
       scraped_sources: {
         Row: {
           base_url: string
+          city: string | null
           created_at: string | null
           id: string
           is_active: boolean
+          last_error: string | null
+          last_scraped: string | null
           listing_url: string
           name: string
+          obituary_list_url: string | null
+          platform: string | null
           region: string | null
+          scrape_count: number | null
+          scraper_config: Json | null
+          state: string | null
         }
         Insert: {
           base_url: string
+          city?: string | null
           created_at?: string | null
           id?: string
           is_active?: boolean
+          last_error?: string | null
+          last_scraped?: string | null
           listing_url: string
           name: string
+          obituary_list_url?: string | null
+          platform?: string | null
           region?: string | null
+          scrape_count?: number | null
+          scraper_config?: Json | null
+          state?: string | null
         }
         Update: {
           base_url?: string
+          city?: string | null
           created_at?: string | null
           id?: string
           is_active?: boolean
+          last_error?: string | null
+          last_scraped?: string | null
           listing_url?: string
           name?: string
+          obituary_list_url?: string | null
+          platform?: string | null
           region?: string | null
+          scrape_count?: number | null
+          scraper_config?: Json | null
+          state?: string | null
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content: string | null
+          content_type: string | null
+          id: string
+          key: string
+          page: string | null
+          section: string | null
+          title: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_type?: string | null
+          id?: string
+          key: string
+          page?: string | null
+          section?: string | null
+          title?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_type?: string | null
+          id?: string
+          key?: string
+          page?: string | null
+          section?: string | null
+          title?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -800,6 +1354,366 @@ export type Database = {
           },
         ]
       }
+      vendor_claims: {
+        Row: {
+          additional_notes: string | null
+          address: string | null
+          admin_notes: string | null
+          business_name: string
+          business_type: string
+          city: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          contact_title: string | null
+          created_at: string | null
+          description: string | null
+          email: string
+          id: string
+          phone: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          services: string | null
+          state: string | null
+          status: string | null
+          updated_at: string | null
+          vendor_id: string | null
+          verification_method: string
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          address?: string | null
+          admin_notes?: string | null
+          business_name: string
+          business_type: string
+          city?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          contact_title?: string | null
+          created_at?: string | null
+          description?: string | null
+          email: string
+          id?: string
+          phone: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          services?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_method: string
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          address?: string | null
+          admin_notes?: string | null
+          business_name?: string
+          business_type?: string
+          city?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          contact_title?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string
+          id?: string
+          phone?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          services?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_method?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_claims_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_leads: {
+        Row: {
+          created_at: string | null
+          id: string
+          lead_data: Json | null
+          lead_type: string
+          source_page: string | null
+          vendor_id: string | null
+          visitor_ip: string | null
+          visitor_session: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          lead_data?: Json | null
+          lead_type: string
+          source_page?: string | null
+          vendor_id?: string | null
+          visitor_ip?: string | null
+          visitor_session?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          lead_data?: Json | null
+          lead_type?: string
+          source_page?: string | null
+          vendor_id?: string | null
+          visitor_ip?: string | null
+          visitor_session?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_leads_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_types: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      vendors: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_submissions: number | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          email: string | null
+          featured: boolean | null
+          hours: Json | null
+          id: string
+          images: Json | null
+          latitude: number | null
+          logo_url: string | null
+          longitude: number | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          page_views: number | null
+          phone: string | null
+          phone_clicks: number | null
+          price_range: string | null
+          services: Json | null
+          short_description: string | null
+          slug: string
+          sort_order: number | null
+          state: string | null
+          status: string | null
+          tier: string | null
+          type_id: string | null
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+          website_clicks: number | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_submissions?: number | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          featured?: boolean | null
+          hours?: Json | null
+          id?: string
+          images?: Json | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          page_views?: number | null
+          phone?: string | null
+          phone_clicks?: number | null
+          price_range?: string | null
+          services?: Json | null
+          short_description?: string | null
+          slug: string
+          sort_order?: number | null
+          state?: string | null
+          status?: string | null
+          tier?: string | null
+          type_id?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+          website_clicks?: number | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_submissions?: number | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          featured?: boolean | null
+          hours?: Json | null
+          id?: string
+          images?: Json | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          page_views?: number | null
+          phone?: string | null
+          phone_clicks?: number | null
+          price_range?: string | null
+          services?: Json | null
+          short_description?: string | null
+          slug?: string
+          sort_order?: number | null
+          state?: string | null
+          status?: string | null
+          tier?: string | null
+          type_id?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+          website_clicks?: number | null
+          zip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      virtual_candles: {
+        Row: {
+          candle_type: string | null
+          city: string | null
+          country: string | null
+          duration_days: number | null
+          email: string | null
+          entity_id: string
+          entity_type: string
+          expires_at: string | null
+          id: string
+          is_lit: boolean | null
+          lit_at: string | null
+          message: string | null
+          name: string | null
+          notable_figure_id: string | null
+          obituary_id: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          candle_type?: string | null
+          city?: string | null
+          country?: string | null
+          duration_days?: number | null
+          email?: string | null
+          entity_id: string
+          entity_type: string
+          expires_at?: string | null
+          id?: string
+          is_lit?: boolean | null
+          lit_at?: string | null
+          message?: string | null
+          name?: string | null
+          notable_figure_id?: string | null
+          obituary_id?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          candle_type?: string | null
+          city?: string | null
+          country?: string | null
+          duration_days?: number | null
+          email?: string | null
+          entity_id?: string
+          entity_type?: string
+          expires_at?: string | null
+          id?: string
+          is_lit?: boolean | null
+          lit_at?: string | null
+          message?: string | null
+          name?: string | null
+          notable_figure_id?: string | null
+          obituary_id?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "virtual_candles_notable_figure_id_fkey"
+            columns: ["notable_figure_id"]
+            isOneToOne: false
+            referencedRelation: "notable_figures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_candles_obituary_id_fkey"
+            columns: ["obituary_id"]
+            isOneToOne: false
+            referencedRelation: "obituaries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -826,6 +1740,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      is_admin: { Args: never; Returns: boolean }
       is_obituary_owner: {
         Args: { check_user_id: string; obit_id: string }
         Returns: boolean
@@ -959,6 +1874,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },
