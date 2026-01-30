@@ -88,54 +88,36 @@ export default function AdminManagementPage() {
     setAddingAdmin(true);
 
     try {
-      // First, create the user account using Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: newAdminEmail,
-        password: newAdminPassword,
-        options: {
-          data: {
-            full_name: newAdminName,
-          },
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('You must be logged in to add admins');
+      }
+
+      // Call the server-side API to create the admin
+      const response = await fetch('/api/admin/create-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
         },
+        body: JSON.stringify({
+          email: newAdminEmail,
+          fullName: newAdminName,
+          password: newAdminPassword,
+          action: 'create',
+        }),
       });
 
-      if (authError) {
-        throw authError;
-      }
+      const data = await response.json();
 
-      if (!authData.user) {
-        throw new Error('Failed to create user account');
-      }
-
-      // Then update the profile to set role as admin
-      // Note: Profile should be created automatically by the auth trigger
-      // Wait a moment for the profile to be created
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const { error: updateError } = await supabase
-        .from('profiles' as any)
-        .update({ role: 'admin', full_name: newAdminName })
-        .eq('user_id', authData.user.id);
-
-      if (updateError) {
-        // If profile doesn't exist yet, create it
-        const { error: insertError } = await supabase
-          .from('profiles' as any)
-          .insert({
-            user_id: authData.user.id,
-            email: newAdminEmail,
-            full_name: newAdminName,
-            role: 'admin',
-          });
-
-        if (insertError) {
-          throw insertError;
-        }
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create admin');
       }
 
       toast({
         title: 'Admin Added',
-        description: `${newAdminEmail} has been added as an admin. They may need to verify their email.`,
+        description: data.message || `${newAdminEmail} has been added as an admin.`,
       });
 
       setNewAdminEmail('');
@@ -201,37 +183,39 @@ export default function AdminManagementPage() {
     setAddingAdmin(true);
 
     try {
-      // Check if user exists
-      const { data: existingProfile, error: searchError } = await supabase
-        .from('profiles' as any)
-        .select('*')
-        .eq('email', newAdminEmail)
-        .single();
-
-      if (searchError || !existingProfile) {
-        toast({
-          title: 'User Not Found',
-          description: 'No user found with that email. Use "Create New Admin" to create a new admin account.',
-          variant: 'destructive',
-        });
-        setAddingAdmin(false);
-        return;
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('You must be logged in to promote users');
       }
 
-      // Update role to admin
-      const { error: updateError } = await supabase
-        .from('profiles' as any)
-        .update({ role: 'admin' })
-        .eq('id', (existingProfile as any).id);
+      // Call the server-side API to promote the user
+      const response = await fetch('/api/admin/create-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          email: newAdminEmail,
+          fullName: newAdminName || undefined,
+          action: 'promote',
+        }),
+      });
 
-      if (updateError) throw updateError;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to promote user');
+      }
 
       toast({
         title: 'Admin Added',
-        description: `${newAdminEmail} has been promoted to admin.`,
+        description: data.message || `${newAdminEmail} has been promoted to admin.`,
       });
 
       setNewAdminEmail('');
+      setNewAdminName('');
       setDialogOpen(false);
       fetchAdmins();
     } catch (error: any) {
