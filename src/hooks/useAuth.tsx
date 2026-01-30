@@ -70,86 +70,116 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let hasCompletedInitialLoad = false;
 
     // Set a timeout to prevent infinite loading if auth hangs
-    // Reduced to 5 seconds for better UX
     const loadingTimeout = setTimeout(() => {
       if (isMounted && !hasCompletedInitialLoad) {
         console.warn('Auth loading timeout - forcing completion');
         setLoading(false);
       }
-    }, 5000); // 5 second timeout
+    }, 8000); // 8 second timeout
+
+    // Helper to handle session and fetch profile
+    const handleSession = async (session: Session | null) => {
+      if (!isMounted) return;
+
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        try {
+          const existingProfile = await fetchProfile(session.user.id);
+
+          // Create profile if it doesn't exist
+          if (!existingProfile && isMounted) {
+            const { data: newProfile } = await supabase
+              .from('profiles')
+              .insert({
+                user_id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+                role: 'user'
+              })
+              .select()
+              .single();
+
+            if (newProfile && isMounted) {
+              setProfile(newProfile as Profile);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching/creating profile:', error);
+        }
+      } else {
+        setProfile(null);
+      }
+
+      if (isMounted) {
+        hasCompletedInitialLoad = true;
+        setLoading(false);
+      }
+    };
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (!isMounted) return;
-
-        setSession(session);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          // Fetch profile
-          try {
-            const existingProfile = await fetchProfile(session.user.id);
-
-            // Create profile if it doesn't exist
-            if (!existingProfile && isMounted) {
-              const { data: newProfile } = await supabase
-                .from('profiles')
-                .insert({
-                  user_id: session.user.id,
-                  email: session.user.email,
-                  full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-                  role: 'user'
-                })
-                .select()
-                .single();
-
-              if (newProfile && isMounted) {
-                setProfile(newProfile as Profile);
-              }
-            }
-          } catch (error) {
-            console.error('Error fetching/creating profile:', error);
-          }
-        } else {
-          setProfile(null);
-        }
-
-        if (isMounted) {
-          hasCompletedInitialLoad = true;
-          setLoading(false);
-        }
+        await handleSession(session);
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession()
-      .then(async ({ data: { session } }) => {
-        if (!isMounted) return;
+    // Check for existing session with fallback to localStorage
+    const initSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
 
-        setSession(session);
-        setUser(session?.user ?? null);
+        if (session) {
+          await handleSession(session);
+          return;
+        }
 
-        if (session?.user) {
-          try {
-            await fetchProfile(session.user.id);
-          } catch (error) {
-            console.error('Error fetching profile:', error);
+        // Fallback: Check localStorage directly if getSession returns null
+        // This handles cases where the Supabase client doesn't properly restore
+        if (typeof window !== 'undefined') {
+          const storageKey = 'jewish-obits-auth';
+          const storedData = localStorage.getItem(storageKey);
+
+          if (storedData) {
+            try {
+              const parsed = JSON.parse(storedData);
+              const currentTime = Math.floor(Date.now() / 1000);
+
+              // Check if token is still valid
+              if (parsed.expires_at && parsed.expires_at > currentTime && parsed.access_token && parsed.refresh_token) {
+                // Try to restore the session manually
+                const { data: refreshData, error: refreshError } = await supabase.auth.setSession({
+                  access_token: parsed.access_token,
+                  refresh_token: parsed.refresh_token
+                });
+
+                if (refreshData?.session && !refreshError) {
+                  await handleSession(refreshData.session);
+                  return;
+                }
+              }
+            } catch (parseError) {
+              console.error('Error parsing stored session:', parseError);
+            }
           }
         }
 
+        // No valid session found
         if (isMounted) {
           hasCompletedInitialLoad = true;
           setLoading(false);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error getting session:', error);
         if (isMounted) {
           hasCompletedInitialLoad = true;
           setLoading(false);
         }
-      });
+      }
+    };
+
+    initSession();
 
     return () => {
       isMounted = false;
