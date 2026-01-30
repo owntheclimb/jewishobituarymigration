@@ -217,23 +217,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(data.session.user);
 
       try {
-        const fetchedProfile = await fetchProfile(data.session.user.id);
-        if (!fetchedProfile) {
-          // Try to create profile if it doesn't exist
-          const { data: newProfile } = await supabase
-            .from('profiles')
-            .insert({
-              user_id: data.session.user.id,
-              email: data.session.user.email,
-              full_name: data.session.user.user_metadata?.full_name || data.session.user.user_metadata?.name,
-              role: 'user'
-            })
-            .select()
-            .single();
+        // Use direct fetch with the token from sign-in response
+        // The supabase client may not have the session ready immediately
+        const SUPABASE_URL = "https://pinwpummsftjsqvszchs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpbndwdW1tc2Z0anNxdnN6Y2hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNjU1MzEsImV4cCI6MjA2OTY0MTUzMX0.8t-WutBLqrv-60jaGTiJatxygqna45PaiKgRxCt3XP4";
 
-          if (newProfile) {
-            setProfile(newProfile as Profile);
+        const profileResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${data.session.user.id}&select=*`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${data.session.access_token}`,
+              'Content-Type': 'application/json',
+            },
           }
+        );
+
+        if (profileResponse.ok) {
+          const profiles = await profileResponse.json();
+          if (profiles && profiles.length > 0) {
+            setProfile(profiles[0] as Profile);
+          } else {
+            // Create profile if it doesn't exist
+            const createResponse = await fetch(
+              `${SUPABASE_URL}/rest/v1/profiles`,
+              {
+                method: 'POST',
+                headers: {
+                  'apikey': SUPABASE_ANON_KEY,
+                  'Authorization': `Bearer ${data.session.access_token}`,
+                  'Content-Type': 'application/json',
+                  'Prefer': 'return=representation',
+                },
+                body: JSON.stringify({
+                  user_id: data.session.user.id,
+                  email: data.session.user.email,
+                  full_name: data.session.user.user_metadata?.full_name || data.session.user.user_metadata?.name,
+                  role: 'user'
+                }),
+              }
+            );
+
+            if (createResponse.ok) {
+              const newProfiles = await createResponse.json();
+              if (newProfiles && newProfiles.length > 0) {
+                setProfile(newProfiles[0] as Profile);
+              }
+            }
+          }
+        } else {
+          console.error('Failed to fetch profile:', await profileResponse.text());
         }
       } catch (profileError) {
         console.error('Error fetching profile after sign-in:', profileError);
