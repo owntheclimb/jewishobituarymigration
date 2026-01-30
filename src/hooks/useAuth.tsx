@@ -205,10 +205,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
+
+    // If sign-in succeeded, explicitly fetch the profile
+    // Don't rely solely on onAuthStateChange which can have race conditions
+    if (!error && data?.session?.user) {
+      setSession(data.session);
+      setUser(data.session.user);
+
+      try {
+        const fetchedProfile = await fetchProfile(data.session.user.id);
+        if (!fetchedProfile) {
+          // Try to create profile if it doesn't exist
+          const { data: newProfile } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: data.session.user.id,
+              email: data.session.user.email,
+              full_name: data.session.user.user_metadata?.full_name || data.session.user.user_metadata?.name,
+              role: 'user'
+            })
+            .select()
+            .single();
+
+          if (newProfile) {
+            setProfile(newProfile as Profile);
+          }
+        }
+      } catch (profileError) {
+        console.error('Error fetching profile after sign-in:', profileError);
+      }
+
+      setLoading(false);
+    }
+
     return { error };
   };
 
