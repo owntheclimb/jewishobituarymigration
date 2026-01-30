@@ -33,7 +33,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = React.useState<Profile | null>(null);
   const [loading, setLoading] = React.useState(true);
 
+  // Direct fetch constants - bypassing Supabase client which has issues
+  const SUPABASE_URL = "https://pinwpummsftjsqvszchs.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpbndwdW1tc2Z0anNxdnN6Y2hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNjU1MzEsImV4cCI6MjA2OTY0MTUzMX0.8t-WutBLqrv-60jaGTiJatxygqna45PaiKgRxCt3XP4";
+
+  const fetchProfileDirect = async (userId: string, accessToken: string): Promise<Profile | null> => {
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${userId}&select=*`,
+        {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error('Profile fetch failed:', response.status);
+        return null;
+      }
+
+      const profiles = await response.json();
+      if (profiles && profiles.length > 0) {
+        setProfile(profiles[0] as Profile);
+        return profiles[0] as Profile;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+  };
+
   const fetchProfile = async (userId: string, retries = 3): Promise<Profile | null> => {
+    // Try to get access token from localStorage
+    const storageKey = 'jewish-obits-auth';
+    const storedData = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+
+    if (storedData) {
+      try {
+        const parsed = JSON.parse(storedData);
+        if (parsed.access_token) {
+          return await fetchProfileDirect(userId, parsed.access_token);
+        }
+      } catch (e) {
+        console.error('Error parsing stored session:', e);
+      }
+    }
+
+    // Fallback to supabase client (may not work)
     for (let attempt = 0; attempt < retries; attempt++) {
       const { data, error } = await supabase
         .from('profiles')
@@ -42,7 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error) {
-        // If RLS/auth error, wait and retry (token might not be ready)
         if (attempt < retries - 1) {
           await new Promise(resolve => setTimeout(resolve, 200 * (attempt + 1)));
           continue;
