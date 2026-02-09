@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'qjmgwwvxkjznsogbktof.supabase.co',
+        hostname: 'pinwpummsftjsqvszchs.supabase.co',
       },
       {
         protocol: 'https',
@@ -171,6 +171,11 @@ const nextConfig: NextConfig = {
       {
         source: '/notable-figures',
         destination: '/notable',
+        permanent: true,
+      },
+      {
+        source: '/cemeteries',
+        destination: '/cemetery-directory',
         permanent: true,
       },
     ];

@@ -241,9 +241,11 @@ const Contact = () => {
             If you need immediate assistance with urgent obituary matters or technical issues,
             our emergency support team is available 24/7 to help you.
           </p>
-          <Button className="bg-warm-gradient text-primary-foreground hover:shadow-elegant transition-all duration-300">
-            Call Emergency Support
-          </Button>
+          <a href="mailto:info@neshamajfs.com">
+            <Button className="bg-warm-gradient text-primary-foreground hover:shadow-elegant transition-all duration-300">
+              Contact Emergency Support
+            </Button>
+          </a>
         </Card>
       </div>
 
