@@ -152,7 +152,7 @@ const SitemapPage = () => {
                 Jewish Obits is committed to providing comprehensive memorial services for the Jewish community.
               </p>
               <p className="mt-2">
-                All content 2025 Jewish Obits. All rights reserved.
+                All content {new Date().getFullYear()} Jewish Obits. All rights reserved.
               </p>
             </div>
           </div>

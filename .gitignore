@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# QA screenshots
+qa-*.png
+
+# supabase temp files
+supabase/.temp/

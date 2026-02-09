@@ -45,7 +45,7 @@ serve(async (req) => {
 
     // Add main search page
     sitemap += '  <url>\n';
-    sitemap += '    <loc>https://jewishobits.com/search</loc>\n';
+    sitemap += '    <loc>https://jewishobituary.com/search</loc>\n';
     sitemap += '    <changefreq>daily</changefreq>\n';
     sitemap += '    <priority>1.0</priority>\n';
     sitemap += '    <lastmod>' + new Date().toISOString().split('T')[0] + '</lastmod>\n';
@@ -55,7 +55,7 @@ serve(async (req) => {
     const totalPages = Math.ceil(allExternalObits.length / 12);
     for (let page = 2; page <= Math.min(totalPages, 100); page++) {
       sitemap += '  <url>\n';
-      sitemap += `    <loc>https://jewishobits.com/search?page=${page}</loc>\n`;
+      sitemap += `    <loc>https://jewishobituary.com/search?page=${page}</loc>\n`;
       sitemap += '    <changefreq>daily</changefreq>\n';
       sitemap += '    <priority>0.8</priority>\n';
       sitemap += '    <lastmod>' + new Date().toISOString().split('T')[0] + '</lastmod>\n';
@@ -69,7 +69,7 @@ serve(async (req) => {
       const daysOld = (Date.now() - lastmodDate.getTime()) / (1000 * 60 * 60 * 24);
       
       sitemap += '  <url>\n';
-      sitemap += `    <loc>https://jewishobits.com/obituary/${obit.id}</loc>\n`;
+      sitemap += `    <loc>https://jewishobituary.com/obituary/${obit.id}</loc>\n`;
       sitemap += `    <lastmod>${lastmodDate.toISOString().split('T')[0]}</lastmod>\n`;
       sitemap += `    <changefreq>${daysOld < 7 ? 'daily' : daysOld < 30 ? 'weekly' : 'monthly'}</changefreq>\n`;
       sitemap += `    <priority>${daysOld < 7 ? '0.9' : daysOld < 30 ? '0.7' : '0.6'}</priority>\n`;
@@ -86,7 +86,7 @@ serve(async (req) => {
       const encodedId = encodeURIComponent(obit.id);
       
       sitemap += '  <url>\n';
-      sitemap += `    <loc>https://jewishobits.com/obituary/${encodedId}</loc>\n`;
+      sitemap += `    <loc>https://jewishobituary.com/obituary/${encodedId}</loc>\n`;
       sitemap += `    <lastmod>${lastmodDate.toISOString().split('T')[0]}</lastmod>\n`;
       sitemap += `    <changefreq>${daysOld < 7 ? 'daily' : daysOld < 30 ? 'weekly' : 'monthly'}</changefreq>\n`;
       sitemap += `    <priority>${daysOld < 7 ? '0.9' : daysOld < 30 ? '0.7' : '0.6'}</priority>\n`;

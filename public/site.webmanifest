@@ -1,6 +1,6 @@
 {
-  "name": "jewishobits",
-  "short_name": "jewobits",
+  "name": "Jewish Obituary",
+  "short_name": "Jewish Obits",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
