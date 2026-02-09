@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Heart, Users, Award, Shield } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import teamMemberPortrait from '@/assets/team-member-portrait.jpg';
-
 const About = () => {
   const values = [
     {
@@ -29,27 +27,6 @@ const About = () => {
       icon: <Shield className="h-8 w-8" />,
       title: "Trust & Privacy",
       description: "We maintain the highest standards of privacy and security for all memorial content and personal information."
-    }
-  ];
-
-  const team = [
-    {
-      name: "Sarah Johnson",
-      role: "Founder & CEO",
-      bio: "With over 15 years in memorial services, Sarah founded Jewish Obits to make honoring loved ones more accessible and meaningful.",
-      image: teamMemberPortrait
-    },
-    {
-      name: "Michael Chen",
-      role: "Chief Technology Officer",
-      bio: "Michael brings technical expertise to ensure our platform is secure, reliable, and user-friendly for all families.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face"
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Director of Community Relations",
-      bio: "Emily works directly with families and communities to provide support and guidance during their time of need.",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face"
     }
   ];
 
@@ -76,7 +53,7 @@ const About = () => {
                 and community.
               </p>
               <p>
-                When our founder lost a beloved family member, she struggled to find a platform that truly
+                When our team experienced the loss of beloved family members, we struggled to find a platform that truly
                 captured the essence of a Jewish life – not just the dates and facts, but the warmth of Shabbat
                 dinners, the pride in cultural heritage, the commitment to tikkun olam (repairing the world),
                 and the unbreakable bonds of family and community.
