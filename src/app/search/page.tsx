@@ -667,7 +667,7 @@ const SearchPageContent = () => {
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "Customer Service",
-      "url": "https://jewishobits.com/contact"
+      "url": "https://jewishobituary.com/contact"
     }
   };
 
@@ -726,7 +726,7 @@ const SearchPageContent = () => {
     "@type": "CollectionPage",
     "name": "Jewish Obituaries Search",
     "description": "Search and browse Jewish obituaries from communities nationwide",
-    "url": "https://jewishobits.com/search",
+    "url": "https://jewishobituary.com/search",
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": filteredExternalObits.length,
@@ -739,7 +739,7 @@ const SearchPageContent = () => {
     "isPartOf": {
       "@type": "WebSite",
       "name": "Jewish Obits",
-      "url": "https://jewishobits.com"
+      "url": "https://jewishobituary.com"
     }
   };
 
@@ -752,19 +752,19 @@ const SearchPageContent = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://jewishobits.com"
+        "item": "https://jewishobituary.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Search Obituaries",
-        "item": "https://jewishobits.com/search"
+        "item": "https://jewishobituary.com/search"
       },
       ...(stateFilter !== 'All' ? [{
         "@type": "ListItem",
         "position": 3,
         "name": `${stateFilter} Obituaries`,
-        "item": `https://jewishobits.com/search#state-${stateFilter}`
+        "item": `https://jewishobituary.com/search#state-${stateFilter}`
       }] : [])
     ]
   };

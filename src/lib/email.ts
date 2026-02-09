@@ -46,7 +46,7 @@ export async function sendContactNotification(
 
   try {
     const { data: result, error } = await getResend().emails.send({
-      from: 'Jewish Obits <notifications@jewishobits.com>',
+      from: 'Jewish Obituary <noreply@jewishobituary.com>',
       to: adminEmail,
       replyTo: data.email,
       subject: `New Contact Form Submission: ${data.subject}`,

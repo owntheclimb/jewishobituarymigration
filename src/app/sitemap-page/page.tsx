@@ -58,7 +58,7 @@ const SitemapPage = () => {
         { name: 'Send Flowers', path: '/flowers' },
         { name: 'Plant Memorial Trees', path: '/memorial-trees' },
         { name: 'Charitable Donations', path: '/charities' },
-        { name: 'Memorial Pages', path: '/memorial' },
+        { name: 'Obituaries', path: '/obituaries' },
       ]
     },
     {

@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   appleWebApp: {
-    title: 'jewishobits',
+    title: 'Jewish Obituary',
   },
 };
 

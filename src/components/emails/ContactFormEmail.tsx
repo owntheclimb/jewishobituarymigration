@@ -272,10 +272,10 @@ export default function ContactFormEmail({
               >
                 This email was sent from the contact form on{' '}
                 <a
-                  href="https://jewishobits.com"
+                  href="https://jewishobituary.com"
                   style={{ color: '#1e3a5f', textDecoration: 'none' }}
                 >
-                  jewishobits.com
+                  jewishobituary.com
                 </a>
               </p>
               <p

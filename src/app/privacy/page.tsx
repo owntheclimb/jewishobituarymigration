@@ -141,7 +141,7 @@ const PrivacyPolicy = () => {
                 <div className="bg-muted/30 rounded-lg p-4 space-y-2">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-primary" />
-                    <span className="text-muted-foreground">Email: privacy@jewishobits.com</span>
+                    <span className="text-muted-foreground">Email: privacy@jewishobituary.com</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-primary" />
