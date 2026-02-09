@@ -40,7 +40,7 @@ const articleSchema = generateArticleSchema({
   description: 'Creating meaningful tributes for Holocaust survivors requires sensitivity, respect, and an understanding of how to honor both their suffering and their resilience.',
   url: 'https://jewishobituary.com/resources/holocaust-survivor-obituary',
   datePublished: '2024-04-01',
-  dateModified: '2025-01-15',
+  dateModified: '2026-02-09',
   authorName: 'Jewish Obituary Editorial Team',
   image: 'https://jewishobituary.com/og-image.jpg',
 });

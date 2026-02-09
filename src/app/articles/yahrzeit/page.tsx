@@ -103,7 +103,7 @@ export default function ArticleYahrzeitPage() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>By Rabbi Sarah Cohen</span>
                 <Separator orientation="vertical" className="h-4" />
-                <span>Updated January 2025</span>
+                <span>Updated February 2026</span>
               </div>
 
               <div className="flex items-center gap-2">

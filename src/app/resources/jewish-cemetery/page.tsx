@@ -37,7 +37,7 @@ const articleSchema = generateArticleSchema({
   description: 'Understanding the customs and etiquette of Jewish cemeteries helps visitors show proper respect while connecting with cherished memories.',
   url: 'https://jewishobituary.com/resources/jewish-cemetery',
   datePublished: '2024-02-15',
-  dateModified: '2025-01-15',
+  dateModified: '2026-02-09',
   authorName: 'Jewish Obituary Editorial Team',
   image: 'https://jewishobituary.com/og-image.jpg',
 });

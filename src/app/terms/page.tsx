@@ -21,7 +21,7 @@ const TermsOfService = () => {
               </div>
               <h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
               <p className="text-muted-foreground">
-                Last updated: January 1, 2025
+                Last updated: February 9, 2026
               </p>
             </div>
 

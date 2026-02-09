@@ -39,7 +39,7 @@ const articleSchema = generateArticleSchema({
   description: 'The unveiling ceremony marks the dedication of a headstone, typically occurring 11-12 months after burial, providing closure and a lasting memorial.',
   url: 'https://jewishobituary.com/resources/unveiling-ceremony',
   datePublished: '2024-05-01',
-  dateModified: '2025-01-15',
+  dateModified: '2026-02-09',
   authorName: 'Jewish Obituary Editorial Team',
   image: 'https://jewishobituary.com/og-image.jpg',
 });

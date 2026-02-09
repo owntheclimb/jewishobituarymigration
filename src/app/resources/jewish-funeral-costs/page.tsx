@@ -40,7 +40,7 @@ const articleSchema = generateArticleSchema({
   description: 'Understanding the costs of a traditional Jewish funeral helps families plan appropriately during a difficult time.',
   url: 'https://jewishobituary.com/resources/jewish-funeral-costs',
   datePublished: '2024-03-15',
-  dateModified: '2025-01-15',
+  dateModified: '2026-02-09',
   authorName: 'Jewish Obituary Editorial Team',
   image: 'https://jewishobituary.com/og-image.jpg',
 });
