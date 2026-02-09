@@ -110,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification email
     const emailResponse = await resend.emails.send({
-      from: "Neshama Memorial <notifications@resend.dev>",
+      from: "Jewish Obituary <noreply@jewishobituary.com>",
       to: [ownerEmail],
       subject: `New ${itemTypeDisplay} awaiting approval - ${deceasedName}'s memorial`,
       html: `
@@ -129,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'lovable.app')}/obituary/${obituaryId}/moderation" 
+            <a href="https://jewishobituary.com/obituary/${obituaryId}/moderation" 
                style="background-color: #7A2CC6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
               Review & Approve
             </a>

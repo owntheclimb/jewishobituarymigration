@@ -34,7 +34,7 @@ const WritingHelp = () => {
     {
       title: "Brief & Dignified Style",
       name: "Dr. Rachel Levin",
-      content: "Dr. Rachel Levin, 72, renowned cardiologist and humanitarian, passed away on December 5, 2023, after a brief illness.\n\nBorn in Tel Aviv and educated at Hebrew University and Johns Hopkins Medical School, Dr. Levin dedicated her career to advancing cardiac care and training the next generation of physicians. She served as Chief of Cardiology at Northwestern Memorial Hospital for 20 years.\n\nDr. Levin's pioneering research in women's heart health saved countless lives and earned her numerous accolades, including the American Heart Association's Distinguished Scientist Award. Yet those who knew her best will remember her compassion, her mentorship, and her unwavering commitment to patients regardless of their ability to pay.\n\nShe is survived by her partner of 40 years, Dr. Janet Morrison; her brother David Levin of Haifa; and generations of grateful students and patients.\n\nA memorial service will be held on December 10 at 11 AM at Temple Sholom. Memorial gifts may be directed to the Dr. Rachel Levin Scholarship Fund for Medical Students."
+      content: "Dr. Rachel Levin, 72, renowned cardiologist and humanitarian, passed away on December 5, 2023, after a brief illness.\n\nBorn in Tel Aviv and educated at Hebrew University and Johns Hopkins Medical School, Dr. Levin dedicated her career to advancing cardiac care and training the next generation of physicians. She served as Chief of Cardiology at Northwestern Memorial Hospital for 20 years.\n\nDr. Levin's pioneering research in women's heart health saved countless lives and earned her numerous accolades, including the American Heart Association's Distinguished Scientist Award. Yet those who knew her best will remember her compassion, her mentorship, and her unwavering commitment to patients regardless of their ability to pay.\n\nShe is survived by her husband of 40 years, Dr. Michael Morrison; her brother David Levin of Haifa; and generations of grateful students and patients.\n\nA memorial service will be held on December 10 at 11 AM at Temple Sholom. Memorial gifts may be directed to the Dr. Rachel Levin Scholarship Fund for Medical Students."
     },
     {
       title: "Story-Based Style",
@@ -85,10 +85,6 @@ const WritingHelp = () => {
         {
           question: 'Should I mention divorces or multiple marriages?',
           answer: 'Yes, you can acknowledge multiple marriages respectfully. Common approaches include: "[Name] was married to [First Spouse] from [years], and later to [Second Spouse] from [years]" or "survived by her current husband [Name] and former husband [Name]." For amicable divorces, especially if children are involved, including ex-spouses can be appropriate and appreciated. Focus on stating facts neutrally without judgment.'
-        },
-        {
-          question: 'How do I include LGBTQ+ relationships respectfully?',
-          answer: 'Use the same language and prominence you would for any marriage or partnership: "beloved husband," "devoted wife," "life partner," or whatever term the couple used. Include their spouse/partner in the survivors section with equal weight. If they weren\'t legally married, "life partner of 30 years" is perfectly appropriate. Let your loved one\'s relationship be honored with the same dignity as any other.'
         },
         {
           question: 'What about complex blended families?',

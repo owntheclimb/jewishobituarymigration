@@ -63,7 +63,7 @@ const Memorial = () => {
             <div className="relative">
               <div className="aspect-[3/4] max-w-md mx-auto relative overflow-hidden rounded-3xl shadow-elegant">
                 <img
-                  src="/lovable-uploads/35c4ed12-3dfb-430c-90fd-9f27d985e1c4.png"
+                  src="/logo.png"
                   alt="Sarah Elizabeth Cohen"
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />

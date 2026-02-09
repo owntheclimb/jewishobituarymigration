@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
           const deathYear = obit.date_of_death ? new Date(obit.date_of_death).getFullYear() : '';
           const years = birthYear && deathYear ? ` (${birthYear} - ${deathYear})` : '';
           
-          return `• ${obit.full_name}${years} - <a href="${Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'lovable.app')}/obituary/${obit.id}" style="color: #2563eb; text-decoration: none;">Read obituary</a>`;
+          return `• ${obit.full_name}${years} - <a href="https://jewishobituary.com/obituary/${obit.id}" style="color: #2563eb; text-decoration: none;">Read obituary</a>`;
         }).join('\n');
 
         const communityIcon = community.type === 'city' ? '🏙️' : 
@@ -117,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Send email
         const emailResponse = await resend.emails.send({
-          from: "Neshama Legacy <digest@resend.dev>",
+          from: "Jewish Obituary <noreply@jewishobituary.com>",
           to: [profile.email],
           subject: `New obituaries in ${community.name}`,
           html: `
@@ -134,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
             <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;" />
             <p style="color: #6b7280; font-size: 14px;">
               You're receiving this because you subscribed to updates for ${community.name}. 
-              <a href="${Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'lovable.app')}/communities" style="color: #2563eb;">Manage your subscriptions</a>
+              <a href="https://jewishobituary.com/communities" style="color: #2563eb;">Manage your subscriptions</a>
             </p>
           `,
         });

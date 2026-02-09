@@ -8,7 +8,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1">
             <div className="flex items-center space-x-2 mb-4">
-              <Image src="/lovable-uploads/91d76a8a-9de8-4557-9c73-04d15ac34ba6.png" alt="Jewish Obits Logo" width={24} height={24} className="h-6 w-6" />
+              <Image src="/logo.png" alt="Jewish Obits Logo" width={24} height={24} className="h-6 w-6" />
               <span className="text-lg font-bold">Jewish Obits</span>
             </div>
             <p className="text-sm opacity-80 mb-4">

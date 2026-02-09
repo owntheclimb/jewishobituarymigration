@@ -362,7 +362,7 @@ export default function ArticleChevraKadishaPage() {
               <li>Written procedures ensuring consistency and respect</li>
               <li>Coordination with medical examiners and modern funeral practices</li>
               <li>Support systems for members dealing with the emotional impact</li>
-              <li>Inclusion of Jews by choice and LGBTQ+ individuals in many communities</li>
+              <li>Inclusion of Jews by choice and all community members</li>
               <li>Educational outreach to help communities understand their work</li>
             </ul>
 

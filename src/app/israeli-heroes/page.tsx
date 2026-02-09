@@ -21,7 +21,7 @@ const IsraeliHeroesMemorial = () => {
       date: "October 7, 2023",
       location: "Near Gaza Border",
       story: "Fell defending his country during the October 7th attack. Known for his leadership and dedication to his unit.",
-      image: "/lovable-uploads/35c4ed12-3dfb-430c-90fd-9f27d985e1c4.png"
+      image: "/logo.png"
     },
     {
       name: "Staff Sergeant Yosef Hieb",
@@ -30,7 +30,7 @@ const IsraeliHeroesMemorial = () => {
       date: "October 7, 2023",
       location: "Kibbutz Be'eri",
       story: "Sacrificed his life protecting civilians during the attack on Kibbutz Be'eri. His bravery saved dozens of lives.",
-      image: "/lovable-uploads/91d76a8a-9de8-4557-9c73-04d15ac34ba6.png"
+      image: "/logo.png"
     }
   ];
 
