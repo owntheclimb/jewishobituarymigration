@@ -31,7 +31,7 @@ const resourceColumns: ResourceColumn[] = [
     icon: MapPin,
     links: [
       { label: 'Funeral Homes', href: '/funeral-homes' },
-      { label: 'Cemeteries', href: '/cemeteries' },
+      { label: 'Cemeteries', href: '/cemetery-directory' },
       { label: 'Shiva Planner', href: '/resources/shiva' },
     ],
   },

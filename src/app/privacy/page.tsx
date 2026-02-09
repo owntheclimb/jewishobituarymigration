@@ -145,7 +145,7 @@ const PrivacyPolicy = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-primary" />
-                    <span className="text-muted-foreground">Address: 123 Memorial Avenue, Suite 200, City, State 12345</span>
+                    <span className="text-muted-foreground">Address: Rockville, Maryland</span>
                   </div>
                 </div>
               </div>

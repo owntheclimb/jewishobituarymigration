@@ -15,9 +15,15 @@ const Footer = () => {
               Honoring Jewish lives and preserving legacies for generations.
             </p>
             <div className="flex space-x-3">
-              <Facebook className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
-              <Twitter className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
-              <Instagram className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Facebook className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <Twitter className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Instagram className="h-5 w-5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+              </a>
             </div>
           </div>
 
@@ -74,7 +80,7 @@ const Footer = () => {
 
         <div className="border-t border-secondary-foreground/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-60">
-            <p>© 2025 Jewish Obits. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Jewish Obits. All rights reserved.</p>
             <p className="flex items-center gap-1">
               Made with <Heart className="h-3 w-3 fill-current" /> for the Jewish community
             </p>
