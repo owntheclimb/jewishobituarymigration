@@ -22,6 +22,20 @@ interface Obituary {
   date_of_death: string | null;
   published: boolean | null;
   created_at: string;
+  obituary_settings?: {
+    allow_public_uploads: boolean | null;
+    guestbook_enabled: boolean | null;
+    require_moderation_for_uploads: boolean | null;
+    max_video_seconds: number | null;
+  } | null;
+}
+
+interface ObituarySettingsRow {
+  obituary_id: string;
+  allow_public_uploads: boolean | null;
+  guestbook_enabled: boolean | null;
+  require_moderation_for_uploads: boolean | null;
+  max_video_seconds: number | null;
 }
 
 interface GuestbookEntry {
@@ -62,6 +76,20 @@ export default function ContentPage() {
         .order('created_at', { ascending: false })
         .limit(50);
 
+      const obituaryIds = (obits || []).map((obit) => obit.id);
+      let settingsByObituaryId: Record<string, ObituarySettingsRow> = {};
+
+      if (obituaryIds.length > 0) {
+        const { data: settingsRows } = await supabase
+          .from('obituary_settings')
+          .select('obituary_id, allow_public_uploads, guestbook_enabled, require_moderation_for_uploads, max_video_seconds')
+          .in('obituary_id', obituaryIds);
+
+        settingsByObituaryId = Object.fromEntries(
+          (settingsRows || []).map((row) => [row.obituary_id, row as ObituarySettingsRow])
+        );
+      }
+
       // Fetch pending guestbook entries
       const { data: guestbook } = await supabase
         .from('guestbook_entries')
@@ -78,7 +106,12 @@ export default function ContentPage() {
         .order('created_at', { ascending: false })
         .limit(50);
 
-      setObituaries(obits || []);
+      setObituaries(
+        (obits || []).map((obit) => ({
+          ...obit,
+          obituary_settings: settingsByObituaryId[obit.id] || null,
+        }))
+      );
       setGuestbookEntries(guestbook || []);
       setMemories(mems || []);
     } catch (error) {
@@ -189,12 +222,16 @@ export default function ContentPage() {
                         <th className="text-left p-3 font-medium">Name</th>
                         <th className="text-left p-3 font-medium">Date of Death</th>
                         <th className="text-left p-3 font-medium">Status</th>
+                        <th className="text-left p-3 font-medium">Memorial Settings</th>
                         <th className="text-left p-3 font-medium">Created</th>
                         <th className="text-left p-3 font-medium">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {obituaries.map((obit) => (
+                      {obituaries.map((obit) => {
+                        // Supabase nested select is one-to-one here; fallback values keep old rows readable.
+                        const settings = obit.obituary_settings;
+                        return (
                         <tr key={obit.id} className="border-b">
                           <td className="p-3 font-medium">{obit.full_name}</td>
                           <td className="p-3">
@@ -210,6 +247,22 @@ export default function ContentPage() {
                             </Badge>
                           </td>
                           <td className="p-3">
+                            <div className="flex flex-wrap gap-1">
+                              <Badge variant={settings?.require_moderation_for_uploads ? 'default' : 'outline'}>
+                                {settings?.require_moderation_for_uploads ? 'Moderation: On' : 'Moderation: Off'}
+                              </Badge>
+                              <Badge variant={settings?.guestbook_enabled ? 'default' : 'outline'}>
+                                {settings?.guestbook_enabled ? 'Guestbook: On' : 'Guestbook: Off'}
+                              </Badge>
+                              <Badge variant={settings?.allow_public_uploads ? 'default' : 'outline'}>
+                                {settings?.allow_public_uploads ? 'Uploads: Public' : 'Uploads: Owner'}
+                              </Badge>
+                              <Badge variant="secondary">
+                                Video: {settings?.max_video_seconds ?? 120}s
+                              </Badge>
+                            </div>
+                          </td>
+                          <td className="p-3">
                             {new Date(obit.created_at).toLocaleDateString()}
                           </td>
                           <td className="p-3">
@@ -218,7 +271,8 @@ export default function ContentPage() {
                             </Button>
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

@@ -11,24 +11,28 @@ import { Heart, Users, BookOpen, Phone, MessageCircle, Video, Mail, ExternalLink
 
 const griefSupportGroups = [
   {
+    slug: 'loss-of-spouse',
     title: 'Loss of a Spouse',
     description: 'Support for widows and widowers navigating life after loss',
     icon: Heart,
     resources: ['Weekly support meetings', 'One-on-one counseling', 'Online community']
   },
   {
+    slug: 'loss-of-parent',
     title: 'Loss of a Parent',
     description: 'Guidance for adults mourning the loss of a mother or father',
     icon: Users,
     resources: ['Grief workshops', 'Jewish mourning traditions', 'Family support']
   },
   {
+    slug: 'loss-of-child',
     title: 'Loss of a Child',
     description: 'Compassionate support for parents facing unimaginable loss',
     icon: Heart,
     resources: ['Specialized counseling', 'Parent support groups', 'Memorial resources']
   },
   {
+    slug: 'loss-of-sibling',
     title: 'Loss of a Sibling',
     description: 'Support for those mourning a brother or sister',
     icon: Users,
@@ -194,7 +198,31 @@ const GriefSupport = () => {
                       ))}
                     </ul>
                     <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
-                      <Link href="/grief-support">Learn More</Link>
+                      <Link href={`/grief-support#${group.slug}`}>Learn More</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="mt-10 space-y-4">
+              {griefSupportGroups.map((group) => (
+                <Card key={group.slug} id={group.slug} className="scroll-mt-24">
+                  <CardHeader>
+                    <CardTitle>{group.title}</CardTitle>
+                    <CardDescription>{group.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 mb-4">
+                      {group.resources.map((resource) => (
+                        <li key={resource} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <Sparkles className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span>{resource}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button variant="outline" asChild>
+                      <Link href="/contact">Request Support</Link>
                     </Button>
                   </CardContent>
                 </Card>

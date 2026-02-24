@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,6 @@ import { Calendar, MapPin, Camera, Heart, GraduationCap, Building, Shield, X, Us
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { z } from 'zod';
-import { useEffect } from 'react';
 
 const createHeroImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=600&fit=crop";
 
@@ -54,6 +53,14 @@ const CreateObituary = () => {
   const [militaryBranches, setMilitaryBranches] = useState<string[]>([]);
   const [newHighSchool, setNewHighSchool] = useState('');
   const [newCollege, setNewCollege] = useState('');
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [settings, setSettings] = useState({
+    allowPublicUploads: true,
+    guestbookEnabled: true,
+    requireModerationForUploads: true,
+    maxVideoSeconds: 120,
+  });
 
   const usStates = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
@@ -65,8 +72,15 @@ const CreateObituary = () => {
     'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
   ];
 
-  const militaryBranchOptions = [
-    'Army', 'Navy', 'Air Force', 'Marines', 'Coast Guard', 'Space Force'
+  const serviceAffiliationOptions = [
+    'Army',
+    'Navy',
+    'Air Force',
+    'Marines',
+    'Coast Guard',
+    'Space Force',
+    'Hatzalah',
+    'Chevra Kadisha Member',
   ];
 
   useEffect(() => {
@@ -95,13 +109,88 @@ const CreateObituary = () => {
     }));
   };
 
+  const uploadPhotoFile = async (file: File): Promise<string> => {
+    if (!user) {
+      throw new Error('You must be signed in to upload a photo.');
+    }
+
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Please upload a valid image file.');
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error('Image must be smaller than 10MB.');
+    }
+
+    const fileExt = file.name.split('.').pop() || 'jpg';
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+    const filePath = `${user.id}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('memorial-media')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) {
+      throw new Error(uploadError.message || 'Photo upload failed.');
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from('memorial-media')
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl;
+  };
+
+  const handlePhotoUpload = async () => {
+    if (!photoFile) {
+      toast({
+        title: 'No file selected',
+        description: 'Choose an image from your device first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadingPhoto(true);
+    try {
+      const publicUrl = await uploadPhotoFile(photoFile);
+      setFormData(prev => ({ ...prev, photoUrl: publicUrl }));
+      toast({
+        title: 'Photo uploaded',
+        description: 'Your image is uploaded and ready to publish.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Photo upload failed',
+        description: error?.message || 'Please try another image.',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      let resolvedPhotoUrl = formData.photoUrl;
+
+      // If the user picked a device photo but didn't upload manually, upload it during submit.
+      if (!resolvedPhotoUrl && photoFile) {
+        resolvedPhotoUrl = await uploadPhotoFile(photoFile);
+        setFormData(prev => ({ ...prev, photoUrl: resolvedPhotoUrl }));
+      }
+
       // Validate form data
-      const validationResult = obituarySchema.safeParse(formData);
+      const validationResult = obituarySchema.safeParse({
+        ...formData,
+        photoUrl: resolvedPhotoUrl,
+      });
       if (!validationResult.success) {
         const errorMessage = validationResult.error.issues[0]?.message || "Invalid input";
         toast({
@@ -150,12 +239,29 @@ const CreateObituary = () => {
           military_branches: militaryBranches,
           biography: formData.biography || null,
           funeral_details: formData.funeralDetails || null,
-          photo_url: formData.photoUrl || null,
+          photo_url: resolvedPhotoUrl || null,
+          published: true,
+          visibility: 'public',
         })
         .select()
         .single();
 
       if (obituaryError) throw obituaryError;
+
+      const { error: settingsError } = await supabase
+        .from('obituary_settings')
+        .upsert(
+          {
+            obituary_id: obituaryData.id,
+            allow_public_uploads: settings.allowPublicUploads,
+            guestbook_enabled: settings.guestbookEnabled,
+            require_moderation_for_uploads: settings.requireModerationForUploads,
+            max_video_seconds: settings.maxVideoSeconds,
+          },
+          { onConflict: 'obituary_id' }
+        );
+
+      if (settingsError) throw settingsError;
 
       // Create community links
       const communityLinks = [];
@@ -222,13 +328,18 @@ const CreateObituary = () => {
       // Military communities
       for (const branch of militaryBranches) {
         const slug = branch.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const isUsMilitaryBranch = ['Army', 'Navy', 'Air Force', 'Marines', 'Coast Guard', 'Space Force'].includes(branch);
+        const description = isUsMilitaryBranch
+          ? `U.S. ${branch} veterans community`
+          : `${branch} community`;
+
         const { data: militaryData } = await supabase
           .from('communities')
           .upsert({
             type: 'military',
             name: branch,
             slug: slug,
-            description: `U.S. ${branch} veterans community`
+            description
           }, { onConflict: 'type,slug' })
           .select()
           .single();
@@ -479,14 +590,14 @@ const CreateObituary = () => {
                   )}
                 </div>
 
-                {/* Military Branches */}
+                {/* Service Affiliations */}
                 <div className="space-y-2">
                   <Label className="text-foreground flex items-center gap-2">
                     <Shield className="h-4 w-4" />
-                    Military Service
+                    Military & Service Affiliations
                   </Label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {militaryBranchOptions.map((branch) => (
+                    {serviceAffiliationOptions.map((branch) => (
                       <Button
                         key={branch}
                         type="button"
@@ -520,7 +631,10 @@ const CreateObituary = () => {
                     <input
                       type="checkbox"
                       className="h-4 w-4 rounded border-border"
-                      defaultChecked={true}
+                      checked={settings.allowPublicUploads}
+                      onChange={(e) =>
+                        setSettings(prev => ({ ...prev, allowPublicUploads: e.target.checked }))
+                      }
                     />
                   </div>
 
@@ -534,7 +648,10 @@ const CreateObituary = () => {
                     <input
                       type="checkbox"
                       className="h-4 w-4 rounded border-border"
-                      defaultChecked={true}
+                      checked={settings.guestbookEnabled}
+                      onChange={(e) =>
+                        setSettings(prev => ({ ...prev, guestbookEnabled: e.target.checked }))
+                      }
                     />
                   </div>
 
@@ -548,20 +665,31 @@ const CreateObituary = () => {
                     <input
                       type="checkbox"
                       className="h-4 w-4 rounded border-border"
-                      defaultChecked={true}
+                      checked={settings.requireModerationForUploads}
+                      onChange={(e) =>
+                        setSettings(prev => ({ ...prev, requireModerationForUploads: e.target.checked }))
+                      }
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="max-video-duration">Max Video Duration (seconds)</Label>
+                    <Label htmlFor="max-video-duration">Max Visitor Video Duration (seconds)</Label>
                     <Input
                       id="max-video-duration"
                       type="number"
                       min="30"
                       max="300"
-                      defaultValue="120"
+                      value={settings.maxVideoSeconds}
+                      onChange={(e) => {
+                        const parsedValue = parseInt(e.target.value || '120', 10);
+                        const clamped = Math.min(300, Math.max(30, Number.isNaN(parsedValue) ? 120 : parsedValue));
+                        setSettings(prev => ({ ...prev, maxVideoSeconds: clamped }));
+                      }}
                       className="bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      This applies to visitor-uploaded videos on the memorial page.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -601,16 +729,38 @@ const CreateObituary = () => {
               <div className="space-y-2">
                 <Label htmlFor="photoUrl" className="text-foreground flex items-center gap-2">
                   <Camera className="h-4 w-4" />
-                  Photo URL
+                  Profile Photo
                 </Label>
-                <Input
-                  id="photoUrl"
-                  name="photoUrl"
-                  value={formData.photoUrl}
-                  onChange={handleInputChange}
-                  className="bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
-                  placeholder="https://example.com/photo.jpg"
-                />
+                <div className="grid gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Input
+                      id="photoUpload"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+                      className="bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handlePhotoUpload}
+                      disabled={!photoFile || uploadingPhoto}
+                    >
+                      {uploadingPhoto ? 'Uploading...' : 'Upload from Device'}
+                    </Button>
+                  </div>
+                  <Input
+                    id="photoUrl"
+                    name="photoUrl"
+                    value={formData.photoUrl}
+                    onChange={handleInputChange}
+                    className="bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
+                    placeholder="Or paste image URL (https://example.com/photo.jpg)"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  You can upload directly from your phone/computer, or paste a public image URL.
+                </p>
               </div>
 
               <div className="space-y-2">

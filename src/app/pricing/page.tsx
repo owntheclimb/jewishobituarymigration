@@ -14,6 +14,7 @@ const pricingTiers = [
     price: '$0',
     period: 'Forever',
     description: 'Perfect for creating a simple, heartfelt tribute',
+    bestFor: 'One memorial with essential features',
     badge: null,
     features: [
       'Create one obituary',
@@ -33,6 +34,7 @@ const pricingTiers = [
     price: '$49',
     period: 'One-time',
     description: 'Enhanced memorial with unlimited memories',
+    bestFor: 'A richer memorial for one loved one',
     badge: 'Most Popular',
     features: [
       'Everything in Free',
@@ -56,6 +58,7 @@ const pricingTiers = [
     price: '$149',
     period: 'One-time',
     description: 'Complete memorial solution with all features',
+    bestFor: 'Families managing multiple memorials over time',
     badge: 'Best Value',
     features: [
       'Everything in Premium',
@@ -126,7 +129,7 @@ const Pricing = () => {
                 Simple, Transparent Pricing
               </h1>
               <p className="text-xl text-muted-foreground mb-6">
-                Choose the perfect plan to honor your loved one's memory. No hidden fees, cancel anytime.
+                Choose the right memorial level for your family. No hidden fees, and paid plans are one-time purchases.
               </p>
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <Check className="h-4 w-4 text-primary" />
@@ -162,6 +165,9 @@ const Pricing = () => {
                         <span className="text-muted-foreground ml-2">{tier.period}</span>
                       </div>
                       <CardDescription className="text-base">{tier.description}</CardDescription>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        <span className="font-medium">Best for:</span> {tier.bestFor}
+                      </p>
                     </CardHeader>
 
                     <CardContent>
@@ -186,6 +192,16 @@ const Pricing = () => {
                   </Card>
                 ))}
               </div>
+              <Card className="mt-8 border-primary/20 bg-primary/5">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-3">What&apos;s the difference between levels?</h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li><strong className="text-foreground">Free:</strong> 1 obituary, up to 3 photos, 25 guestbook messages.</li>
+                    <li><strong className="text-foreground">Premium:</strong> everything in Free + unlimited photos/videos, timeline, and premium placement.</li>
+                    <li><strong className="text-foreground">Lifetime:</strong> everything in Premium + unlimited obituaries and advanced family tools.</li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
@@ -282,7 +298,7 @@ const Pricing = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Yes, you can upgrade at any time. The price difference will be prorated. Downgrades take effect at the end of your current billing period.
+                      You can upgrade at any time by paying only the difference to the higher tier. Because plans are one-time purchases, there is no monthly downgrade billing cycle.
                     </p>
                   </CardContent>
                 </Card>
@@ -293,7 +309,7 @@ const Pricing = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Your memorial page will remain active with free tier features. You'll retain access to all content but premium features will be disabled. You can reactivate anytime.
+                      There are no recurring subscriptions on memorial plans, so nothing renews automatically. Your memorial remains active based on the plan you purchased.
                     </p>
                   </CardContent>
                 </Card>

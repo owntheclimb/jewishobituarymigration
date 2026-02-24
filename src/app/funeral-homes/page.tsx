@@ -347,6 +347,17 @@ const FuneralHomes = () => {
                                 )}
                               </div>
                               <div className="flex flex-wrap gap-2">
+                                {home.slug && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    asChild
+                                  >
+                                    <Link href={`/funeral-homes/${home.slug}`}>
+                                      View Profile
+                                    </Link>
+                                  </Button>
+                                )}
                                 {home.website && (
                                   <Button
                                     size="sm"

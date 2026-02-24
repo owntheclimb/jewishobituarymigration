@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
 import Navbar from '@/components/Navbar';
@@ -22,8 +22,6 @@ import {
   Clock,
   ArrowLeft,
   Building2,
-  Calendar,
-  Users,
   ExternalLink,
   Send,
 } from 'lucide-react';
@@ -109,12 +107,27 @@ export default function VendorDetailPage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const { data, error } = await supabase
+        const { data: typeData } = await supabase
+          .from('vendor_types' as any)
+          .select('id')
+          .eq('slug', 'funeral-home')
+          .single();
+
+        let vendorQuery = supabase
           .from('vendors' as any)
           .select('*')
           .eq('slug', slug)
-          .eq('status', 'active')
-          .single();
+          .eq('status', 'active');
+
+        if ((typeData as any)?.id) {
+          vendorQuery = vendorQuery.eq('type_id', (typeData as any).id);
+        }
+
+        const { data, error } = await vendorQuery.maybeSingle();
+
+        if (error) {
+          throw error;
+        }
 
         if (data) {
           setVendor(data as unknown as Vendor);

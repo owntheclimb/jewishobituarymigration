@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/integrations/supabase/client';
 
-export const revalidate = 3600; // Cache for 1 hour
+export const revalidate = 60; // Refresh roughly every minute so homepage totals stay current
 
 // Fallback response for quick serving
 const FALLBACK_STATS = {
