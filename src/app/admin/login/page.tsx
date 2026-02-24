@@ -30,7 +30,7 @@ const AdminLoginPage = () => {
     // If user is logged in, profile is loaded, but not admin, show error
     // Only show error when we're certain profile has been fetched (profile !== null)
     if (!authLoading && user && profile && !isAdmin) {
-      setLoading(false); // Reset loading state
+      queueMicrotask(() => setLoading(false));
       toast({
         title: 'Access Denied',
         description: 'You do not have admin privileges.',

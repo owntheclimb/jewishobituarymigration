@@ -397,7 +397,7 @@ export default function ArticleChevraKadishaPage() {
 
             <div className="bg-primary/5 border-l-4 border-primary p-6 my-8 rounded-r-lg">
               <p className="text-lg text-foreground italic leading-relaxed mb-2">
-                "In serving the chevra kadisha, we don't just honor the deceased - we affirm the sanctity of every human life and the eternal bonds of our community. This is Judaism at its most beautiful: practical compassion rooted in ancient wisdom."
+                "In serving the chevra kadisha, we don&apos;t just honor the deceased - we affirm the sanctity of every human life and the eternal bonds of our community. This is Judaism at its most beautiful: practical compassion rooted in ancient wisdom."
               </p>
               <p className="text-sm text-muted-foreground text-right">-- Rabbi Simkha Weintraub</p>
             </div>

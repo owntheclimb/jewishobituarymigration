@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import schoolHeroImage from '@/assets/school-community-hero.jpg';
+const schoolHeroImage = "https://images.unsplash.com/photo-1523050854058-8df90110c476?w=1920&h=600&fit=crop";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -304,9 +304,9 @@ const CommunityTypeFilter = () => {
         {/* CTA Section */}
         <section className="py-16 bg-primary/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Don't See Your {getTypeLabel(type).slice(0, -1)}?</h2>
+            <h2 className="text-3xl font-bold mb-4">Don&apos;t See Your {getTypeLabel(type).slice(0, -1)}?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              We're continuously expanding our directory. {user ? `Add a ${getTypeLabel(type).slice(0, -1).toLowerCase()} to our directory or let us know about others.` : `Sign in to add a ${getTypeLabel(type).slice(0, -1).toLowerCase()} or let us know about others.`}
+              We&apos;re continuously expanding our directory. {user ? `Add a ${getTypeLabel(type).slice(0, -1).toLowerCase()} to our directory or let us know about others.` : `Sign in to add a ${getTypeLabel(type).slice(0, -1).toLowerCase()} or let us know about others.`}
             </p>
             <div className="flex gap-4 justify-center">
               {user && (

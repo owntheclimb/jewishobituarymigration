@@ -90,8 +90,7 @@ export default function FunnelsPage() {
     setLoading(true);
     try {
       // Calculate date range
-      const now = new Date();
-      let startDate = new Date();
+      const startDate = new Date();
 
       switch (timeRange) {
         case '24h':

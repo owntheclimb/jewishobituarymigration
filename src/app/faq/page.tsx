@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, Phone, Mail, MessageCircle, Heart, Search, FileText } from "lucide-react";
-import faqHeroBg from "@/assets/faq-hero-bg.jpg";
+const faqHeroBg = "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1920&h=600&fit=crop";
 
 const FAQ = () => {
   const faqCategories = [

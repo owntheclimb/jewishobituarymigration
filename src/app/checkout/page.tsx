@@ -26,7 +26,7 @@ const Checkout = () => {
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">
               Our online checkout and payment system is currently under construction.
-              We're working hard to bring you a seamless purchasing experience soon.
+              We&apos;re working hard to bring you a seamless purchasing experience soon.
             </p>
 
             <div className="bg-muted/50 rounded-lg p-4 space-y-3">

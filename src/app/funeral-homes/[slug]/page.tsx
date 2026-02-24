@@ -252,7 +252,7 @@ export default function VendorDetailPage() {
             <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h1 className="text-2xl font-bold mb-2">Funeral Home Not Found</h1>
             <p className="text-muted-foreground mb-4">
-              The funeral home you're looking for doesn't exist or has been removed.
+              The funeral home you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Button asChild>
               <Link href="/funeral-homes">

@@ -264,7 +264,7 @@ const handler = async (req: Request): Promise<Response> => {
             }
 
             // Extract image URL if available - simplified approach
-            let imageUrl = null;
+            const imageUrl = null;
             // Skip complex image extraction for now, can be enhanced later
 
             // Upsert obituary record (including state from source)

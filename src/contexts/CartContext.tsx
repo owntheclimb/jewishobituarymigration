@@ -38,9 +38,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const saved = localStorage.getItem('cart');
     if (saved) {
-      setItems(JSON.parse(saved));
+      queueMicrotask(() => setItems(JSON.parse(saved)));
     }
-    setIsHydrated(true);
+    queueMicrotask(() => setIsHydrated(true));
   }, []);
 
   // Save cart to localStorage whenever items change

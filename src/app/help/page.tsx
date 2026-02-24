@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import writingHelpHero from "@/assets/writing-help-hero.jpg";
+const writingHelpHero = { src: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1920&h=600&fit=crop" };
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

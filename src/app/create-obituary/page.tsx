@@ -18,7 +18,7 @@ import Footer from '@/components/Footer';
 import { z } from 'zod';
 import { useEffect } from 'react';
 
-import createHeroImage from '@/assets/create-hero-couple-candid.jpg';
+const createHeroImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=600&fit=crop";
 
 const obituarySchema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(200, "Name must be less than 200 characters"),

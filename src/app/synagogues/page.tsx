@@ -261,9 +261,9 @@ const Synagogues = () => {
         {/* CTA Section */}
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-2xl font-bold mb-4">Don't see your synagogue?</h2>
+            <h2 className="text-2xl font-bold mb-4">Don&apos;t see your synagogue?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              We're continuously adding synagogues to our directory. If you'd like to add your congregation, please contact us.
+              We&apos;re continuously adding synagogues to our directory. If you&apos;d like to add your congregation, please contact us.
             </p>
             <Button asChild>
               <Link href="/contact">Request Addition</Link>

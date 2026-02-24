@@ -45,3 +45,4 @@ qa-*.png
 
 # supabase temp files
 supabase/.temp/
+.env*.local

@@ -25,7 +25,7 @@ const MemorialStoryDetail = () => {
   // Redirect legacy story-* IDs to /notable/ pages
   useEffect(() => {
     if (id && legacyStoryIdMap[id]) {
-      setIsRedirecting(true);
+      queueMicrotask(() => setIsRedirecting(true));
       router.replace(`/notable/${legacyStoryIdMap[id]}`);
     }
   }, [id, router]);
@@ -33,7 +33,7 @@ const MemorialStoryDetail = () => {
   // Check if this is a notable figure ID that should go to /notable/
   useEffect(() => {
     if (id && notableFigures.find(f => f.id === id)) {
-      setIsRedirecting(true);
+      queueMicrotask(() => setIsRedirecting(true));
       router.replace(`/notable/${id}`);
     }
   }, [id, router]);

@@ -183,9 +183,9 @@ const Organizations = () => {
         {/* CTA Section */}
         <section className="py-16 bg-primary/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Don't See Your Organization?</h2>
+            <h2 className="text-3xl font-bold mb-4">Don&apos;t See Your Organization?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              We're continuously adding Jewish organizations to our directory. Let us know if you'd like to see your organization listed.
+              We&apos;re continuously adding Jewish organizations to our directory. Let us know if you&apos;d like to see your organization listed.
             </p>
             <Button size="lg" asChild>
               <Link href="/contact">Suggest an Organization</Link>

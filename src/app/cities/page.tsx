@@ -220,9 +220,9 @@ const Cities = () => {
         {/* CTA Section */}
         <section className="py-16 bg-primary/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Don't See Your City?</h2>
+            <h2 className="text-3xl font-bold mb-4">Don&apos;t See Your City?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              We're continuously expanding our coverage. Let us know if you'd like to see your city's Jewish community featured.
+              We&apos;re continuously expanding our coverage. Let us know if you&apos;d like to see your city&apos;s Jewish community featured.
             </p>
             <Button size="lg" asChild>
               <Link href="/contact">Suggest a City</Link>

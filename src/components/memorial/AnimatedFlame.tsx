@@ -12,8 +12,8 @@ const AnimatedFlame = ({ isLit, isAnimating }: AnimatedFlameProps) => {
 
   useEffect(() => {
     if (isAnimating) {
-      // Flame springs up dramatically
-      setFlameScale(0);
+      // Flame springs up dramatically (defer setState to avoid sync setState in effect)
+      queueMicrotask(() => setFlameScale(0));
       const timer1 = setTimeout(() => setFlameScale(1.2), 50);
       const timer2 = setTimeout(() => setFlameScale(1), 300);
       return () => {
@@ -21,9 +21,9 @@ const AnimatedFlame = ({ isLit, isAnimating }: AnimatedFlameProps) => {
         clearTimeout(timer2);
       };
     } else if (isLit) {
-      setFlameScale(1);
+      queueMicrotask(() => setFlameScale(1));
     } else {
-      setFlameScale(0);
+      queueMicrotask(() => setFlameScale(0));
     }
   }, [isLit, isAnimating]);
 

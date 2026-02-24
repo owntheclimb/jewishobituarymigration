@@ -89,9 +89,9 @@ const OnThisDate = () => {
 
   useEffect(() => {
     // In production, this would query by current date
-    // For now, randomly select a figure
+    // For now, randomly select a figure (defer setState to avoid sync setState in effect)
     const randomIndex = Math.floor(Math.random() * historicalFigures.length);
-    setCurrentFigure(historicalFigures[randomIndex]);
+    queueMicrotask(() => setCurrentFigure(historicalFigures[randomIndex]));
   }, []);
 
   if (!currentFigure) return null;

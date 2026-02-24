@@ -65,7 +65,7 @@ const RelatedObituaries = ({
       setLoading(true);
 
       // Build a relevance score query
-      let query = supabase
+      const query = supabase
         .from('obituaries')
         .select('id, full_name, photo_url, city, state, date_of_death, date_of_birth, high_schools, colleges, military_branches')
         .eq('published', true)

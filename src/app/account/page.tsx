@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -33,12 +33,7 @@ const Account = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  useEffect(() => {
-    loadProfile();
-    loadObituaries();
-  }, [user]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) return;
 
     const { data, error } = await supabase
@@ -58,9 +53,9 @@ const Account = () => {
     setFullName(data.full_name || "");
     setBio(data.bio || "");
     setPhone(data.phone || "");
-  };
+  }, [user]);
 
-  const loadObituaries = async () => {
+  const loadObituaries = useCallback(async () => {
     if (!user) return;
 
     setLoadingObits(true);
@@ -78,7 +73,14 @@ const Account = () => {
       setObituaries(data || []);
     }
     setLoadingObits(false);
-  };
+  }, [user]);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      loadProfile();
+      loadObituaries();
+    });
+  }, [loadProfile, loadObituaries]);
 
   const handleSaveProfile = async () => {
     if (!user) return;

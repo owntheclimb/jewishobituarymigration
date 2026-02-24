@@ -444,7 +444,7 @@ export default function ArticleJewishFuneralPage() {
 
           <h2 id="attending">What to Expect as an Attendee</h2>
           <p>
-            Non-Jews and those unfamiliar with Jewish customs are welcome at Jewish funerals. Here's what to know:
+            Non-Jews and those unfamiliar with Jewish customs are welcome at Jewish funerals. Here&apos;s what to know:
           </p>
 
           <h3>Dress and Behavior</h3>
@@ -463,9 +463,9 @@ export default function ArticleJewishFuneralPage() {
 
           <h3>What NOT to Do</h3>
           <ul>
-            <li><strong>Don't bring flowers</strong>—make a charitable donation instead</li>
-            <li><strong>Don't approach mourners first</strong>—let them initiate conversation. Traditional practice is to let mourners speak first</li>
-            <li><strong>Don't say "I know how you feel"</strong>—instead, share a memory of the deceased or simply say "I'm sorry for your loss"</li>
+            <li><strong>Don&apos;t bring flowers</strong>—make a charitable donation instead</li>
+            <li><strong>Don&apos;t approach mourners first</strong>—let them initiate conversation. Traditional practice is to let mourners speak first</li>
+            <li><strong>Don&apos;t say "I know how you feel"</strong>—instead, share a memory of the deceased or simply say "I&apos;m sorry for your loss"</li>
           </ul>
 
           <h2 id="special-considerations">Special Considerations</h2>

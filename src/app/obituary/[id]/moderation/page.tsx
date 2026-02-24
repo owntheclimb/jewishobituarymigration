@@ -402,14 +402,11 @@ const ModerationItem = ({ item, onModerate, processing, getImageUrl }: Moderatio
     }
   }, [item, getImageUrl]);
 
-  const getTypeIconLocal = (type: string, mediaType?: string) => {
-    if (type === 'media') {
-      return mediaType === 'video' ? Video : Image;
-    }
-    return type === 'memory' ? Heart : MessageSquare;
-  };
-
-  const Icon = getTypeIconLocal(item.type, item.media_type);
+  const IconComponent = item.type === 'media'
+    ? (item.media_type === 'video' ? Video : Image)
+    : item.type === 'memory'
+      ? Heart
+      : MessageSquare;
 
   return (
     <Card className="p-6">
@@ -427,7 +424,7 @@ const ModerationItem = ({ item, onModerate, processing, getImageUrl }: Moderatio
         <div className="flex-1 space-y-3">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
-              <Icon className="h-5 w-5 text-muted-foreground" />
+              <IconComponent className="h-5 w-5 text-muted-foreground" />
               <div>
                 <h3 className="font-medium">
                   {item.title || `${item.type} from ${item.author_name}`}

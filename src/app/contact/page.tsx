@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import contactTeamHero from '@/assets/contact-team-hero.jpg';
+const contactTeamHero = { src: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&h=400&fit=crop" };
 import { z } from 'zod';
 
 const contactSchema = z.object({
@@ -126,7 +126,7 @@ const Contact = () => {
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl font-bold text-foreground mb-4">Contact Us</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            We're here to help you during this difficult time. Reach out to us with any questions,
+            We&apos;re here to help you during this difficult time. Reach out to us with any questions,
             concerns, or if you need assistance creating a meaningful tribute.
           </p>
         </div>
