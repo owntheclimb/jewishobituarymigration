@@ -123,7 +123,10 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
         {/* Bottom-left verified photo indicator */}
         {obituary.hasVerifiedPhoto && !isPlaceholder && (
           <div className="absolute bottom-3 left-3">
-            <Badge variant="secondary" className="text-[10px] bg-background/90 shadow-sm border-primary/20">
+            <Badge
+              variant="secondary"
+              className="text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-200 shadow-sm dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/30"
+            >
               📸 Photo
             </Badge>
           </div>
