@@ -19,7 +19,8 @@ interface HistoricalFigure {
   imageUrl: string;
 }
 
-// Historical figures with properly licensed public photos
+// Historical figures with real, properly-licensed photos
+// All images are stored locally in /public/notable-figures/
 const historicalFigures: HistoricalFigure[] = [
   {
     id: 'elie-wiesel',
@@ -29,7 +30,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2016,
     category: 'Holocaust Survivor & Nobel Laureate',
     description: 'Author of "Night" and tireless advocate for human rights and remembrance.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Elie_Wiesel_2012_Shankbone.JPG'
+    imageUrl: '/notable-figures/elie-wiesel.jpg'
   },
   {
     id: 'rbg',
@@ -39,7 +40,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2020,
     category: 'Supreme Court Justice',
     description: 'Champion of gender equality and women\'s rights, cultural icon.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Ruth_Bader_Ginsburg_2016_portrait.jpg'
+    imageUrl: '/notable-figures/ruth-bader-ginsburg.jpg'
   },
   {
     id: 'leonard-nimoy',
@@ -49,7 +50,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2015,
     category: 'Actor & Cultural Icon',
     description: 'Beloved as Mr. Spock on Star Trek, accomplished director and photographer.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Leonard_Nimoy_Star_Trek_2011.jpg'
+    imageUrl: '/notable-figures/leonard-nimoy.jpg'
   },
   {
     id: 'carl-reiner',
@@ -59,7 +60,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2020,
     category: 'Comedy Legend & Director',
     description: 'Emmy-winning comedy legend, creator of The Dick Van Dyke Show.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Carl_Reiner_2011_Shankbone.JPG'
+    imageUrl: '/notable-figures/carl-reiner.jpg'
   },
   {
     id: 'gene-wilder',
@@ -69,7 +70,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2016,
     category: 'Actor & Comedian',
     description: 'Iconic actor known for Willy Wonka and Young Frankenstein.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Gene_Wilder_1970.JPG'
+    imageUrl: '/notable-figures/gene-wilder.jpg'
   },
   {
     id: 'joan-rivers',
@@ -79,7 +80,7 @@ const historicalFigures: HistoricalFigure[] = [
     year: 2014,
     category: 'Comedian & Entertainment Pioneer',
     description: 'Groundbreaking comedian who broke barriers in entertainment.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Joan_Rivers_2010.jpg'
+    imageUrl: '/notable-figures/joan-rivers.jpg'
   }
 ];
 

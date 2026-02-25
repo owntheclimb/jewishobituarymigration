@@ -149,7 +149,7 @@ const Flowers = () => {
       price: 89.99,
       category: "bouquets",
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=800&q=80",
+      image: "/images/peaceful-white-lilies.jpg",
       description: "Elegant white lilies and roses arranged with care"
     },
     {
@@ -158,7 +158,7 @@ const Flowers = () => {
       price: 149.99,
       category: "sprays",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1463320726281-696a485928c7?auto=format&fit=crop&w=800&q=80",
+      image: "/images/garden-of-grace-spray.jpg",
       description: "Professional funeral standing arrangement"
     },
     {
@@ -167,7 +167,7 @@ const Flowers = () => {
       price: 64.99,
       category: "plants",
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80",
+      image: "/images/comfort-planter.jpg",
       description: "Living peace lily in decorative planter"
     },
     {
@@ -176,7 +176,7 @@ const Flowers = () => {
       price: 79.99,
       category: "baskets",
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80",
+      image: "/images/sympathy-gift-basket.jpg",
       description: "Thoughtful collection of gourmet treats"
     },
     {
@@ -185,7 +185,7 @@ const Flowers = () => {
       price: 34.99,
       category: "keepsakes",
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      image: "/images/memorial-wind-chimes.jpg",
       description: "Beautiful keepsake with gentle sounds"
     },
     {
@@ -194,7 +194,7 @@ const Flowers = () => {
       price: 69.99,
       category: "bouquets",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+      image: "/images/remembrance-rose-bouquet.jpg",
       description: "Stunning roses in remembrance colors"
     }
   ];
@@ -207,7 +207,7 @@ const Flowers = () => {
         price: p.price,
         category: getCategorySlug(p.category_id),
         rating: 4.8,
-        image: p.image_url || 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=800&q=80',
+        image: p.image_url || '/images/peaceful-white-lilies.jpg',
         description: p.short_description || p.description || ''
       }))
     : fallbackProducts;

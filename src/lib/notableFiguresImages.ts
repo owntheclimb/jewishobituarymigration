@@ -12,32 +12,32 @@ export interface NotableFigure {
 export const NOTABLE_FIGURES_IMAGES: NotableFigure[] = [
   {
     name: 'joan rivers',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Joan_Rivers_2010.jpg',
+    imageUrl: '/notable-figures/joan-rivers.jpg',
     aliases: ['joan alexandra rivers', 'joan molinsky']
   },
   {
     name: 'elie wiesel',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Elie_Wiesel_2012_Shankbone.JPG',
+    imageUrl: '/notable-figures/elie-wiesel.jpg',
     aliases: ['eliezer wiesel']
   },
   {
     name: 'leonard nimoy',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Leonard_Nimoy_Star_Trek_2011.jpg',
+    imageUrl: '/notable-figures/leonard-nimoy.jpg',
     aliases: ['leonard simon nimoy']
   },
   {
     name: 'ruth bader ginsburg',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Ruth_Bader_Ginsburg_2016_portrait.jpg',
+    imageUrl: '/notable-figures/ruth-bader-ginsburg.jpg',
     aliases: ['ruth joan bader ginsburg', 'rbg', 'justice ginsburg']
   },
   {
     name: 'carl reiner',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Carl_Reiner_2011_Shankbone.JPG',
+    imageUrl: '/notable-figures/carl-reiner.jpg',
     aliases: ['carl reiner']
   },
   {
     name: 'gene wilder',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Gene_Wilder_1970.JPG',
+    imageUrl: '/notable-figures/gene-wilder.jpg',
     aliases: ['jerome silberman']
   },
 ];

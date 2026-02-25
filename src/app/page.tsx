@@ -31,7 +31,7 @@ const Index = () => {
         {/* Background Image */}
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1800&q=80)' }}
+          style={{ backgroundImage: `url(/images/hero-cemetery.jpg)` }}
         />
 
         {/* Warm gradient overlay for dignified feel */}
