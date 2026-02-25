@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PenTool, Heart, CheckCircle, Edit, Download, Send } from "lucide-react";
 
 const ObituaryHelper = () => {
+  const router = useRouter();
   const [step, setStep] = useState<"form" | "preview" | "edit">("form");
   const [tone, setTone] = useState("warm");
   const [formData, setFormData] = useState({
@@ -62,6 +64,47 @@ May his memory be a blessing.`;
 
     setGeneratedObit(obit);
     setStep("preview");
+  };
+
+  const handleDownloadPDF = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <title>${formData.fullName || 'Obituary'}</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 700px; margin: 40px auto; line-height: 1.8; color: #1a1a1a; font-size: 16px; }
+    h1 { font-size: 26px; margin-bottom: 6px; }
+    .subtitle { color: #666; margin-bottom: 28px; font-style: italic; }
+    .obituary { white-space: pre-line; }
+    @media print { body { margin: 24px; } }
+  </style>
+</head>
+<body>
+  <h1>${formData.fullName || 'Obituary'}</h1>
+  <p class="subtitle">In Loving Memory</p>
+  <div class="obituary">${generatedObit.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
+</body>
+</html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => printWindow.print(), 500);
+  };
+
+  const handlePublishToMemorial = () => {
+    try {
+      sessionStorage.setItem('obituaryHelperDraft', JSON.stringify({
+        fullName: formData.fullName,
+        hebrewName: formData.hebrewName,
+        dateOfBirth: formData.dateOfBirth,
+        dateOfDeath: formData.dateOfDeath,
+        obituaryText: generatedObit,
+      }));
+    } catch {
+      // sessionStorage unavailable in this browser context
+    }
+    router.push('/create-obituary');
   };
 
   return (
@@ -399,15 +442,13 @@ May his memory be a blessing.`;
                     <Edit className="mr-2 h-5 w-5" />
                     Edit & Customize
                   </Button>
-                  <Button size="lg" variant="outline">
+                  <Button size="lg" variant="outline" onClick={handleDownloadPDF}>
                     <Download className="mr-2 h-5 w-5" />
                     Download PDF
                   </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <Link href="/create-obituary">
-                      <Send className="mr-2 h-5 w-5" />
-                      Publish to Memorial Page
-                    </Link>
+                  <Button size="lg" variant="outline" onClick={handlePublishToMemorial}>
+                    <Send className="mr-2 h-5 w-5" />
+                    Publish to Memorial Page
                   </Button>
                 </div>
               </Card>
@@ -440,15 +481,13 @@ May his memory be a blessing.`;
                 <Button size="lg" onClick={() => setStep("preview")}>
                   Preview Changes
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" onClick={handleDownloadPDF}>
                   <Download className="mr-2 h-5 w-5" />
                   Download PDF
                 </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/create-obituary">
-                    <Send className="mr-2 h-5 w-5" />
-                    Publish to Memorial Page
-                  </Link>
+                <Button size="lg" variant="outline" onClick={handlePublishToMemorial}>
+                  <Send className="mr-2 h-5 w-5" />
+                  Publish to Memorial Page
                 </Button>
               </div>
             </Card>

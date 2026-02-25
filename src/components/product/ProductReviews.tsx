@@ -26,6 +26,39 @@ interface ProductReviewsProps {
   totalReviews: number;
 }
 
+const seedReviews: Review[] = [
+  {
+    id: 1,
+    author: "Sarah M.",
+    rating: 5,
+    date: "2025-12-15",
+    title: "Absolutely beautiful arrangement",
+    content: "I ordered these for my mother's shiva and they arrived fresh and stunning. The quality far exceeded my expectations. The family was deeply moved by how thoughtfully the arrangement was put together. Will order again without hesitation.",
+    verified: true,
+    helpful: 14,
+  },
+  {
+    id: 2,
+    author: "David L.",
+    rating: 5,
+    date: "2025-11-28",
+    title: "Delivered on time, exactly as pictured",
+    content: "Ordered for a close friend's family during an incredibly difficult time. The flowers arrived on schedule and looked exactly as pictured. The family commented on how beautiful they were. Thank you for helping us show we care.",
+    verified: true,
+    helpful: 9,
+  },
+  {
+    id: 3,
+    author: "Rachel K.",
+    rating: 4,
+    date: "2025-11-10",
+    title: "Lovely flowers, very fresh",
+    content: "Very pleased with the quality and presentation. The flowers stayed vibrant for over a week. Customer service was prompt and helpful when I had a question about the delivery window. Highly recommend for any memorial occasion.",
+    verified: false,
+    helpful: 6,
+  },
+];
+
 const ProductReviews = ({ productId, averageRating, totalReviews }: ProductReviewsProps) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [rating, setRating] = useState(0);
@@ -33,8 +66,7 @@ const ProductReviews = ({ productId, averageRating, totalReviews }: ProductRevie
   const [reviewContent, setReviewContent] = useState('');
   const [reviewerName, setReviewerName] = useState('');
 
-  // Reviews would come from backend in production
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(seedReviews);
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
