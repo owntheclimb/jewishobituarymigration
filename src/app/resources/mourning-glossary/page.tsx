@@ -697,7 +697,7 @@ export default function MourningGlossaryPage() {
                 </CardContent>
               </Card>
             </Link>
-            <Link href="/resources/shiva-planner">
+            <Link href="/shiva-planner">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <CardContent className="p-6">
                   <Home className="h-8 w-8 text-amber-600 mb-3" />

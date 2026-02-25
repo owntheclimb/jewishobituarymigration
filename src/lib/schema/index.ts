@@ -37,7 +37,7 @@ export function generateArticleSchema(data: ArticleSchemaData) {
       name: 'Jewish Obituary',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://jewishobituary.com/logo.svg',
+        url: 'https://jewishobituary.com/logo.png',
       },
     },
     mainEntityOfPage: {

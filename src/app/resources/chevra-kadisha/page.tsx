@@ -29,7 +29,8 @@ import Footer from '@/components/Footer';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Share2, Download, ArrowLeft, Users } from 'lucide-react';
+import { Clock, Download, ArrowLeft, Users } from 'lucide-react';
+import { ShareButton } from '@/components/ShareButton';
 import Link from 'next/link';
 import JewishWisdom from '@/components/JewishWisdom';
 import { AuthorBox } from '@/components/AuthorBox';
@@ -134,10 +135,7 @@ export default function ArticleChevraKadishaPage() {
           </p>
 
           <div className="flex gap-3 mb-8">
-            <Button variant="outline">
-              <Share2 className="mr-2 h-4 w-4" />
-              Share Article
-            </Button>
+            <ShareButton />
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Download PDF

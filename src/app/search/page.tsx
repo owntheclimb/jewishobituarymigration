@@ -653,7 +653,7 @@ const SearchPageContent = () => {
     "name": "Jewish Obits",
     "description": "Comprehensive Jewish obituary database preserving memories from communities across the United States",
     "url": "https://jewishobituary.com",
-    "logo": "https://jewishobituary.com/logo.svg",
+    "logo": "https://jewishobituary.com/logo.png",
     "sameAs": [
       "https://facebook.com/jewishobits",
       "https://twitter.com/jewishobits"

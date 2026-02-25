@@ -44,6 +44,7 @@ function LoginPageInner() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const { user, signUp, signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
@@ -89,6 +90,14 @@ function LoginPageInner() {
           variant: 'destructive',
         });
       } else {
+        if (!isSignUp && !rememberMe) {
+          const storageKey = 'jewish-obits-auth';
+          const sessionData = localStorage.getItem(storageKey);
+          if (sessionData) {
+            sessionStorage.setItem(storageKey, sessionData);
+            localStorage.removeItem(storageKey);
+          }
+        }
         toast({
           title: isSignUp ? 'Account created!' : 'Welcome back!',
           description: isSignUp
@@ -251,6 +260,26 @@ function LoginPageInner() {
                 </button>
               </div>
             </div>
+
+            {!isSignUp && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-border accent-primary"
+                  />
+                  <span className="text-xs text-muted-foreground">Stay signed in</span>
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+            )}
 
             <Button
               type="submit"

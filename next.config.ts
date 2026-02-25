@@ -178,6 +178,11 @@ const nextConfig: NextConfig = {
         destination: '/cemetery-directory',
         permanent: true,
       },
+      {
+        source: '/auth',
+        destination: '/login',
+        permanent: true,
+      },
     ];
   },
 

@@ -6,7 +6,8 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Heart, Clock, ArrowLeft, Share2, ExternalLink, Calendar, Users, Flame } from "lucide-react";
+import { BookOpen, Heart, Clock, ArrowLeft, ExternalLink, Calendar, Users, Flame } from "lucide-react";
+import { ShareButton } from "@/components/ShareButton";
 import { AuthorBox } from "@/components/AuthorBox";
 import { getAuthor } from "@/data/authors";
 import { generateArticleSchema, generateBreadcrumbSchema, generateFAQSchema, generateSpeakableSchema, schemaToString } from "@/lib/schema";
@@ -806,10 +807,7 @@ export default function ArticleShivaPage() {
               <p className="font-semibold mb-1">Was this article helpful?</p>
               <p className="text-sm text-muted-foreground">Share it with others who might benefit</p>
             </div>
-            <Button className="gap-2">
-              <Share2 className="h-4 w-4" />
-              Share Article
-            </Button>
+            <ShareButton />
           </div>
         </div>
       </article>

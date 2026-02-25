@@ -291,7 +291,7 @@ const ObituaryDetail = () => {
       "name": "Jewish Obits",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://jewishobituary.com/logo.svg"
+        "url": "https://jewishobituary.com/logo.png"
       }
     },
     "mainEntityOfPage": {

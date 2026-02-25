@@ -142,7 +142,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/auth">Sign In</Link>
+                  <Link href="/login">Sign In</Link>
                 </Button>
                 <Button variant="elegant" size="sm" asChild>
                   <Link href="/create-obituary">Create Obituary</Link>

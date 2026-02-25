@@ -22,6 +22,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  resetPasswordForEmail: (email: string) => Promise<{ error: any }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -346,6 +347,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
   };
 
+  const resetPasswordForEmail = async (email: string) => {
+    const redirectTo = typeof window !== 'undefined'
+      ? `${window.location.origin}/reset-password`
+      : undefined;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    return { error };
+  };
+
   const isAdmin = profile?.role === 'admin';
 
   return (
@@ -359,6 +368,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signInWithGoogle,
       signOut,
+      resetPasswordForEmail,
       refreshProfile
     }}>
       {children}

@@ -236,7 +236,7 @@ const MobileMenu = ({ open, onOpenChange }: MobileMenuProps) => {
                 closeMenu();
                 void (async () => {
                   await signOut();
-                  window.location.href = '/auth';
+                  window.location.href = '/login';
                 })();
               }}>
                 <LogOut className="mr-2 h-4 w-4" />
@@ -246,7 +246,7 @@ const MobileMenu = ({ open, onOpenChange }: MobileMenuProps) => {
           ) : (
             <>
               <Button variant="outline" className="w-full" asChild onClick={closeMenu}>
-                <Link href="/auth">Sign In</Link>
+                <Link href="/login">Sign In</Link>
               </Button>
               <Button variant="elegant" className="w-full" asChild onClick={closeMenu}>
                 <Link href="/create-obituary">Create Obituary</Link>
