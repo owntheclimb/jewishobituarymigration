@@ -101,13 +101,19 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
             </Badge>
           )}
           {obituary.isRecent && (
-            <Badge variant="secondary" className="text-xs bg-background/90 shadow-md">
+            <Badge
+              variant="secondary"
+              className="text-xs bg-orange-100 text-orange-900 border border-orange-200 shadow-md dark:bg-orange-500/20 dark:text-orange-100 dark:border-orange-400/30"
+            >
               <Flame className="h-3 w-3 mr-1 text-amber-500" />
               Recent
             </Badge>
           )}
           {obituary.isNotable && (
-            <Badge variant="secondary" className="text-xs bg-background/90 shadow-md">
+            <Badge
+              variant="secondary"
+              className="text-xs bg-amber-100 text-amber-900 border border-amber-200 shadow-md dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/30"
+            >
               <Star className="h-3 w-3 mr-1 text-amber-500" />
               Notable
             </Badge>
