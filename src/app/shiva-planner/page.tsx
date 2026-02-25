@@ -345,8 +345,11 @@ ${shivaData.notificationTemplate}
                         <Button
                           variant="outline"
                           onClick={() => {
-                            navigator.clipboard.writeText(shivaData.notificationTemplate);
-                            toast.success("Template copied to clipboard");
+                            navigator.clipboard.writeText(shivaData.notificationTemplate).then(() => {
+                              toast.success("Template copied to clipboard");
+                            }).catch(() => {
+                              toast.error("Failed to copy template");
+                            });
                           }}
                         >
                           Copy to Clipboard

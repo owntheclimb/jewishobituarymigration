@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/integrations/supabase/client';
+import { supabasePublic } from '@/integrations/supabase/client';
 
 export const revalidate = 60; // Refresh roughly every minute so homepage totals stay current
 
@@ -46,7 +46,7 @@ export async function GET() {
     ] = await Promise.all([
       // User-created obituaries (published and public)
       safeQuery(
-        () => supabase
+        () => supabasePublic
           .from('obituaries')
           .select('*', { count: 'exact', head: true })
           .eq('published', true)
@@ -56,7 +56,7 @@ export async function GET() {
 
       // Scraped obituaries
       safeQuery(
-        () => supabase
+        () => supabasePublic
           .from('scraped_obituaries')
           .select('*', { count: 'exact', head: true }),
         { count: 0, data: null, error: null }
@@ -64,7 +64,7 @@ export async function GET() {
 
       // Active funeral home sources
       safeQuery(
-        () => supabase
+        () => supabasePublic
           .from('scraped_sources')
           .select('*', { count: 'exact', head: true })
           .eq('is_active', true),
@@ -73,7 +73,7 @@ export async function GET() {
 
       // Communities by type
       safeQuery(
-        () => supabase
+        () => supabasePublic
           .from('communities')
           .select('type', { count: 'exact' })
           .eq('status', 'active'),

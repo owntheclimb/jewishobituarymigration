@@ -54,7 +54,7 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
   
   // Use the obituary's image URL (already includes gender-specific placeholder logic from transformer)
   const imageUrl = (!obituary.imageUrl || imageError) 
-    ? '/placeholder-memorial.png' 
+    ? '/placeholder-memorial.svg' 
     : obituary.imageUrl;
 
   const isPlaceholder = imageUrl.includes('/placeholder-');

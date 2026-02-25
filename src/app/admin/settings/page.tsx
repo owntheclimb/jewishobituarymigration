@@ -22,9 +22,12 @@ export default function SettingsPage() {
     : 'https://jewishobituary.com/api/webhooks/rb2b';
 
   function copyToClipboard(text: string, key: string) {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 2000);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(key);
+      setTimeout(() => setCopied(null), 2000);
+    }).catch(() => {
+      // Clipboard unavailable
+    });
   }
 
   return (

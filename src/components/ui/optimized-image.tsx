@@ -27,7 +27,7 @@ const aspectRatioClasses = {
 export function OptimizedImage({
   src,
   alt,
-  fallback = '/placeholder-memorial.png',
+  fallback = '/placeholder-memorial.svg',
   aspectRatio = 'auto',
   showSkeleton = true,
   className,

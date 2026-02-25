@@ -233,7 +233,7 @@ const ObituaryDetail = () => {
     ? obituary.biography.substring(0, 155) + '...'
     : `In loving memory of ${obituary.full_name}${obituary.date_of_birth && obituary.date_of_death ? ` (${formatDate(obituary.date_of_birth)} - ${formatDate(obituary.date_of_death)})` : ''}`;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const pageImage = obituary.photo_url || '/placeholder-memorial.png';
+  const pageImage = obituary.photo_url || '/placeholder-memorial.svg';
 
   // Parse name for schema
   const parseName = (fullName: string) => {
@@ -377,8 +377,11 @@ const ObituaryDetail = () => {
                         size="sm"
                         className="gap-2"
                         onClick={() => {
-                          navigator.clipboard.writeText(window.location.href);
-                          toast.success('Link copied to clipboard');
+                          navigator.clipboard.writeText(window.location.href).then(() => {
+                            toast.success('Link copied to clipboard');
+                          }).catch(() => {
+                            toast.error('Failed to copy link');
+                          });
                         }}
                       >
                         <Share2 className="h-4 w-4" />

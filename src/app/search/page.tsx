@@ -576,6 +576,12 @@ const SearchPageContent = () => {
         description: `Share link for ${name} copied to clipboard`,
       });
       setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy link to clipboard",
+        variant: "destructive",
+      });
     });
   };
 

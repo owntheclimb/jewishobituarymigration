@@ -171,7 +171,9 @@ END:VCALENDAR`;
       }
     } else {
       // Fallback to clipboard
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(text).catch(() => {
+        // Clipboard unavailable; user can copy manually
+      });
     }
   };
 

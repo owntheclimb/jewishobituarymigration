@@ -249,6 +249,10 @@ const CreateObituary = () => {
 
       if (obituaryError) throw obituaryError;
 
+      if (!obituaryId) {
+        throw new Error('Failed to create obituary — no ID returned from server.');
+      }
+
       toast({
         title: "Obituary Created",
         description: "The obituary has been published successfully.",

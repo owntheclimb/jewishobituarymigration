@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (profile.role !== 'admin' && !profile.is_admin) {
+    if (profile.role !== 'admin' && profile.role !== 'super_admin' && !profile.is_admin) {
       return NextResponse.json(
         { error: 'Forbidden - Admin access required' },
         { status: 403 }

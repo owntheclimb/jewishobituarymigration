@@ -9,7 +9,8 @@ interface Profile {
   user_id: string;
   email: string | null;
   full_name: string | null;
-  role: 'user' | 'admin' | null;
+  role: 'user' | 'admin' | 'super_admin' | null;
+  is_admin?: boolean | null;
 }
 
 interface AuthContextType {
@@ -355,7 +356,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.is_admin === true;
 
   return (
     <AuthContext.Provider value={{

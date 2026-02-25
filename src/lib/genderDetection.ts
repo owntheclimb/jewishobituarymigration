@@ -95,7 +95,7 @@ export const detectGender = (fullName: string): Gender => {
  * Get the universal placeholder image for obituaries without photos
  */
 export const getPlaceholderImage = (gender: Gender): string => {
-  return '/placeholder-memorial.png';
+  return '/placeholder-memorial.svg';
 };
 
 /**

@@ -404,5 +404,77 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching industry pages for sitemap:', error);
   }
 
-  return [...staticPages, ...industryPages];
+  // Fetch dynamic obituary pages (published, public)
+  let obituaryPages: MetadataRoute.Sitemap = [];
+  try {
+    const { data: obituaries } = await supabasePublic
+      .from('obituaries')
+      .select('id, updated_at')
+      .eq('published', true)
+      .eq('visibility', 'public')
+      .order('created_at', { ascending: false })
+      .limit(5000);
+
+    if (obituaries) {
+      obituaryPages = obituaries.map((obit) => ({
+        url: `${baseUrl}/obituary/${obit.id}`,
+        lastModified: new Date(obit.updated_at),
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching obituaries for sitemap:', error);
+  }
+
+  // Fetch dynamic community pages (active)
+  let communityPages: MetadataRoute.Sitemap = [];
+  try {
+    const { data: communities } = await supabasePublic
+      .from('communities')
+      .select('type, slug')
+      .eq('status', 'active')
+      .limit(2000);
+
+    if (communities) {
+      communityPages = communities.map((community) => ({
+        url: `${baseUrl}/communities/${community.type}/${community.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.65,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching communities for sitemap:', error);
+  }
+
+  // Fetch dynamic funeral home / vendor pages
+  let funeralHomePages: MetadataRoute.Sitemap = [];
+  try {
+    const { data: vendors } = await supabasePublic
+      .from('vendors' as any)
+      .select('slug, updated_at')
+      .eq('status', 'active')
+      .limit(1000);
+
+    if (vendors) {
+      const vendorData = vendors as unknown as { slug: string; updated_at: string }[];
+      funeralHomePages = vendorData.map((vendor) => ({
+        url: `${baseUrl}/funeral-homes/${vendor.slug}`,
+        lastModified: new Date(vendor.updated_at || Date.now()),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching funeral homes for sitemap:', error);
+  }
+
+  return [
+    ...staticPages,
+    ...industryPages,
+    ...obituaryPages,
+    ...communityPages,
+    ...funeralHomePages,
+  ];
 }
