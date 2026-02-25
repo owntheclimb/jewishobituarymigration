@@ -39,7 +39,7 @@ const ModerationPanel = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace('/auth');
+      router.replace('/login?next=' + encodeURIComponent(window.location.pathname));
     }
   }, [authLoading, user, router]);
 

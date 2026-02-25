@@ -30,15 +30,13 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-// Stable image URLs from /public folder - these won't change across deployments
-// which prevents cart image breakage when users have old cart data in localStorage
 const PRODUCT_IMAGES = {
-  peacefulWhiteLilies: '/images/peaceful-white-lilies.jpg',
-  gardenOfGraceSpray: '/images/garden-of-grace-spray.jpg',
-  comfortPlanter: '/images/comfort-planter.jpg',
-  sympathyGiftBasket: '/images/sympathy-gift-basket.jpg',
-  memorialWindChimes: '/images/memorial-wind-chimes.jpg',
-  remembranceRoseBouquet: '/images/remembrance-rose-bouquet.jpg',
+  peacefulWhiteLilies: 'https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=300&fit=crop',
+  gardenOfGraceSpray: 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400&h=300&fit=crop',
+  comfortPlanter: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400&h=300&fit=crop',
+  sympathyGiftBasket: 'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=300&fit=crop',
+  memorialWindChimes: 'https://images.unsplash.com/photo-1518882054726-4a2cfb3cd545?w=400&h=300&fit=crop',
+  remembranceRoseBouquet: 'https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=400&h=300&fit=crop',
 };
 
 interface Product {

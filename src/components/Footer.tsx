@@ -32,7 +32,7 @@ const Footer = () => {
             <h3 className="font-semibold mb-4">Services</h3>
             <ul className="space-y-2 text-sm">
               <li><Link href="/create-obituary" className="opacity-80 hover:opacity-100 transition-opacity">Create Obituary</Link></li>
-              <li><Link href="/obituary-helper" className="opacity-80 hover:opacity-100 transition-opacity">AI Obituary Helper</Link></li>
+              <li><Link href="/obituary-helper" className="opacity-80 hover:opacity-100 transition-opacity">Obituary Helper</Link></li>
               <li><Link href="/search" className="opacity-80 hover:opacity-100 transition-opacity">Find Obituary</Link></li>
               <li><Link href="/planning" className="opacity-80 hover:opacity-100 transition-opacity">Funeral Planning</Link></li>
               <li><Link href="/funeral-homes" className="opacity-80 hover:opacity-100 transition-opacity">Funeral Homes</Link></li>

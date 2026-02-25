@@ -141,7 +141,6 @@ const Flowers = () => {
   ];
 
   // Fallback products if database is empty
-  // Using stable /public URLs to prevent cart image breakage across deployments
   const fallbackProducts = [
     {
       id: "1",
@@ -149,7 +148,7 @@ const Flowers = () => {
       price: 89.99,
       category: "bouquets",
       rating: 4.8,
-      image: "/images/peaceful-white-lilies.jpg",
+      image: "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=300&fit=crop",
       description: "Elegant white lilies and roses arranged with care"
     },
     {
@@ -158,7 +157,7 @@ const Flowers = () => {
       price: 149.99,
       category: "sprays",
       rating: 4.9,
-      image: "/images/garden-of-grace-spray.jpg",
+      image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400&h=300&fit=crop",
       description: "Professional funeral standing arrangement"
     },
     {
@@ -167,7 +166,7 @@ const Flowers = () => {
       price: 64.99,
       category: "plants",
       rating: 4.7,
-      image: "/images/comfort-planter.jpg",
+      image: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400&h=300&fit=crop",
       description: "Living peace lily in decorative planter"
     },
     {
@@ -176,7 +175,7 @@ const Flowers = () => {
       price: 79.99,
       category: "baskets",
       rating: 4.6,
-      image: "/images/sympathy-gift-basket.jpg",
+      image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=300&fit=crop",
       description: "Thoughtful collection of gourmet treats"
     },
     {
@@ -185,7 +184,7 @@ const Flowers = () => {
       price: 34.99,
       category: "keepsakes",
       rating: 4.8,
-      image: "/images/memorial-wind-chimes.jpg",
+      image: "https://images.unsplash.com/photo-1518882054726-4a2cfb3cd545?w=400&h=300&fit=crop",
       description: "Beautiful keepsake with gentle sounds"
     },
     {
@@ -194,7 +193,7 @@ const Flowers = () => {
       price: 69.99,
       category: "bouquets",
       rating: 4.9,
-      image: "/images/remembrance-rose-bouquet.jpg",
+      image: "https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=400&h=300&fit=crop",
       description: "Stunning roses in remembrance colors"
     }
   ];
@@ -207,7 +206,7 @@ const Flowers = () => {
         price: p.price,
         category: getCategorySlug(p.category_id),
         rating: 4.8,
-        image: p.image_url || '/images/peaceful-white-lilies.jpg',
+        image: p.image_url || 'https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=300&fit=crop',
         description: p.short_description || p.description || ''
       }))
     : fallbackProducts;

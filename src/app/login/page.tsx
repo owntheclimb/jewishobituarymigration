@@ -51,9 +51,11 @@ function LoginPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const nextUrl = searchParams.get('next') || '/';
+
   useEffect(() => {
     if (user) {
-      router.replace('/');
+      router.replace(nextUrl);
     }
 
     // Check for auth errors from callback
@@ -65,7 +67,7 @@ function LoginPageInner() {
         variant: 'destructive',
       });
     }
-  }, [user, router, searchParams, toast]);
+  }, [user, router, nextUrl, searchParams, toast]);
 
   if (user) {
     return null;
@@ -105,7 +107,7 @@ function LoginPageInner() {
             : 'You have been signed in successfully.',
         });
         if (!isSignUp) {
-          router.push('/');
+          router.push(nextUrl);
         }
       }
     } catch (error) {
@@ -157,20 +159,6 @@ function LoginPageInner() {
                 ? 'Join us to create meaningful obituaries'
                 : 'Sign in to your account'}
             </p>
-          </div>
-
-          {/* Google Sign In - hidden until OAuth is enabled in Supabase */}
-
-          {/* Divider */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border/50"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
-              </span>
-            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -230,6 +218,7 @@ function LoginPageInner() {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >

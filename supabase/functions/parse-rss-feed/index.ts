@@ -203,6 +203,21 @@ const SOURCE_STATE_MAP: Record<string, string> = {
   'jewish_living_learning': 'National'
 };
 
+// Check whether an RSS item is likely an obituary (not a news article)
+// Applied to general-purpose news feeds that mix obituaries with other content
+function isLikelyObituary(title: string, description: string): boolean {
+  const text = (title + ' ' + description).toLowerCase();
+  const obituaryKeywords = [
+    'passed away', 'passing of', 'has died', 'have died', 'died on', 'died at',
+    'passed on', 'death of', 'in loving memory', 'memorial service', 'funeral service',
+    'survived by', 'leaves behind', 'is survived', 'beloved', 'z"l', "z'l", 'zichrono',
+    'baruch dayan', 'condolence', 'mourning', 'shiva', 'yahrzeit', 'obituary',
+    'remembrance', 'laid to rest', 'eulogy', 'of blessed memory', 'may his memory',
+    'may her memory', 'born in', 'born on'
+  ];
+  return obituaryKeywords.some(kw => text.includes(kw));
+}
+
 // Helper to extract city and state from title or description
 function extractLocation(title: string, description: string): { city: string | null; state: string | null } {
   // Common patterns: "Name, City, State" or "City, State - ..."
@@ -305,6 +320,19 @@ Deno.serve(async (req) => {
         // Process each item
         for (const item of feed.items) {
           totalProcessed++;
+
+          // For general news RSS feeds, skip non-obituary articles
+          // Dedicated funeral home / obituary-section feeds can bypass this filter
+          const isDedicatedObitSource = source.key?.includes('mortuary') ||
+            source.key?.includes('chapel') ||
+            source.key?.includes('funeral') ||
+            source.key?.includes('cremation') ||
+            source.key?.includes('memorial') ||
+            source.type === 'scrape';
+          if (!isDedicatedObitSource && !isLikelyObituary(item.title, item.description)) {
+            console.log(`Skipping non-obituary article: "${item.title}"`);
+            continue;
+          }
           
           // Use source label as source name
           const sourceName = source.label;

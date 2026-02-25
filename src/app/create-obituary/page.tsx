@@ -86,9 +86,29 @@ const CreateObituary = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace('/auth');
+      router.replace('/login?next=/create-obituary');
     }
   }, [authLoading, user, router]);
+
+  // Pre-fill from obituary helper draft if present
+  useEffect(() => {
+    try {
+      const draft = sessionStorage.getItem('obituaryHelperDraft');
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        setFormData(prev => ({
+          ...prev,
+          fullName: parsed.formData?.fullName || prev.fullName,
+          dateOfBirth: parsed.formData?.dateOfBirth || prev.dateOfBirth,
+          dateOfDeath: parsed.formData?.dateOfPassing || prev.dateOfDeath,
+          biography: parsed.obituaryText || prev.biography,
+        }));
+        sessionStorage.removeItem('obituaryHelperDraft');
+      }
+    } catch {
+      // sessionStorage unavailable or JSON parse error — continue with empty form
+    }
+  }, []);
 
   if (authLoading) {
     return (

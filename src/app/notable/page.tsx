@@ -230,6 +230,7 @@ const NotableFigures = () => {
                     <Button
                       size="sm"
                       variant={favorites.has(figure.id) ? "default" : "outline"}
+                      aria-label={favorites.has(figure.id) ? `Remove ${figure.name} from favorites` : `Add ${figure.name} to favorites`}
                       onClick={() => handleToggleFavorite(figure.id, figure.name)}
                     >
                       <Heart className={`h-3 w-3 ${favorites.has(figure.id) ? 'fill-current' : ''}`} />
