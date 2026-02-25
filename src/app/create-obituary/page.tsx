@@ -17,7 +17,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { z } from 'zod';
 
-const createHeroImage = "/images/hero-cemetery.jpg";
+import createHeroImageAsset from '@/assets/memorial-tree.jpg';
+const createHeroImage = createHeroImageAsset.src;
 
 const obituarySchema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(200, "Name must be less than 200 characters"),
