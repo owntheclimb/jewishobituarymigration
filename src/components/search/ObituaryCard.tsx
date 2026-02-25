@@ -54,7 +54,7 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
   
   // Use the obituary's image URL (already includes gender-specific placeholder logic from transformer)
   const imageUrl = (!obituary.imageUrl || imageError) 
-    ? '/placeholder-memorial.svg' 
+    ? '/placeholder-memorial.png' 
     : obituary.imageUrl;
 
   const isPlaceholder = imageUrl.includes('/placeholder-');
@@ -93,18 +93,6 @@ const ObituaryCard = ({ obituary, onCopyLink, copiedId, index = 0 }: ObituaryCar
           loading="lazy"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        
-        {/* Overlay for placeholder images with text */}
-        {isPlaceholder && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-transparent to-primary/5">
-            <div className="text-center px-4">
-              <div className="text-muted-foreground/40 text-sm font-medium">
-                {/* Decorative element only, alt text is sufficient */}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Top-right badges */}
         <div className="absolute top-3 right-3 flex flex-col gap-2">
           {hasFloridaBadge && (

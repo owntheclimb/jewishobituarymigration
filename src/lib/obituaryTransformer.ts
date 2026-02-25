@@ -72,8 +72,10 @@ interface ScrapedObituary {
  * Priority: 1) Provided image, 2) Notable figure image, 3) Gender-specific placeholder
  */
 const getObituaryImage = (imageUrl: string | null, name: string): string => {
+  const isPlaceholderImage = !!imageUrl && imageUrl.includes('/placeholder-');
+
   // If we have a valid image URL, use it
-  if (imageUrl && imageUrl !== '/placeholder-memorial.svg') {
+  if (imageUrl && !isPlaceholderImage) {
     return imageUrl;
   }
   
