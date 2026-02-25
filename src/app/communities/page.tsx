@@ -387,11 +387,11 @@ const Communities = () => {
               We're always adding new communities. Help us grow by suggesting your hometown, school, or organization.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="hover-scale">
-                Suggest a Community
+              <Button size="lg" className="hover-scale" asChild>
+                <Link href="/contact">Suggest a Community</Link>
               </Button>
-              <Button variant="outline" size="lg" className="hover-scale">
-                Contact Support
+              <Button variant="outline" size="lg" className="hover-scale" asChild>
+                <Link href="/contact">Contact Support</Link>
               </Button>
             </div>
           </Card>

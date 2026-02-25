@@ -43,7 +43,7 @@ const ObituaryHelper = () => {
   };
 
   const generateObituary = () => {
-    // Mock AI generation - creates a personalized obituary based on inputs
+    // Template-based generation from user inputs
     const obit = `${formData.fullName}${formData.hebrewName ? ` (${formData.hebrewName})` : ""}, beloved ${formData.spouse ? "husband and " : ""}father, passed away peacefully on ${formData.dateOfDeath || "[date]"} at the age of ${formData.age || "[age]"}.
 
 Born ${formData.dateOfBirth ? `on ${formData.dateOfBirth}` : ""} in ${formData.residence || "[city]"}, ${formData.fullName} was a cherished member of the community for many years. ${formData.education ? `He graduated from ${formData.education} and ` : ""}${formData.career ? `built a distinguished career in ${formData.career}.` : ""}
@@ -76,7 +76,7 @@ May his memory be a blessing.`;
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">The Words You Need</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
-            Losing a loved one is overwhelming. Finding the right words to honor their memory shouldn't add to your burden. Our AI-powered ObituaryHelper creates a beautiful, personalized tribute in minutes.
+            Losing a loved one is overwhelming. Finding the right words to honor their memory shouldn't add to your burden. Our Obituary Template Generator creates a beautiful, personalized tribute in minutes.
           </p>
           {step === "form" && (
             <div className="flex flex-wrap gap-4 justify-center">
@@ -109,7 +109,7 @@ May his memory be a blessing.`;
                 2
               </div>
               <h3 className="font-semibold mb-2">We'll Create a Draft</h3>
-              <p className="text-sm text-muted-foreground">Our intelligent writing assistant generates a personalized obituary.</p>
+              <p className="text-sm text-muted-foreground">Our template engine generates a personalized obituary from your details.</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold text-primary">

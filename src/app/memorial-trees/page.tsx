@@ -78,7 +78,7 @@ const MemorialTrees = () => {
 
       {/* Hero Section */}
       <section className="relative py-24 px-4 bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 dark:from-green-950/30 dark:via-emerald-950/20 dark:to-green-900/30 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/hero-cemetery.jpg')] bg-cover bg-center opacity-10" />
+        <div className="absolute inset-0 bg-[url('/images/hero-cemetery.jpg')] bg-cover bg-center opacity-25" />
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 dark:bg-green-900/50 rounded-full mb-8 shadow-lg">
             <TreePine className="h-12 w-12 text-green-600 dark:text-green-400" />
@@ -127,11 +127,7 @@ const MemorialTrees = () => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md p-2">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/JNF_logo.svg/200px-JNF_logo.svg.png"
-                  alt="Jewish National Fund"
-                  className="w-12 h-12 object-contain"
-                />
+                <TreePine className="w-10 h-10 text-green-700" aria-label="Jewish National Fund" />
               </div>
               <div>
                 <h3 className="font-semibold text-lg">Official Partner: Jewish National Fund</h3>

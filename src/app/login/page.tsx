@@ -159,26 +159,7 @@ function LoginPageInner() {
             </p>
           </div>
 
-          {/* Google Sign In Button */}
-          <Button
-            type="button"
-            variant="outline"
-            disabled={googleLoading}
-            onClick={handleGoogleSignIn}
-            className="w-full mb-6 h-12 text-base font-medium border-2 hover:bg-muted/50 transition-all duration-300"
-          >
-            {googleLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
-                Connecting...
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <GoogleIcon />
-                Continue with Google
-              </div>
-            )}
-          </Button>
+          {/* Google Sign In - hidden until OAuth is enabled in Supabase */}
 
           {/* Divider */}
           <div className="relative mb-6">

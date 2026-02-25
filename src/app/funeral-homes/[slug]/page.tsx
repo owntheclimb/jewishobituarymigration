@@ -51,43 +51,6 @@ interface Vendor {
   created_at: string;
 }
 
-// Mock data for fallback (matches funeral-homes page)
-const mockFuneralHomes: Record<string, Vendor & { services: { name: string }[] }> = {
-  'neshama': {
-    id: 'neshama',
-    name: 'Neshama Jewish Funeral Services',
-    slug: 'neshama',
-    description: 'Neshama provides compassionate, dignified Jewish funeral services with the highest standards of care. Our team is available 24/7 to guide families through every step with wisdom, warmth, and deep respect for tradition. We serve families of all Jewish denominations throughout the Greater New York Area, offering traditional tahara and chevra kadisha services performed with the utmost reverence.',
-    short_description: 'Compassionate Jewish funeral services serving all denominations',
-    phone: '(855) NESHAMA',
-    email: 'info@neshamajfs.com',
-    website: 'https://www.neshamajfs.com/',
-    address: 'Serving the Greater New York Area',
-    city: 'Multiple Locations',
-    state: 'NY',
-    zip: '',
-    logo_url: null,
-    featured: true,
-    verified: true,
-    status: 'active',
-    services: [
-      { name: '24/7 Availability' },
-      { name: 'All Denominations Welcome' },
-      { name: 'Chevra Kadisha On-Site' },
-      { name: 'Kosher Certified' },
-      { name: 'Pre-Planning Services' },
-      { name: 'Grief Counseling' },
-      { name: 'Traditional & Contemporary Services' },
-      { name: 'Cemetery Arrangements' },
-    ],
-    hours: {
-      'Monday-Friday': '24 Hours',
-      'Saturday': 'After Shabbat',
-      'Sunday': '24 Hours',
-    },
-    created_at: '2024-01-01',
-  },
-};
 
 export default function VendorDetailPage() {
   const params = useParams();
@@ -131,15 +94,9 @@ export default function VendorDetailPage() {
 
         if (data) {
           setVendor(data as unknown as Vendor);
-        } else if (mockFuneralHomes[slug]) {
-          // Fallback to mock data
-          setVendor(mockFuneralHomes[slug]);
         }
       } catch (error) {
-        // Try mock data on error
-        if (mockFuneralHomes[slug]) {
-          setVendor(mockFuneralHomes[slug]);
-        }
+        console.error('Failed to fetch vendor:', error);
       } finally {
         setLoading(false);
       }

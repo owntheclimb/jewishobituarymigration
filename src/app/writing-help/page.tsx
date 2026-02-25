@@ -197,7 +197,7 @@ const WritingHelp = () => {
               </div>
               <div className="flex items-center gap-2">
                 <FileCheck className="h-5 w-5" />
-                <span>AI-assisted writing tools</span>
+                <span>Template-based writing tools</span>
               </div>
               <div className="flex items-center gap-2">
                 <Heart className="h-5 w-5" />

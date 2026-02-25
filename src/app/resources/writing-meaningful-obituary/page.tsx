@@ -534,7 +534,7 @@ export default function WritingMeaningfulObituaryPage() {
           <div className="mt-12 p-8 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg text-center">
             <h3 className="text-2xl font-bold mb-4">Need Help Writing an Obituary?</h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Our AI-assisted obituary helper can guide you through the process, suggesting language and ensuring you capture all the important details.
+              Our obituary template helper can guide you through the process, suggesting language and ensuring you capture all the important details.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
