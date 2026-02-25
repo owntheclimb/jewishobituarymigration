@@ -104,7 +104,7 @@ export default function RootLayout({
               name: 'Jewish Obituary',
               alternateName: 'Jewish Obits',
               url: 'https://jewishobituary.com',
-              logo: 'https://jewishobituary.com/logo.png',
+              logo: 'https://jewishobituary.com/logo.svg',
               description: 'The premier online platform for creating, publishing, and preserving Jewish obituaries and memorial tributes.',
               sameAs: [],
               contactPoint: {

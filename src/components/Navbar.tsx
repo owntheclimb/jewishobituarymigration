@@ -63,7 +63,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 hover:scale-105 transition-transform duration-300">
-            <Image src="/logo.png" alt="Jewish Obits Logo" width={32} height={32} className="h-8 w-auto" priority />
+            <Image src="/logo.svg" alt="Jewish Obits Logo" width={32} height={32} className="h-8 w-auto" priority />
             <span className="text-xl font-bold text-foreground">Jewish Obits</span>
           </Link>
 

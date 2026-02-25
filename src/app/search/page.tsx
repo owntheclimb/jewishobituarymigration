@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
+import { useState, useEffect, Suspense, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { supabase, supabasePublic } from '@/integrations/supabase/client';
@@ -20,7 +20,6 @@ import ObituaryCard from '@/components/search/ObituaryCard';
 import ObituaryCardSkeleton from '@/components/search/ObituaryCardSkeleton';
 import SearchStats from '@/components/search/SearchStats';
 import { transformObituary, UnifiedObituary, markAsNotable } from '@/lib/obituaryTransformer';
-import { withTimeout } from '@/lib/utils/timeout';
 
 // Timeout constants
 const DB_TIMEOUT_MS = 10000; // 10 seconds for database queries
@@ -37,10 +36,16 @@ import {
 interface Obituary {
   id: string;
   full_name: string;
+  hebrew_name?: string | null;
   date_of_birth: string | null;
   date_of_death: string | null;
   biography: string | null;
   location: string | null;
+  city?: string | null;
+  state?: string | null;
+  high_schools?: string[] | null;
+  colleges?: string[] | null;
+  military_branches?: string[] | null;
   photo_url: string | null;
   created_at: string | null;
 }
@@ -74,7 +79,6 @@ const SearchPageContent = () => {
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const [obituaries, setObituaries] = useState<Obituary[]>([]);
   const [filteredObituaries, setFilteredObituaries] = useState<Obituary[]>([]);
-  const [unifiedObituaries, setUnifiedObituaries] = useState<UnifiedObituary[]>([]);
   const [filters, setFilters] = useState<SearchFilterValues>({
     searchTerm: '',
     hebrewName: '',
@@ -102,7 +106,6 @@ const SearchPageContent = () => {
   // Combined external obituaries (Jewish RSS + Scraped)
   const [externalObits, setExternalObits] = useState<(JewishObit | ScrapedObituary)[]>([]);
   const [filteredExternalObits, setFilteredExternalObits] = useState<(JewishObit | ScrapedObituary)[]>([]);
-  const [unifiedExternalObits, setUnifiedExternalObits] = useState<UnifiedObituary[]>([]);
   const [externalSearchTerm, setExternalSearchTerm] = useState('');
   const [stateFilter, setStateFilter] = useState('All');
   const [externalSourceFilter, setExternalSourceFilter] = useState('All');
@@ -125,6 +128,40 @@ const SearchPageContent = () => {
     GA: 'Georgia', NC: 'North Carolina', VA: 'Virginia', MI: 'Michigan',
     WA: 'Washington', CO: 'Colorado', OR: 'Oregon', NV: 'Nevada'
   };
+
+  const filteredUnifiedObituaries = useMemo<UnifiedObituary[]>(
+    () => filteredObituaries.map(obit => markAsNotable(transformObituary(obit))),
+    [filteredObituaries]
+  );
+
+  const filteredUnifiedExternalObits = useMemo<UnifiedObituary[]>(
+    () => filteredExternalObits.map(obit => markAsNotable(transformObituary(obit))),
+    [filteredExternalObits]
+  );
+
+  const externalStateOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          externalObits
+            .map(obit => ('state' in obit ? obit.state : null))
+            .filter((state): state is string => !!state)
+        )
+      ).sort((a, b) => a.localeCompare(b)),
+    [externalObits]
+  );
+
+  const externalSourceOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          externalObits
+            .map(obit => ('source_name' in obit ? obit.source_name : obit.source))
+            .filter((source): source is string => !!source)
+        )
+      ).sort((a, b) => a.localeCompare(b)),
+    [externalObits]
+  );
 
   // Reset to page 1 when filters change - Note: In Next.js, we'd use router.push to update URL
   useEffect(() => {
@@ -194,18 +231,6 @@ const SearchPageContent = () => {
     applyExternalFilters();
   }, [stateFilter, externalSourceFilter, externalSearchTerm, externalSortBy, externalObits]);
 
-  // Transform obituaries to unified format whenever they change
-  useEffect(() => {
-    const unified = obituaries.map(obit => markAsNotable(transformObituary(obit)));
-    setUnifiedObituaries(unified);
-  }, [obituaries]);
-
-  // Transform external obituaries to unified format
-  useEffect(() => {
-    const unified = externalObits.map(obit => markAsNotable(transformObituary(obit)));
-    setUnifiedExternalObits(unified);
-  }, [externalObits]);
-
   useEffect(() => {
     // Create new AbortController for this effect
     abortControllerRef.current = new AbortController();
@@ -239,45 +264,7 @@ const SearchPageContent = () => {
 
   useEffect(() => {
     const applyFilters = async () => {
-      // Combine all obituaries: user-created + external (Jewish RSS + Scraped)
-      const combinedObits = [
-        ...obituaries,
-        ...externalObits.map(extObit => {
-          if ('title' in extObit) {
-            // Jewish RSS obit
-            return {
-              id: extObit.id,
-              full_name: extObit.title,
-              date_of_birth: null,
-              date_of_death: null,
-              biography: extObit.summary,
-              location: null,
-              photo_url: extObit.image_url,
-              created_at: extObit.created_at,
-              __external: true,
-              __external_url: extObit.source_url,
-              __external_source: extObit.source_name,
-            };
-          } else {
-            // Scraped obit
-            return {
-              id: extObit.id,
-              full_name: extObit.name,
-              date_of_birth: null,
-              date_of_death: extObit.date_of_death,
-              biography: extObit.snippet,
-              location: extObit.city && extObit.state ? `${extObit.city}, ${extObit.state}` : extObit.city || extObit.state || null,
-              photo_url: null,
-              created_at: extObit.created_at,
-              __external: true,
-              __external_url: extObit.source_url,
-              __external_source: extObit.source,
-            };
-          }
-        })
-      ];
-
-      let filtered = combinedObits;
+      let filtered = [...obituaries];
 
       // Apply search term filter
       if (filters.searchTerm) {
@@ -291,7 +278,16 @@ const SearchPageContent = () => {
       // Apply Hebrew name filter (search in biography for now)
       if (filters.hebrewName) {
         filtered = filtered.filter(obituary =>
+          obituary.hebrew_name?.toLowerCase().includes(filters.hebrewName.toLowerCase()) ||
           obituary.biography?.toLowerCase().includes(filters.hebrewName.toLowerCase())
+        );
+      }
+
+      if (filters.stateFilter) {
+        const stateFilter = filters.stateFilter.trim().toLowerCase();
+        filtered = filtered.filter(obituary =>
+          obituary.state?.toLowerCase() === stateFilter ||
+          obituary.location?.toLowerCase().includes(stateFilter)
         );
       }
 
@@ -328,7 +324,7 @@ const SearchPageContent = () => {
         });
       }
 
-      // Apply community filters (only for non-external obituaries)
+      // Apply community filters
       if (filters.cityFilter || filters.highSchoolFilter || filters.collegeFilter || filters.militaryFilter) {
         const communityFilteredIds = new Set<string>();
 
@@ -357,17 +353,15 @@ const SearchPageContent = () => {
           }
         }
 
-        // Filter obituaries by community links (only apply to non-external obits)
-        filtered = filtered.filter(obituary =>
-          (obituary as any).__external || communityFilteredIds.has(obituary.id)
-        );
+        // Keep only obituaries linked to the requested communities
+        filtered = filtered.filter(obituary => communityFilteredIds.has(obituary.id));
       }
 
       setFilteredObituaries(filtered);
     };
 
     applyFilters();
-  }, [filters, obituaries, externalObits]);
+  }, [filters, obituaries]);
 
   const fetchObituaries = useCallback(async () => {
     // Check if request was aborted
@@ -531,7 +525,7 @@ const SearchPageContent = () => {
       // Call both sync functions in parallel
       const [rssResult, scrapedResult] = await Promise.all([
         supabase.functions.invoke('parse-rss-feed'),
-        supabase.functions.invoke('sync-obituaries')
+        supabase.functions.invoke('sync-obituaries-v2')
       ]);
 
       if (rssResult.error || scrapedResult.error) {
@@ -543,7 +537,7 @@ const SearchPageContent = () => {
         });
       } else {
         const rssCount = rssResult.data?.inserted || 0;
-        const scrapedCount = scrapedResult.data?.inserted_or_updated || 0;
+        const scrapedCount = scrapedResult.data?.total_inserted || scrapedResult.data?.inserted_or_updated || 0;
         toast({
           title: "Success",
           description: `All sources synced! ${rssCount + scrapedCount} obituaries updated.`,
@@ -659,7 +653,7 @@ const SearchPageContent = () => {
     "name": "Jewish Obits",
     "description": "Comprehensive Jewish obituary database preserving memories from communities across the United States",
     "url": "https://jewishobituary.com",
-    "logo": "https://jewishobituary.com/logo.png",
+    "logo": "https://jewishobituary.com/logo.svg",
     "sameAs": [
       "https://facebook.com/jewishobits",
       "https://twitter.com/jewishobits"
@@ -980,7 +974,7 @@ const SearchPageContent = () => {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {unifiedObituaries.map((obituary, index) => (
+              {filteredUnifiedObituaries.map((obituary, index) => (
                 <ObituaryCard
                   key={obituary.id}
                   obituary={obituary}
@@ -1061,7 +1055,7 @@ const SearchPageContent = () => {
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-foreground px-1">Filter by State</label>
                   <div className="flex flex-wrap gap-2">
-                    {['All', 'FL', 'NY', 'CA', 'NJ', 'PA', 'IL', 'MA', 'TX', 'MD', 'OH'].map((state) => (
+                    {['All', ...externalStateOptions].map((state) => (
                       <Button
                         key={state}
                         variant={stateFilter === state ? "default" : "outline"}
@@ -1073,7 +1067,7 @@ const SearchPageContent = () => {
                             : 'hover:bg-primary/10 hover:border-primary/30'
                         }`}
                       >
-                        {state === 'All' ? 'All States' : state === 'FL' ? 'Florida' : state}
+                        {state === 'All' ? 'All States' : (STATE_NAMES[state] || state)}
                       </Button>
                     ))}
                   </div>
@@ -1083,7 +1077,7 @@ const SearchPageContent = () => {
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-foreground px-1">Filter by Source</label>
                   <div className="flex flex-wrap gap-2">
-                    {['All', 'Orlando', 'Tampa Bay', 'South Florida', 'Sarasota-Manatee', 'South East Florida'].map((source) => (
+                    {['All', ...externalSourceOptions].map((source) => (
                       <Button
                         key={source}
                         variant={externalSourceFilter === source ? "default" : "outline"}
@@ -1196,10 +1190,10 @@ const SearchPageContent = () => {
           ) : (
             <>
             {/* Quick Statistics */}
-            <SearchStats obituaries={unifiedExternalObits} visible={visibleCount} />
+            <SearchStats obituaries={filteredUnifiedExternalObits} visible={visibleCount} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-              {unifiedExternalObits.slice(0, visibleCount).map((obituary, index) => (
+              {filteredUnifiedExternalObits.slice(0, visibleCount).map((obituary, index) => (
                 <ObituaryCard
                   key={obituary.id}
                   obituary={obituary}

@@ -183,21 +183,25 @@ export default function VendorDetailPage() {
     setSubmitting(true);
 
     try {
-      // Track as contact lead
-      await supabase.from('vendor_leads' as any).insert({
-        vendor_id: vendor?.id,
-        lead_type: 'contact_form',
-        source_page: `/funeral-homes/${slug}`,
-        lead_data: contactForm,
+      if (!vendor?.id || !vendor?.name) {
+        throw new Error('Vendor information is unavailable');
+      }
+
+      const response = await fetch('/api/vendors/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vendorId: vendor.id,
+          slug,
+          vendorName: vendor.name,
+          contactForm,
+        }),
       });
 
-      // Also save to contact_submissions
-      await supabase.from('contact_submissions' as any).insert({
-        name: contactForm.name,
-        email: contactForm.email,
-        subject: `Inquiry for ${vendor?.name}`,
-        message: `Phone: ${contactForm.phone}\n\n${contactForm.message}`,
-      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
 
       toast({
         title: 'Message Sent',

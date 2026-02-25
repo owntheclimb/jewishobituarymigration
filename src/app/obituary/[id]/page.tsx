@@ -233,7 +233,7 @@ const ObituaryDetail = () => {
     ? obituary.biography.substring(0, 155) + '...'
     : `In loving memory of ${obituary.full_name}${obituary.date_of_birth && obituary.date_of_death ? ` (${formatDate(obituary.date_of_birth)} - ${formatDate(obituary.date_of_death)})` : ''}`;
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const pageImage = obituary.photo_url || '/placeholder-memorial.png';
+  const pageImage = obituary.photo_url || '/placeholder-memorial.svg';
 
   // Parse name for schema
   const parseName = (fullName: string) => {
@@ -291,7 +291,7 @@ const ObituaryDetail = () => {
       "name": "Jewish Obits",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://jewishobituary.com/logo.png"
+        "url": "https://jewishobituary.com/logo.svg"
       }
     },
     "mainEntityOfPage": {

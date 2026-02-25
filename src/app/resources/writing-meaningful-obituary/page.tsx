@@ -541,7 +541,7 @@ export default function WritingMeaningfulObituaryPage() {
                 <Link href="/create-obituary">Create Obituary</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/ai-helper">AI Obituary Helper</Link>
+                <Link href="/obituary-helper">AI Obituary Helper</Link>
               </Button>
             </div>
           </div>

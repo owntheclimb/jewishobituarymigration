@@ -255,7 +255,7 @@ Deno.serve(async (req) => {
       .from('obit_sources')
       .select('*')
       .eq('type', 'feed')
-      .eq('active', true);
+      .or('is_active.eq.true,active.eq.true');
 
     if (sourcesError) {
       console.error('Error fetching sources:', sourcesError);

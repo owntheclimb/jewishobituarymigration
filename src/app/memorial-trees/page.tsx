@@ -78,7 +78,7 @@ const MemorialTrees = () => {
 
       {/* Hero Section */}
       <section className="relative py-24 px-4 bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 dark:from-green-950/30 dark:via-emerald-950/20 dark:to-green-900/30 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/hero-cemetery.jpg')] bg-cover bg-center opacity-10" />
+        <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1800&q=80)' }} />
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 dark:bg-green-900/50 rounded-full mb-8 shadow-lg">
             <TreePine className="h-12 w-12 text-green-600 dark:text-green-400" />

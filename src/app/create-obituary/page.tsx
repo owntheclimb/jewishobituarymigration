@@ -223,145 +223,36 @@ const CreateObituary = () => {
         return;
       }
 
-      // Create the obituary
-      const { data: obituaryData, error: obituaryError } = await supabase
-        .from('obituaries')
-        .insert({
-          user_id: user.id,
-          full_name: formData.fullName,
-          date_of_birth: formData.dateOfBirth || null,
-          date_of_death: formData.dateOfDeath || null,
-          location: formData.location || null,
-          city: formData.city || null,
-          state: formData.state || null,
-          high_schools: highSchools,
-          colleges: colleges,
-          military_branches: militaryBranches,
-          biography: formData.biography || null,
-          funeral_details: formData.funeralDetails || null,
-          photo_url: resolvedPhotoUrl || null,
-          published: true,
-          visibility: 'public',
-        })
-        .select()
-        .single();
+      const { data: obituaryId, error: obituaryError } = await (supabase as any).rpc(
+        'create_obituary_with_relations',
+        {
+          p_user_id: user.id,
+          p_full_name: formData.fullName,
+          p_date_of_birth: formData.dateOfBirth || null,
+          p_date_of_death: formData.dateOfDeath || null,
+          p_location: formData.location || null,
+          p_city: formData.city || null,
+          p_state: formData.state || null,
+          p_high_schools: highSchools,
+          p_colleges: colleges,
+          p_military_branches: militaryBranches,
+          p_biography: formData.biography || null,
+          p_funeral_details: formData.funeralDetails || null,
+          p_photo_url: resolvedPhotoUrl || null,
+          p_allow_public_uploads: settings.allowPublicUploads,
+          p_guestbook_enabled: settings.guestbookEnabled,
+          p_require_moderation_for_uploads: settings.requireModerationForUploads,
+          p_max_video_seconds: settings.maxVideoSeconds,
+        }
+      );
 
       if (obituaryError) throw obituaryError;
-
-      const { error: settingsError } = await supabase
-        .from('obituary_settings')
-        .upsert(
-          {
-            obituary_id: obituaryData.id,
-            allow_public_uploads: settings.allowPublicUploads,
-            guestbook_enabled: settings.guestbookEnabled,
-            require_moderation_for_uploads: settings.requireModerationForUploads,
-            max_video_seconds: settings.maxVideoSeconds,
-          },
-          { onConflict: 'obituary_id' }
-        );
-
-      if (settingsError) throw settingsError;
-
-      // Create community links
-      const communityLinks = [];
-
-      // City community
-      if (formData.city && formData.state) {
-        const cityName = `${formData.city}, ${formData.state}`;
-        const citySlug = cityName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-
-        const { data: cityData } = await supabase
-          .from('communities')
-          .upsert({
-            type: 'city',
-            name: cityName,
-            slug: citySlug,
-            description: `${cityName} community`
-          }, { onConflict: 'type,slug' })
-          .select()
-          .single();
-
-        if (cityData) {
-          communityLinks.push({ obituary_id: obituaryData.id, community_id: cityData.id });
-        }
-      }
-
-      // High school communities
-      for (const school of highSchools) {
-        const slug = school.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const { data: schoolData } = await supabase
-          .from('communities')
-          .upsert({
-            type: 'highschool',
-            name: school,
-            slug: slug,
-            description: `${school} alumni community`
-          }, { onConflict: 'type,slug' })
-          .select()
-          .single();
-
-        if (schoolData) {
-          communityLinks.push({ obituary_id: obituaryData.id, community_id: schoolData.id });
-        }
-      }
-
-      // College communities
-      for (const college of colleges) {
-        const slug = college.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const { data: collegeData } = await supabase
-          .from('communities')
-          .upsert({
-            type: 'college',
-            name: college,
-            slug: slug,
-            description: `${college} alumni community`
-          }, { onConflict: 'type,slug' })
-          .select()
-          .single();
-
-        if (collegeData) {
-          communityLinks.push({ obituary_id: obituaryData.id, community_id: collegeData.id });
-        }
-      }
-
-      // Military communities
-      for (const branch of militaryBranches) {
-        const slug = branch.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const isUsMilitaryBranch = ['Army', 'Navy', 'Air Force', 'Marines', 'Coast Guard', 'Space Force'].includes(branch);
-        const description = isUsMilitaryBranch
-          ? `U.S. ${branch} veterans community`
-          : `${branch} community`;
-
-        const { data: militaryData } = await supabase
-          .from('communities')
-          .upsert({
-            type: 'military',
-            name: branch,
-            slug: slug,
-            description
-          }, { onConflict: 'type,slug' })
-          .select()
-          .single();
-
-        if (militaryData) {
-          communityLinks.push({ obituary_id: obituaryData.id, community_id: militaryData.id });
-        }
-      }
-
-      // Insert community links
-      if (communityLinks.length > 0) {
-        await supabase.from('community_links').insert(communityLinks);
-      }
-
-      // Update community stats
-      await supabase.rpc('update_community_stats');
 
       toast({
         title: "Obituary Created",
         description: "The obituary has been published successfully.",
       });
-      router.push('/search');
+      router.push(`/obituary/${obituaryId}`);
     } catch (error: any) {
       console.error('Error creating obituary:', error);
 

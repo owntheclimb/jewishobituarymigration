@@ -13,7 +13,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-api-key',
 };
 
 const MAX_PAYLOAD_SIZE = 50 * 1024;
@@ -442,20 +442,19 @@ async function upsertItems(items: ParsedItem[]) {
 
 // Update source status
 async function updateSourceStatus(sourceId: string, success: boolean, error?: string) {
-  const update: Record<string, unknown> = {
-    last_scraped: new Date().toISOString()
-  };
-
   if (success) {
-    update.last_error = null;
-    update.scrape_count = sb.rpc('increment_scrape_count', { source_id: sourceId });
-  } else {
-    update.last_error = error || 'Unknown error';
+    const { error: incrementError } = await sb.rpc('increment_scrape_count', { source_id: sourceId });
+    if (incrementError) {
+      console.error(`Failed to increment scrape_count for ${sourceId}:`, incrementError);
+    }
   }
 
   await sb
     .from("scraped_sources")
-    .update({ last_scraped: new Date().toISOString(), last_error: success ? null : error })
+    .update({
+      last_scraped: new Date().toISOString(),
+      last_error: success ? null : (error || 'Unknown error'),
+    })
     .eq('id', sourceId);
 }
 
@@ -466,6 +465,20 @@ serve(async (req) => {
   }
 
   try {
+    const apiKey = req.headers.get('x-api-key');
+    const authorization = req.headers.get('authorization');
+    const internalApiKey = Deno.env.get('INTERNAL_API_KEY');
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
+    const isInternalRequest = !!internalApiKey && apiKey === internalApiKey;
+    const isCronBearerRequest = !!anonKey && authorization === `Bearer ${anonKey}`;
+
+    if (!isInternalRequest && !isCronBearerRequest) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const contentLength = req.headers.get('content-length');
     if (contentLength && parseInt(contentLength) > MAX_PAYLOAD_SIZE) {
       return new Response(
@@ -480,7 +493,7 @@ serve(async (req) => {
     const { data: sources, error: sourcesError } = await sb
       .from('scraped_sources')
       .select('*')
-      .eq('is_active', true)
+      .or('is_active.eq.true,active.eq.true')
       .not('scraper_config', 'is', null)
       .order('name');
 

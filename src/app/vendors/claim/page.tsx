@@ -30,7 +30,6 @@ import {
   Send,
   ArrowRight,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const benefits = [
@@ -133,37 +132,16 @@ export default function VendorClaimPage() {
     setSubmitting(true);
 
     try {
-      // Save to vendor_claims table
-      const { error } = await supabase.from('vendor_claims' as any).insert({
-        business_name: formData.businessName,
-        business_type: formData.businessType,
-        website: formData.website || null,
-        phone: formData.phone,
-        email: formData.email,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        zip: formData.zip,
-        contact_name: formData.contactName,
-        contact_title: formData.contactTitle,
-        contact_email: formData.contactEmail,
-        contact_phone: formData.contactPhone,
-        description: formData.description,
-        services: formData.services,
-        verification_method: formData.verificationMethod,
-        additional_notes: formData.additionalNotes,
-        status: 'pending',
+      const response = await fetch('/api/vendors/claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
 
-      if (error) throw error;
-
-      // Also save to contact_submissions for admin notification
-      await supabase.from('contact_submissions' as any).insert({
-        name: formData.contactName,
-        email: formData.contactEmail,
-        subject: `New Vendor Claim: ${formData.businessName}`,
-        message: `Business: ${formData.businessName}\nType: ${formData.businessType}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nAddress: ${formData.address}, ${formData.city}, ${formData.state} ${formData.zip}\n\nVerification Method: ${formData.verificationMethod}\n\nDescription:\n${formData.description}`,
-      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit claim');
+      }
 
       toast({
         title: 'Claim Submitted!',

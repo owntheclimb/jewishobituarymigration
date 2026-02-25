@@ -157,7 +157,7 @@ export default function ScrapingDashboard() {
     try {
       const { error } = await supabase
         .from('obit_sources' as any)
-        .update({ is_active: !source.is_active })
+        .update({ is_active: !source.is_active, active: !source.is_active })
         .eq('id', source.id);
 
       if (error) throw error;

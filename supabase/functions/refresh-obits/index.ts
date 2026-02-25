@@ -120,9 +120,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Authenticate request
+    // Authenticate request (supports internal header and scheduled cron bearer token)
     const apiKey = req.headers.get('x-api-key');
-    if (apiKey !== Deno.env.get('INTERNAL_API_KEY')) {
+    const authorization = req.headers.get('authorization');
+    const internalApiKey = Deno.env.get('INTERNAL_API_KEY');
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
+    const isInternalRequest = !!internalApiKey && apiKey === internalApiKey;
+    const isCronBearerRequest = !!anonKey && authorization === `Bearer ${anonKey}`;
+
+    if (!isInternalRequest && !isCronBearerRequest) {
       console.error('Unauthorized access attempt');
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
@@ -144,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: sources, error: sourcesError } = await supabase
       .from('obit_sources')
       .select('*')
-      .eq('active', true);
+      .or('is_active.eq.true,active.eq.true');
 
     if (sourcesError) {
       console.error('Error fetching sources:', sourcesError);

@@ -12,6 +12,7 @@ interface FacetSelectProps {
 const FacetSelect = ({ type, value, onValueChange, placeholder }: FacetSelectProps) => {
   const [options, setOptions] = useState<Array<{ name: string; slug: string }>>([]);
   const [loading, setLoading] = useState(false);
+  const normalizedValue = value || 'all';
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -46,13 +47,31 @@ const FacetSelect = ({ type, value, onValueChange, placeholder }: FacetSelectPro
     }
   };
 
+  const getAllLabel = () => {
+    switch (type) {
+      case 'city':
+        return 'All cities';
+      case 'highschool':
+        return 'All high schools';
+      case 'college':
+        return 'All colleges';
+      case 'military':
+        return 'All branches';
+      default:
+        return 'All';
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select
+      value={normalizedValue}
+      onValueChange={(nextValue) => onValueChange(nextValue === 'all' ? '' : nextValue)}
+    >
       <SelectTrigger className="w-full">
         <SelectValue placeholder={getPlaceholder()} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">All {type === 'military' ? 'branches' : `${type}s`}</SelectItem>
+        <SelectItem value="all">{getAllLabel()}</SelectItem>
         {loading ? (
           <SelectItem value="loading" disabled>Loading...</SelectItem>
         ) : (

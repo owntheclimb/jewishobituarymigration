@@ -63,7 +63,7 @@ interface MobileMenuProps {
 }
 
 const MobileMenu = ({ open, onOpenChange }: MobileMenuProps) => {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const closeMenu = () => onOpenChange(false);
 
   const getInitials = (name: string) => {
@@ -234,8 +234,10 @@ const MobileMenu = ({ open, onOpenChange }: MobileMenuProps) => {
               </Button>
               <Button variant="outline" className="w-full" onClick={() => {
                 closeMenu();
-                // Will trigger sign out through parent component
-                window.location.href = '/auth';
+                void (async () => {
+                  await signOut();
+                  window.location.href = '/auth';
+                })();
               }}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
